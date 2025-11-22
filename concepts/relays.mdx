@@ -4,9 +4,16 @@ title: "Relays"
 
 Relays are servers that help establish connections between devices. 
 
-Relays temporarily route encrypted traffic until a direct, P2P connection is feasible. Once this direct path is set up, the relay server steps back, and the data flows directly between devices. This approach allows Iroh to maintain a secure, low-latency connection, even in challenging network situations.
+Relays temporarily route encrypted traffic until a direct, P2P connection is
+feasible. Once this direct path is set up, the relay server steps back, and the
+data flows directly between devices. This approach allows Iroh to maintain a
+secure, low-latency connection, even in challenging network situations.
 
-Relays are also open source! You can run your own relay server, or use one of the public relays. Code is [here](https://github.com/n0-computer/iroh/tree/main/iroh-relay), and we build relay binaries for most platforms with each iroh [release](https://github.com/n0-computer/iroh/releases)
+Relays are also open source! You can run your own relay server, or use one of
+the public relays. Code is
+[here](https://github.com/n0-computer/iroh/tree/main/iroh-relay), and we build
+relay binaries for most platforms with each iroh
+[release](https://github.com/n0-computer/iroh/releases)
 
 There are situations where a direct connection _can't_ be established, and in those cases traffic falls back to running through the relay. Relay servers **do not** have access to the data being transmitted, as it's encrypted end-to-end.
 
@@ -14,12 +21,28 @@ We're working on formally collecting the direct connection rate from production 
 
 ## Connection Changes
 
-During the lifespan of a connection, networking conditions can change, for example when a user switched from 5G to WiFi, plugs in an ethernet cable, or a sysadmin modifies router configurations. The connection may change from direct to relayed, or even a mixed combination of the two. Iroh will automatically switch between direct and relayed connections as needed, without any action required from the application.
+During the lifespan of a connection, networking conditions can change, for
+example when a user switched from 5G to WiFi, plugs in an ethernet cable, or a
+sysadmin modifies router configurations. The connection may change from direct
+to relayed, or even a mixed combination of the two. Iroh will automatically
+switch between direct and relayed connections as needed, without any action
+required from the application.
 
 ## number 0 public relays
 
-number 0 provides a set of public relays that are free to use, and are configured by default. You're more than welcome to run production systems using the public relays if you find performance acceptable. The public relays do rate-limit traffic that flows through the relay. This is to prevent abuse, and ensure the relays are available to everyone. If you need more capacity, you can run your own relay server, or [contact us about a custom relay setup](https://n0.computer/n0ps/).
+number 0 provides a set of public relays that are free to use, and are
+configured by default. You're more than welcome to run production systems using
+the public relays if you find performance acceptable. The public relays do
+rate-limit traffic that flows through the relay. This is to prevent abuse, and
+ensure the relays are available to everyone. If you need more capacity, you can
+run your own relay server, or [contact us about a custom relay
+setup](https://n0.computer/n0ps/).
 
 ## Local Discovery
 
-Relays aren't the only way to find other iroh endpoint. Iroh also supports local [discovery](/docs/concepts/discovery), where endpoints on the same local network can find each other & exchange dialing information without a relay using mDNS. This is useful for local networks, or for bootstrapping a network before a relay is available. For more info on configuring local discovery, see the [local discovery docs](https://docs.rs/iroh/latest/iroh/discovery/mdns/index.html).
+Relays aren't the only way to find other iroh endpoint. Iroh also supports local
+[discovery](/concepts/discovery), where endpoints on the same local network
+can find each other & exchange dialing information without a relay using mDNS.
+This is useful for local networks, or for bootstrapping a network before a relay
+is available. For more info on configuring local discovery, see the [local
+discovery docs](https://docs.rs/iroh/latest/iroh/discovery/mdns/index.html).

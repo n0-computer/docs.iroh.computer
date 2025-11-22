@@ -2,4 +2,75 @@
 title: "Blobs"
 ---
 
-Placeholder: How blob storage and transfer works in iroh.
+Content-addressed blob storage and transfer for iroh. `iroh-blobs` implements
+request/response and streaming transfers of arbitrary-sized byte blobs, using
+BLAKE3-verified streams and content-addressed links.
+
+The page below is a concise summary of the `iroh-blobs` crate. For complete
+API details, examples, and the module reference, see the upstream docs:
+https://docs.rs/iroh-blobs/latest/iroh_blobs/
+
+## Concepts
+
+- Blob: an opaque sequence of bytes (no embedded metadata).
+- Link: a 32-byte BLAKE3 hash that identifies a blob.
+- HashSeq: a blob that contains a sequence of links (useful for chunking/trees).
+- Provider / Requester: provider serves data; requester fetches it. A node can
+	be both.
+
+## Installation
+
+```
+cargo add iroh-blobs
+```
+
+- Primary docs and API reference: https://docs.rs/iroh-blobs/latest/iroh_blobs/
+- Examples repo: https://github.com/n0-computer/iroh-blobs/tree/main/examples
+
+## Example 
+
+The crate is typically used by creating a store, a `BlobsProtocol` handler,
+and registering it with an `iroh::Router`. The code below is an illustrative
+outline — see the upstream examples for full runnable code.
+
+```rust
+use iroh::{protocol::Router, Endpoint};
+use iroh_blobs::{store::mem::MemStore, BlobsProtocol, ticket::BlobTicket};
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    // create an iroh endpoint that includes the standard discovery mechanisms
+    // we've built at number0
+    let endpoint = Endpoint::bind().await?;
+
+    // create a protocol handler using an in-memory blob store.
+    let store = MemStore::new();
+    let tag = store.add_slice(b"Hello world").await?;
+  
+    let _ = endpoint.online().await;
+    let addr = endpoint.addr();
+    let ticket = BlobTicket::new(addr, tag.hash, tag.format);
+
+    // build the router
+    let blobs = BlobsProtocol::new(&store, None);
+    let router = Router::builder(endpoint)
+        .accept(iroh_blobs::ALPN, blobs)
+        .spawn();
+
+    println!("We are now serving {}", ticket);
+
+    // wait for control-c
+    tokio::signal::ctrl_c().await;
+
+    // clean shutdown of router and store
+    router.shutdown().await?;
+    Ok(())
+}
+```
+
+## Notes & best practices
+
+- Keep message sizes appropriate for your transport; publish references to
+	large payloads and transfer the data via the blobs protocol.
+- Use HashSeq to represent sequences of blobs (e.g., chunked content).
+- Use the downloader utilities to aggregate sources and store results locally.
