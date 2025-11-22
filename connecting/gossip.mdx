@@ -7,7 +7,6 @@ without relying on a central broker. Each node tracks a small set of
 neighbors and forwards messages redundantly so they reach interested peers
 even when nodes join, leave, or fail.
 
-
 In P2P networks each node typically only knows a handful of neighbors. Gossip
 protocols accept that partial view and use probabilistic forwarding so messages
 eventually reach most or all subscribers.
@@ -16,12 +15,6 @@ Characteristics
 - Peers may join, leave, change addresses, or drop messages at any time.
 - Gossip spreads information redundantly across overlapping paths, which
 	improves resilience but increases traffic.
-
-What gossip must handle
-- Subscription propagation: efficiently informing the network who is
-	interested in which topics.
-- Message dissemination: delivering published messages to subscribers with
-	acceptable latency and a reasonable bandwidth cost.
 
 How gossip compares to centralized systems
 - Central brokers (Kafka, MQTT, Pulsar) keep authoritative topic membership
@@ -35,9 +28,6 @@ When to use gossip
 - Dynamic membership (peers frequently join/leave or change addresses).
 - No single point of failure is desired.
 
-When not to use gossip
-- Strong delivery guarantees (exactly-once) or strict global ordering are
-	required.
 
 ## iroh-gossip
 
@@ -46,3 +36,112 @@ messages among a swarm of peers interested in a *topic*.  The implementation is
 based on the papers
 [HyParView](https://asc.di.fct.unl.pt/~jleitao/pdf/dsn07-leitao.pdf) and
 [PlumTree](https://asc.di.fct.unl.pt/~jleitao/pdf/srds07-leitao.pdf).
+
+Iroh provides a Router that takes an Endpoint and any protocols needed for the
+application. Similar to a router in webserver library, it runs a loop accepting
+incoming connections and routes them to the specific protocol handler, based on
+ALPN.
+
+```rust
+use iroh::{protocol::Router, Endpoint, EndpointId};
+use iroh_gossip::{api::Event, Gossip, TopicId};
+use n0_error::{Result, StdResultExt};
+use n0_future::StreamExt;
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    // create an iroh endpoint that includes the standard discovery mechanisms
+    // we've built at number0
+    let endpoint = Endpoint::bind().await?;
+
+    // build gossip protocol
+    let gossip = Gossip::builder().spawn(endpoint.clone());
+
+    // setup router
+    let router = Router::builder(endpoint)
+        .accept(iroh_gossip::ALPN, gossip.clone())
+        .spawn();
+
+    // gossip swarms are centered around a shared "topic id", which is a 32 byte identifier
+    let topic_id = TopicId::from_bytes([23u8; 32]);
+
+    // and you need some bootstrap peers to join the swarm
+    let bootstrap_peers = bootstrap_peers();
+
+    // then, you can subscribe to the topic and join your initial peers
+    let (sender, mut receiver) = gossip
+        .subscribe(topic_id, bootstrap_peers)
+        .await?
+        .split();
+
+    // you might want to wait until you joined at least one other peer:
+    receiver.joined().await?;
+
+    // then, you can broadcast messages to all other peers!
+    sender.broadcast(b"hello world this is a gossip message".to_vec().into()).await?;
+
+    // and read messages from others
+    while let Some(event) = receiver.next().await {
+        match event? {
+            Event::Received(message) => {
+                println!("received a message: {:?}", std::str::from_utf8(&message.content));
+            }
+            _ => {}
+        }
+    }
+
+    // clean shutdown makes sure that other peers are notified that you went offline
+    router.shutdown().await.std_context("shutdown router")?;
+    Ok(())
+}
+
+fn bootstrap_peers() -> Vec<EndpointId> {
+    // insert your bootstrap peers here, or get them from your environment
+    vec![]
+}
+```
+
+### Getting bootstrap peers
+
+To join a gossip topic, you need to provide a list of bootstrap peers that are
+already members of the topic. These peers will help you discover other peers in
+the topic. You can obtain bootstrap peers through various means, such as:
+- A predefined list of known peers hardcoded in your application.
+- A configuration file or environment variable.
+- A discovery service that provides a list of active peers for the topic.
+
+TODO: provide example code for getting bootstrap peers from DNS or DHT discovery.
+
+### Picking a topic ID
+
+A topic ID is a 32 byte identifier that identifies a gossip topic. You can
+pick any value you like, but it's recommended to use a cryptographic hash of a
+meaningful string to avoid collisions with other applications.
+
+We recommend using a stable hash function to derive topic IDs from human-readable
+strings. For example, you can use SHA-256 to hash a string like "com.example.myapp.mytopic"
+to produce a unique 32-byte topic ID:   
+
+```rust
+use sha2::{Sha256, Digest}; 
+let topic_name = "com.example.myapp.mytopic";
+let mut hasher = Sha256::new();
+hasher.update(topic_name.as_bytes());
+let topic_id_bytes = hasher.finalize();
+let topic_id = TopicId::from_bytes(topic_id_bytes.into());
+```
+
+### Waiting for peers
+
+Before sending messages, yoou might want to wait until you have connected to at
+least one other peer. This is because the gossip protocol works by forwarding
+messages between connected peers, so if you are not connected to anyone, your
+messages won't go anywhere.
+
+Call the `joined` method on the `Receiver` to block execution until at least one peer has
+joined the topic:
+
+```rust
+receiver.joined().await?;
+```
+
