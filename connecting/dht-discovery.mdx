@@ -1,0 +1,26 @@
+---
+title: "DHT"
+---
+
+Discovery via DHT in iroh uses the [BitTorrent Mainline](https://en.wikipedia.org/wiki/Mainline_DHT) distributed hash table (DHT) to publish & resolve EndpointIds.
+
+DHT Discovery is _not_ enabled by default, and must be enabled by the user. You'll need to add the `discovery-pkarr-dht` feature flag to your `Cargo.toml` to use it.
+
+```toml
+[dependencies]
+# Make sure to use the most recent version here instead of nn. (at the time of writing: 0.32)
+iroh = { version = "0.nn", features = ["discovery-pkarr-dht"] }
+```
+
+Then configure your endpoint to use DHT discovery concurrently with mDNS discovery, but not with the default DNS discovery, use the `Endpoint::empty_builder` method. This requires specifying a `RelayMode`, which in this example we will keep default.
+
+```rust
+use iroh::Endpoint;
+
+let dht_discovery = iroh::discovery::dht::DhtDiscovery::builder();
+let mdns = iroh::discovery::mdns::MdnsDiscovery::builder();
+let ep = Endpoint::empty_builder(iroh::RelayMode::Default)
+    .discovery(dnt_discovery)
+    .bind()
+    .await?;
+```

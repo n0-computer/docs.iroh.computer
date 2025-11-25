@@ -1,15 +1,14 @@
 ---
-title: "Local discovery"
+title: "mDNS and Bluetooth"
 ---
 
-Placeholder: Using mDNS for local peer discovery and network config notes.
+Local discovery adds the ability to use physical radios to discover other iroh
+endpoints. This is useful for local networks where the internet may not be available or reliable.
 
+Local connections can be faster and more reliable than internet-based connections, especially in
+environments with poor connectivity. They also enhance privacy by keeping communications within a local area.
 
 ## mDNS
-
-Local discovery adds the ability to scan local networks for other iroh
-endpoints, using Local Swarm Discovery. This is useful for local networks, or
-for bootstrapping a network before a relay is available.
 
 Local Discovery is _not_ enabled by default, and must be enabled by the user.
 You'll need to add the `discovery-local-network` feature flag to your
@@ -34,4 +33,7 @@ let ep = Endpoint::builder()
 ```
 
 
-## Bluetooth, and P2P WiFi
+## Bluetooth
+
+Bluetooth discovery is currently under development and will be available in a
+future release of iroh. For more information, please [contact us](https://cal.com/team/number-0/n0-protocol-services).

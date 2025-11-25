@@ -1,6 +1,10 @@
 ---
-title: "Creating an endpoint"
+title: "Creating an Endpoint"
 ---
+
+An endpoint is the core building block of an iroh node. It manages network
+connections, handles incoming and outgoing traffic, and provides the necessary
+infrastructure for implementing protocols.
 
 To create an endpoint in Iroh, you can use the `Endpoint::bind` method. This
 method initializes a new endpoint and binds it to a local address, allowing it
@@ -17,10 +21,9 @@ async fn main() {
 ```
 
 
-Breaking that down, `bind` creates the endpoint and starts listening for
-incoming connections, while the `await` keyword is used to wait for the endpoint
+1. `bind` creates the endpoint and starts listening for
+incoming connections
+2. `await` keyword is used to wait for the endpoint
 to be created in an asynchronous context.
-
-
-Once you have an endpoint, you can use it to create connections to other
+3. Once you have an endpoint, you can use it to create connections to other
 endpoints, or accept incoming connections from other endpoints.

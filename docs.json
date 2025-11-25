@@ -20,6 +20,7 @@
               "quickstart",
             {
               "group": "Concepts",
+              "expanded": true,
               "pages": [
                 "concepts/endpoints",
                 "concepts/discovery",
@@ -31,10 +32,11 @@
             ]
           },
           {
-            "group": "Connecting Peers",
+            "group": "Forming a Network",
             "pages": [
               "connecting/creating-endpoint",
-              "connecting/global-discovery",
+              "connecting/dns-discovery",
+              "connecting/dht-discovery",
               "connecting/local-discovery",
               "connecting/gossip"
             ]
