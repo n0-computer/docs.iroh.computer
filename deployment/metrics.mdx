@@ -2,4 +2,44 @@
 title: "Metrics"
 ---
 
-Placeholder: Suggested metrics, instrumentation, and dashboards for iroh services.
+iroh provides support for collecting metrics about your application's
+performance and behavior using the `iroh-metrics` crate. This crate offers a
+simple and flexible way to define, collect, and report various metrics.
+
+## Example
+
+```rust
+use iroh_metrics::{Counter, MetricsGroup};
+
+/// Define your metrics:
+#[derive(Debug, Default, MetricsGroup)]
+#[metrics(name = "ping")]
+pub struct Metrics {
+    /// count of valid ping messages sent
+    pub pings_sent: Counter,
+    /// count of valid ping messages received
+    pub pings_recv: Counter,
+}
+
+// elsewhere...
+let metrics = Metrics::default();
+
+// increment count of pings we've received
+metrics.pings_recv.inc();
+```
+
+## Exporting metrics
+
+The `iroh-metrics` crate supports exporting metrics in various formats, such
+as Prometheus, which can be scraped by monitoring systems.
+
+As a convenience, the iroh team  runs a service that collects Prometheus metrics from
+applications using iroh. To export your metrics to this service, you can use the
+`iroh-n0des` crate.
+
+First, sign up for an account on [n0des.iroh.computer](https://n0des.iroh.computer/signup) and create a project.
+
+Then, follow the instructions in the [iroh-n0des
+documentation](https://n0des.iroh.computer/docs/metrics/custom) to set up the exporter in your
+application.
+
