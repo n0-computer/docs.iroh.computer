@@ -11,7 +11,7 @@ export const metadata = {
 
 Let's dive into iroh by building a simple peer-to-peer file transfer tool in rust! 
 
-## Get set up
+# Set up
 
 We'll assume you've set up [rust](https://www.rust-lang.org/) and
 [cargo](https://doc.rust-lang.org/cargo/) on your machine.
@@ -31,8 +31,9 @@ cargo add iroh iroh-ping iroh-tickets tokio anyhow
 
 From here on we'll be working inside the `src/main.rs` file.
 
+# Part 1: Simple Ping Protocol
 
-## Create an `iroh::Endpoint`
+### Create an Endpoint
 
 To start interacting with other iroh endpoints, we need to build an `iroh::Endpoint`.
 This is what manages the possibly changing network underneath, maintains a
@@ -57,32 +58,20 @@ connections](https://docs.rs/iroh/latest/iroh/endpoint/struct.Endpoint.html#meth
 or [accept
 them](https://docs.rs/iroh/latest/iroh/endpoint/struct.Endpoint.html#method.accept).
 
-<Note>
-Here, we're specifically configuring the `Endpoint`'s builder to include "number 0 discovery".
-This makes it connect to DNS servers that [number 0](https://n0.computer) runs to find which relay to talk to for specific `EndpointId`s.
-It's a great default!
 
-The iroh toolkit is built to be modular and flexible, so if you want to use a different discovery mechanism, you can!
+### Protocols
 
-If all of this is too much magic for your taste, it's possible for the endpoint to work entirely without any discovery services.
-In that case, you'll need to make sure you're not only dialing by `EndpointId`, but also help the `Endpoint` out with giving it the whole [`EndpointAddr`](https://docs.rs/iroh/latest/iroh/struct.EndpointAddr.html) when connecting.
-</Note>
+Now that we have an `Endpoint`, we can start using protocols over it. 
 
+A **protocol** defines how two endpoints exchange messages. Just like HTTP
+defines how web browsers talk to servers, iroh protocols define how peers
+communicate over iroh connections.
 
-## Protocols
+Each protocol is identified by an **ALPN** (Application-Layer Protocol
+Negotiation) string. When a connection arrives, the router uses this string to
+decide which handler processes the data.
 
-Now that we have an `Endpoint`, we can start using protocols over it. A protocol
-is a specific way of exchanging messages over a connection.
-
-Similar to how HTTP is a protocol for exchanging web pages, iroh protocols define
-ways to exchange data over iroh connections.
-
-Each endpoint can support multiple protocols, identified by a string called
-an ALPN string. This just tells the program which handler to use for
-processing data as it arrives.
-
-When building applications with iroh, you can either build your own custom
-protocol handlers, or use existing ones.    
+You can build custom protocol handlers or use existing ones like `iroh-ping`.
 
 <Note>
 Learn more about writing your own protocol on the [protocol documentation page](/protocols/writing-a-protocol).
@@ -103,16 +92,16 @@ use iroh_ping::Ping;
 async fn main() -> anyhow::Result<()> {
     // Create an endpoint, it allows creating and accepting
     // connections in the iroh p2p world
-    let recv_ep = Endpoint::builder().bind().await?;
+    let endpoint = Endpoint::builder().bind().await?;
 
     // bring the endpoint online before accepting connections
-    recv_ep.online().await;
+    endpoint.online().await;
 
     // Then we initialize a struct that can accept ping requests over iroh connections
     let ping = Ping::new();
 
     // receiving ping requests
-    let recv_router = Router::builder(recv_ep)
+    let recv_router = Router::builder(endpoint)
         .accept(iroh_ping::ALPN, ping)
         .spawn();
 
@@ -139,13 +128,13 @@ use iroh_ping::Ping;
 async fn main() -> Result<()> {
     // Create an endpoint, it allows creating and accepting
     // connections in the iroh p2p world
-    let recv_ep = Endpoint::builder().bind().await?;
+    let endpoint = Endpoint::builder().bind().await?;
 
     // Then we initialize a struct that can accept ping requests over iroh connections
     let ping = Ping::new();
 
     // receiving ping requests
-    let recv_router = Router::builder(recv_ep)
+    let recv_router = Router::builder(endpoint)
         .accept(iroh_ping::ALPN, ping)
         .spawn();
 
@@ -163,7 +152,7 @@ async fn main() -> Result<()> {
 ```
 
 
-### Getting round trip time
+### Running it
 
 Now that we've created both the sending and receiving sides of our ping program, we can run it!
 
@@ -172,13 +161,13 @@ cargo run
 ```
 
 ```bash
-I   Compiling ping-quickstart v0.1.0 (/Users/raemckelvey/dev/ping-quickstart)
+I   Compiling ping-pong v0.1.0 (/dev/ping-pong)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.62s
-     Running `target/debug/ping-quickstart`
+     Running `target/debug/ping-pong`
 ping took: 1.189375ms to complete
 ```
 
-## Part 2: Separate Sender and Receiver
+## Part 2: Discovering Peers with Tickets
 
 Round-trip time isn't very useful when both roles live in the same binary
 instance. Let's split the app into two subcommands so you can run the receiver
@@ -188,7 +177,7 @@ on one machine and the sender on another.
 
 When an iroh endpoint comes online, it has an address containing its node ID,
 relay URL, and direct addresses. An `EndpointTicket` wraps this address into a
-serializable ticket—a short string you can copy and paste. Share this ticket
+serializable ticket -- a short string you can copy and paste. Share this ticket
 with senders so they can dial the receiver without manually exchanging
 networking details.
 
@@ -197,11 +186,11 @@ A ticket is made from an endpoint's address like this:
 ```rust
 use iroh_tickets::{Ticket, endpoint::EndpointTicket};
 
-let ticket = EndpointTicket::new(recv_ep.addr());
+let ticket = EndpointTicket::new(endpoint.addr());
 println!("{ticket}");
 ```
 
-For more details on tickets, see [Discovery](/concepts/discovery).
+For more details on how it works, see [Tickets](/concepts/tickets) and [Discovery](/concepts/discovery).
 
 ### Receiver
 
@@ -217,15 +206,15 @@ use iroh_tickets::{Ticket, endpoint::EndpointTicket};
 use std::env;
 
 async fn run_receiver() -> Result<()> {
-    let recv_ep = Endpoint::builder().bind().await?;
-    recv_ep.online().await;
+    let endpoint = Endpoint::builder().bind().await?;
+    endpoint.online().await;
 
     let ping = Ping::new();
 
-    let ticket = EndpointTicket::new(recv_ep.addr());
+    let ticket = EndpointTicket::new(endpoint.addr());
     println!("{ticket}");
 
-    Router::builder(recv_ep)
+    Router::builder(endpoint)
         .accept(iroh_ping::ALPN, ping)
         .spawn();
 
@@ -296,13 +285,14 @@ cargo run -- sender <TICKET>
 
 You should see the round-trip time printed by the sender.
 
-## That's it!
+## More Tutorials
 
 You've now successfully built a small tool for sending messages over a peer to peer network! 🎉
 
-The full example with the very latest version of iroh and iroh-ping can be [viewed on github](https://github.com/n0-computer/iroh-blobs/blob/main/examples/transfer.rs).
+The full example with the very latest version of iroh and iroh-ping can be
+[viewed on github](https://github.com/n0-computer/iroh-ping).
 
 If you're hungry for more, check out
-- the [iroh rust documentation](https://docs.rs/iroh),
-- Blob storage with [iroh-blobs](/protocols/blobs),
-- [other examples](/examples)
+- [Blob storage with iroh-blobs](/protocols/blobs)
+- [Build your own P2P Chat app tutorial](/examples/chat) 
+- [iroh rust documentation](https://docs.rs/iroh)
