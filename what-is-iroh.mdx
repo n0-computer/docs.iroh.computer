@@ -1,3 +1,36 @@
 ---
 title: "What is iroh?"
 ---
+
+iroh is a modular peer-to-peer networking stack written in Rust. It provides
+the building blocks to create decentralized applications that can communicate
+securely and efficiently over the internet.
+
+## Core features
+- **Peer-to-peer connectivity**: iroh enables direct connections between
+  devices, allowing them to communicate without relying on centralized servers.
+  It uses relay servers as a fallback when direct connections are not possible.
+- **Secure communication**: All connections established through iroh are
+  authenticated and encrypted end-to-end using the QUIC protocol, ensuring data
+  privacy and integrity.
+- **Modular protocols**: iroh is built around a system of composable protocols
+  that can be mixed and matched to suit the needs of different applications. This
+  allows developers to easily add functionality such as file sharing, messaging,
+  and real-time collaboration.
+
+## Use cases
+- **Decentralized applications**: iroh provides the networking foundation for
+  building decentralized applications that can operate without central servers.
+- **File sharing**: With protocols like iroh-blobs, iroh enables efficient
+  peer-to-peer file sharing.
+- **Real-time collaboration**: iroh's support for flexible data protocols allows
+developers to build applications that support real-time collaborative editing
+and data synchronization. Any kind of CRDT or OT sync protocol can be integrated.
+
+## Getting started
+To get started with iroh, check out the [quickstart guide](/quickstart) or explore the
+[protocols documentation](/protocols) to see what protocols are available and
+how to use them in your applications.
+
+Read the [how it works documentation](/concepts) to understand the underlying
+principles and architecture of iroh.
