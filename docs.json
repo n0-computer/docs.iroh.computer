@@ -14,11 +14,11 @@
       "tab": "Docs",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "Getting Started",
             "pages": [
               "what-is-iroh",
               "quickstart",
-              "examples",
+              "examples/examples",
             {
               "group": "How it works",
               "pages": [
@@ -42,7 +42,7 @@
             ]
           },
           {
-            "group": "Data Protocols",
+            "group": "Sending Data",
             "pages": [
               "protocols/kv-crdts",
               "protocols/blobs",

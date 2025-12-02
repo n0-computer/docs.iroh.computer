@@ -5,6 +5,8 @@ title: "Streaming"
 Streaming protocols in iroh enable efficient transfer of large or continuous
 data (files, audio, video, or chunked content) over QUIC connections. 
 
+With [iroh-live](https://github.com/n0-computer/iroh-live) you can build livestreaming video and audio over iroh. This repository implements a live streaming protocol over iroh with Media over Quic. It uses moq-rs to transfer audio and video streams over iroh connections.
+
 ## Example
 
 Callme is a demo that sets up an iroh endpoint, registers the streaming protocol, and
@@ -64,3 +66,4 @@ cargo run --release -- --connect <peer-addr>
 
 - [callme](https://github.com/n0-computer/callme): GitHub repository
 - [iroh-roq](https://docs.rs/iroh-roq/latest/iroh_roq/index.html): The RTP protocol used by `callme` for streaming audio.
+- [iroh-live](https://github.com/n0-computer/iroh-live): Live streaming over iroh using Media over QUIC (MoQ).
