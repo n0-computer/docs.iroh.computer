@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  spellcheck:
+    name: check spelling
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4
+
+    - uses: actions/setup-go@v4
+    - run: curl -L https://git.io/misspell | bash
+
+    - name: Check spelling
+      run: ./bin/misspell -error ./**/*.mdx ./**/*.md
+
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install Mintlify CLI
+      run: npm i -g mintlify
+
+    - name: Validate documentation
+      run: mintlify broken-links
