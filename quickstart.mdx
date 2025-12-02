@@ -26,7 +26,7 @@ cd ping-pong
 Now, add the dependencies we'll need for this example:
 
 ```bash
-cargo add iroh iroh-ping tokio anyhow
+cargo add iroh iroh-ping iroh-tickets tokio anyhow
 ```
 
 From here on we'll be working inside the `src/main.rs` file.
@@ -105,6 +105,9 @@ async fn main() -> anyhow::Result<()> {
     // connections in the iroh p2p world
     let recv_ep = Endpoint::builder().bind().await?;
 
+    // bring the endpoint online before accepting connections
+    recv_ep.online().await;
+
     // Then we initialize a struct that can accept ping requests over iroh connections
     let ping = Ping::new();
 
@@ -121,6 +124,7 @@ async fn main() -> anyhow::Result<()> {
 
 With these two lines, we've initialized iroh-blobs and gave it access to our `Endpoint`.
 
+### Ping: Send
 At this point what we want to do depends on whether we want to accept incoming iroh connections from the network or create outbound iroh connections to other endpoints.
 Which one we want to do depends on if the executable was called with `send` as
 an argument or `receive`, so let's parse these two options out from the CLI
@@ -171,10 +175,126 @@ cargo run
 I   Compiling ping-quickstart v0.1.0 (/Users/raemckelvey/dev/ping-quickstart)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.62s
      Running `target/debug/ping-quickstart`
-accepted connection from 32c5772d26bff78923ef6e85f665f23b96ee06655832649910a560af59c84e22
 ping took: 1.189375ms to complete
 ```
 
+## Part 2: Separate Sender and Receiver
+
+Round-trip time isn't very useful when both roles live in the same binary
+instance. Let's split the app into two subcommands so you can run the receiver
+on one machine and the sender on another.
+
+### What is a ticket?
+
+When an iroh endpoint comes online, it has an address containing its node ID,
+relay URL, and direct addresses. An `EndpointTicket` wraps this address into a
+serializable ticket—a short string you can copy and paste. Share this ticket
+with senders so they can dial the receiver without manually exchanging
+networking details.
+
+A ticket is made from an endpoint's address like this:
+
+```rust
+use iroh_tickets::{Ticket, endpoint::EndpointTicket};
+
+let ticket = EndpointTicket::new(recv_ep.addr());
+println!("{ticket}");
+```
+
+For more details on tickets, see [Discovery](/concepts/discovery).
+
+### Receiver
+
+The receiver creates an endpoint, brings it online, prints its ticket, then runs
+a router that accepts incoming ping requests indefinitely:
+
+```rust
+// filepath: src/main.rs
+use anyhow::{anyhow, Result};
+use iroh::{Endpoint, protocol::Router};
+use iroh_ping::Ping;
+use iroh_tickets::{Ticket, endpoint::EndpointTicket};
+use std::env;
+
+async fn run_receiver() -> Result<()> {
+    let recv_ep = Endpoint::builder().bind().await?;
+    recv_ep.online().await;
+
+    let ping = Ping::new();
+
+    let ticket = EndpointTicket::new(recv_ep.addr());
+    println!("{ticket}");
+
+    Router::builder(recv_ep)
+        .accept(iroh_ping::ALPN, ping)
+        .spawn();
+
+    // Keep the receiver running indefinitely
+    loop {
+        tokio::time::sleep(tokio::time::Duration::from_secs(60)).await;
+    }
+}
+```
+
+### Sender
+
+The sender parses the ticket, creates its own endpoint, and pings the receiver's address:
+
+```rust
+// filepath: src/main.rs
+async fn run_sender(ticket: EndpointTicket) -> Result<()> {
+    let send_ep = Endpoint::builder().bind().await?;
+    let send_pinger = Ping::new();
+    let rtt = send_pinger.ping(&send_ep, ticket.endpoint_addr().clone()).await?;
+    println!("ping took: {:?} to complete", rtt);
+    Ok(())
+}
+```
+
+### Wiring it together
+
+Parse the command-line arguments to determine whether to run as receiver or sender:
+
+```rust
+// filepath: src/main.rs
+#[tokio::main]
+async fn main() -> Result<()> {
+    let mut args = env::args().skip(1);
+    let role = args
+        .next()
+        .ok_or_else(|| anyhow!("expected 'receiver' or 'sender' as the first argument"))?;
+
+    match role.as_str() {
+        "receiver" => run_receiver().await,
+        "sender" => {
+            let ticket_str = args
+                .next()
+                .ok_or_else(|| anyhow!("expected ticket as the second argument"))?;
+            let ticket = EndpointTicket::deserialize(&ticket_str)
+                .map_err(|e| anyhow!("failed to parse ticket: {}", e))?;
+
+            run_sender(ticket).await
+        }
+        _ => Err(anyhow!("unknown role '{}'; use 'receiver' or 'sender'", role)),
+    }
+}
+```
+
+### Running it
+
+In one terminal, start the receiver:
+
+```bash
+cargo run -- receiver
+```
+
+It will print a ticket. Copy that ticket and run the sender in another terminal:
+
+```bash
+cargo run -- sender <TICKET>
+```
+
+You should see the round-trip time printed by the sender.
 
 ## That's it!
 

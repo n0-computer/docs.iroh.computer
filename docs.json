@@ -23,6 +23,7 @@
               "group": "How it works",
               "pages": [
                 "concepts/endpoints",
+                "concepts/tickets",
                 "concepts/discovery",
                 "concepts/relays",
                 "concepts/holepunching",
@@ -42,13 +43,14 @@
             ]
           },
           {
-            "group": "Sending Data",
+            "group": "Communicating over Iroh",
             "pages": [
               "protocols/kv-crdts",
               "protocols/blobs",
               "protocols/rpc",
               "protocols/automerge",
               "protocols/streaming",
+              "examples/chat",
               "protocols/writing-a-protocol"
             ]
           },
