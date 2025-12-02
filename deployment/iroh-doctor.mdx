@@ -2,15 +2,32 @@
 title: "Troubleshooting"
 ---
 
+## Logging
+
+iroh uses the `tracing` crate for logging. To enable logging in your
+application, you need to set up a subscriber.
+
+
+```rust
+use tracing_subscriber::layer::SubscriberExt;
+use tracing_subscriber::util::SubscriberInitExt;
+
+    tracing_subscriber::registry()
+       .with(tracing_subscriber::EnvFilter::from_default_env())
+       .with(tracing_subscriber::fmt::layer())
+       .init();
+```
+
+## Doctor CLI 
 [iroh doctor](https://github.com/n0-computer/iroh-doctor) is a command-line tool that helps you diagnose network connectivity issues with your iroh setup.
 
-## Installation
+### Installation
 
 ```
 cargo install iroh-doctor
 ``` 
 
-## Home Relay
+### Home Relay
 
 All iroh endpoints will maintain a single home relay server that they're
 reachable at. On startup iroh will probe its configured relays & choose the one
