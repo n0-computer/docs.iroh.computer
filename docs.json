@@ -39,7 +39,8 @@
               "connecting/dns-discovery",
               "connecting/dht-discovery",
               "connecting/local-discovery",
-              "connecting/gossip"
+              "connecting/gossip",
+              "connecting/endpoint-hooks"
             ]
           },
           {
