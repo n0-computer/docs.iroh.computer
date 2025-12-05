@@ -25,6 +25,7 @@ use iroh::{
     Endpoint, EndpointAddr, Watcher,
     endpoint::{AfterHandshakeOutcome, BeforeConnectOutcome, ConnectionInfo, EndpointHooks},
 };
+use tracing::info;
 
 /// Our hooks instance.
 ///
@@ -40,7 +41,7 @@ impl EndpointHooks for LogHooks {
         remote_addr: &EndpointAddr,
         alpn: &[u8],
     ) -> BeforeConnectOutcome {
-        tracing::info!(?remote_addr, ?alpn, "attempting to connect");
+        info!(?remote_addr, ?alpn, "attempting to connect");
         BeforeConnectOutcome::Accept
     }
 
@@ -52,13 +53,13 @@ impl EndpointHooks for LogHooks {
         let side = conn.side();
         let remote = conn.remote_id().fmt_short();
 
-        tracing::info!(%remote, alpn=?conn.alpn(), ?side, "connection established");
+        info!(%remote, alpn=?conn.alpn(), ?side, "connection established");
 
         // We can spawn a task to observe network path changes for this connection.
         let mut path_updates = conn.paths();
         tokio::spawn(async move {
             while let Ok(paths) = path_updates.updated().await {
-                tracing::info!(%remote, ?paths, "paths updated");
+                info!(%remote, ?paths, "paths updated");
             }
         });
 
