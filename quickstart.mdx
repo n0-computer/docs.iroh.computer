@@ -214,22 +214,28 @@ use iroh_tickets::{Ticket, endpoint::EndpointTicket};
 use std::env;
 
 async fn run_receiver() -> Result<()> {
+     // Create an endpoint, it allows creating and accepting
+    // connections in the iroh p2p world
     let endpoint = Endpoint::bind().await?;
+
+    // Wait for the endpoint to be accessible by others on the internet
     endpoint.online().await;
 
+    // Then we initialize a struct that can accept ping requests over iroh connections
     let ping = Ping::new();
 
+    // get the address of this endpoint to share with the sender
     let ticket = EndpointTicket::new(endpoint.addr());
     println!("{ticket}");
 
+    // receiving ping requests
     let _router = Router::builder(endpoint)
         .accept(iroh_ping::ALPN, ping)
         .spawn();
 
-    // Keep the receiver running indefinitely
-    loop {
-        tokio::time::sleep(tokio::time::Duration::from_secs(60)).await;
-    }
+    // Keep the receiver running until Ctrl+C
+    tokio::signal::ctrl_c().await?;
+    Ok(())
 }
 ```
 
