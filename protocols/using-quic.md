@@ -2,8 +2,6 @@
 title: "Using QUIC"
 ---
 
-# Implementing different connection patterns with QUIC
-
 ## Why this matters for iroh
 
 iroh is built on top of QUIC, providing peer-to-peer connectivity, NAT traversal, and encrypted connections out of the box. While iroh handles the hard parts of networking—holepunching, relay servers, and discovery—**you still need to design how your application exchanges data once connected**.
@@ -20,14 +18,14 @@ Think of iroh as giving you **reliable, secure tunnels between peers**. This gui
 iroh uses a fork of [Quinn](https://docs.rs/iroh-quinn/latest/iroh_quinn/), a pure-Rust implementation of QUIC maintained by [the n0 team](https://n0.computer). Quinn is production-ready, actively maintained, and used by projects beyond iroh. If you need lower-level QUIC access or want to understand the implementation details, check out the [Quinn documentation](https://docs.rs/iroh-quinn/latest/iroh_quinn/).
 </Note>
 
-## Introduction
+
+## Overview of the QUIC API
 
 Implementing a new protocol on the QUIC protocol can be a little daunting initially. Although the API is not that extensive, it's more complicated than e.g. TCP where you can only send and receive bytes, and eventually have an end of stream.
 There isn't "one right way" to use the QUIC API. It depends on what interaction pattern your protocol intends to use.
 This document is an attempt at categorizing the interaction patterns. Perhaps you find exactly what you want to do here. If not, perhaps the examples give you an idea for how you can utilize the QUIC API for your use case.
 One thing to point out is that we're looking at interaction patterns *after* establishing a connection, i.e. everything that happens *after* we've `connect`ed or `accept`ed incoming connections, so everything that happens once we have a `Connection` instance.
 
-### Overview of the QUIC API
 
 Unlike TCP, in QUIC you can open multiple streams. Either side of a connection can decide to "open" a stream at any time:
 ```rs
