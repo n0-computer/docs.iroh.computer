@@ -14,17 +14,15 @@ Endpoint discovery is an automated system for an [Endpoint](/concepts/endpoints)
 
 ## Discovery Services
 
-There are four different implementations of the discovery service in iroh. iroh
-uses the DNS discovery system to resolve EndpointIds to addresses, but you can choose to opt-in and configure
-iroh to use any of the other discovery systems.
+There are four different implementations of the discovery service in iroh. **By default, iroh uses DNS discovery** to resolve EndpointIds to addresses. Local and DHT discovery are **disabled by default** and must be explicitly configured if you want to use them.
 
 
-| Name | Description | |
+| Name | Description | Default |
 | --- | --- | --- |
-| [DNS](/connecting/global-discovery) | uses a custom Domain Name System server |
-| [Local](/connecting/local-discovery) | uses an mDNS-like system to find endpoints on the local network |
-| [Pkarr](/connecting/global-discovery#pkarr-discovery) | uses Pkarr Servers over HTTP |
-|  [DHT](/conecting/global-discovery/#dht-discovery) | uses the BitTorrent Mainline DHT |
+| [DNS](#node-discovery-via-dns) | uses a custom Domain Name System server | ✅ Enabled |
+| [Local](#local-discovery) | uses an mDNS-like system to find endpoints on the local network | ❌ Disabled |
+| [Pkarr](#node-announces-via-pkarr) | uses Pkarr Servers over HTTP | ✅ Enabled (via DNS) |
+|  [DHT](#dht-discovery) | uses the BitTorrent Mainline DHT | ❌ Disabled |
 
 ### The motivation
 
@@ -87,7 +85,7 @@ that node. So the Pkarr packet currently only needs to contain the Node ID and
 the relay URL of its preferred relay server (which we call its “home relay”).
 When Pkarr publishing is enabled on your iroh node, your node will create a
 Pkarr packet with its Node ID and relay URL, sign it, and defaults to publishing
-on an `iroh-dns` server that is run by number0.
+on an `iroh-dns` server that is run by [the n0 team](https://n0.computer).
 
 From there, others can discover your dialing information by resolving your Node
 ID using regular DNS. It’s worth noting that others must still learn your node
@@ -97,21 +95,25 @@ The following sections describe the format of the Pkarr publishing records and N
 
 ## Node discovery via DNS
 
-When connecting to an unknown `EndpointId`, the DNS discovery mechanism in iroh will perform a DNS query to discover relays or addresses for the node. The DNS discovery is configured with a *origin domain* (which defaults to *dns.iroh.link*, a server run by n0). iroh will then perform a DNS query through the configured DNS resolver (which defaults to using the host system's nameservers):
+When connecting to an unknown `EndpointId`, the DNS discovery mechanism in iroh will perform a DNS query to discover relays or addresses for the node. The DNS discovery is configured with a *origin domain* (which defaults to *dns.iroh.link*, a server run by n0). iroh will then perform a DNS query through the configured DNS resolver (which defaults to using the host system's nameservers):
 
 `_iroh.<z32-node-id>.<origin-domain> TXT`
 
-- `_iroh` is the record name defined in this spec
-- `<z32-node-id>` is the [z32](https://crates.io/crates/z32) encoding of the 32-byte long `EndpointId` (which is a string of 52 characters)
-- `<origin-domain>` is the configured origin domain
-- `TXT` is the queried record type
+- `_iroh` is the record name defined in this spec
+- `<z32-node-id>` is the [z32](https://crates.io/crates/z32) encoding of the 32-byte long `EndpointId` (which is a string of 52 characters)
+- `<origin-domain>` is the configured origin domain
+- `TXT` is the queried record type
 
-The returned TXT records must contain a string value of the form `key=value`, as defined in [RFC1464](https://www.rfc-editor.org/rfc/rfc1464).
+The returned TXT records must contain a string value of the form `key=value`, as defined in [RFC1464](https://www.rfc-editor.org/rfc/rfc1464).
 
 This spec defines the following attributes:
 
-- `relay=<url>`: The home relay for this node, e.g. `https://euw1-1.derp.iroh.network`.
-- `addr=<addr> <addr> ..` A space-separated list of socket addresses for this iroh node. Each address is an IPv4 or IPv6 address with a port (e.g. `1.2.3.4:7367` or `[::1]:3521`
+- `relay=<url>`: The home relay for this node, e.g. `https://euw1-1.derp.iroh.network`.
+- `addr=<addr> <addr> ..` A space-separated list of socket addresses for this iroh node. Each address is an IPv4 or IPv6 address with a port (e.g. `1.2.3.4:7367` or `[::1]:3521`)
+
+<Note>
+**Ready to use DNS discovery?** Learn how to configure DNS discovery in your application in the [DNS Discovery guide](/connecting/dns-discovery).
+</Note>
 
 ## Node announces via `pkarr`
 
@@ -122,7 +124,7 @@ must be `_iroh.<node-id>.` The encoded node ID must be the root name, no other
 origin but `.` (the single dot) is permitted.
 
 Those packets are published to a Pkarr relay server, which is a HTTP service
-handling PUT requests with the signed packets. iroh’s Pkarr server is
+handling PUT requests with the signed packets. iroh's Pkarr server is
 [`iroh-dns-server`](https://crates.io/crates/iroh-dns-server), which serves the
 received records over DNS. Pkarr packets can also be published onto the
 bittorrent mainline DHT, as specified by Pkarr (this is not yet supported in
@@ -132,12 +134,29 @@ DNS servers that support this spec will receive these Pkarr signed packets,
 check their signature and format validity, and then serve each contained record,
 with the DNS server's configured *origin domain* appended to all record names.
 
+<Note>
+**Want to publish via Pkarr?** This is handled automatically when using DNS discovery. See the [DNS Discovery guide](/connecting/dns-discovery) for configuration details.
+</Note>
 
 ## Local Discovery
 
-Global servers aren't the only way to find other iroh endpoint. Iroh also supports local
+**Note: Local discovery is disabled by default and must be explicitly enabled.**
+
+Global servers aren't the only way to find other iroh endpoints. Iroh also supports local
 discovery, where endpoints on the same local network can find each other &
-exchange dialing information without a relay using mDNS.  This is useful for
-offline environments, or for bootstrapping a network before a relay is available. For
-more info on configuring local discovery, see the [local discovery
-documentation](/connecting/local-discovery).
+exchange dialing information without a relay using mDNS. This is useful for
+offline environments, or for bootstrapping a network before a relay is available.
+
+<Note>
+**Want to enable local discovery?** Learn how to configure and enable mDNS-based local discovery in the [Local Discovery guide](/connecting/local-discovery).
+</Note>
+
+## DHT Discovery
+
+**Note: DHT discovery is disabled by default and must be explicitly enabled.**
+
+The Distributed Hash Table (DHT) discovery uses the BitTorrent Mainline DHT to publish and discover node addresses in a fully decentralized manner. This allows nodes to find each other without relying on centralized DNS servers.
+
+<Note>
+**Want to enable DHT discovery?** Learn how to configure and enable DHT-based discovery in the [DHT Discovery guide](/connecting/dht-discovery).
+</Note>

@@ -4,19 +4,40 @@ title: "Troubleshooting"
 
 ## Logging
 
-iroh uses the `tracing` crate for logging. To enable logging in your
-application, you need to set up a subscriber.
+iroh uses the `tracing` crate for logging. To see what's happening inside iroh, you need to enable logging in your application.
 
+### Setup
+
+First, add the tracing subscriber dependency:
+
+```bash
+cargo add tracing-subscriber
+```
+
+Then, at the top of your `main` function, initialize the subscriber:
 
 ```rust
-use tracing_subscriber::layer::SubscriberExt;
-use tracing_subscriber::util::SubscriberInitExt;
-
-    tracing_subscriber::registry()
-       .with(tracing_subscriber::EnvFilter::from_default_env())
-       .with(tracing_subscriber::fmt::layer())
-       .init();
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    tracing_subscriber::fmt::init();
+    
+    // ...existing code...
+}
 ```
+
+### Running with logs
+
+Now run your application with the `RUST_LOG` environment variable to control the log level:
+
+```bash
+# For general info logs from iroh
+RUST_LOG=iroh=info cargo run
+
+# For more detailed debug logs if you need more information
+RUST_LOG=iroh=debug cargo run
+```
+
+This will print log messages to your terminal, helping you understand what iroh is doing and diagnose any issues.
 
 ## Doctor CLI 
 [iroh doctor](https://github.com/n0-computer/iroh-doctor) is a command-line tool that helps you diagnose network connectivity issues with your iroh setup.

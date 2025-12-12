@@ -25,7 +25,7 @@ use iroh::Endpoint;
 
 #[tokio::main]
 async fn main() {
-    let endpoint = Endpoint::builder().bind().await?;
+    let endpoint = Endpoint::bind().await?;
     // ...
 }
 ```
@@ -35,3 +35,13 @@ async fn main() {
 incoming connections
 2. `await` keyword is used to wait for the endpoint
 to be created in an asynchronous context.
+
+## Next Steps
+
+With an endpoint created, you can now start discovering and connecting to other endpoints.
+
+Explore the following guides to learn more:
+- [DNS Global Discovery](/connecting/dns-discovery)
+- [Local Network Discovery](/connecting/local-discovery)
+- [Gossip and Topic Broadcast](/connecting/gossip)
+- [Writing a Protocol](/protocols/writing-a-protocol)

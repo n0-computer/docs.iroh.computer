@@ -1,15 +1,11 @@
 ---
 title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+description: "Start building with iroh in minutes"
 ---
-export const metadata = {
-  title: 'Quickstart',
-  description:
-    'Transfer a file peer-to-peer between endpoints',
-};
 
-
-Let's dive into iroh by building a simple peer-to-peer file transfer tool in rust! 
+In this tutorial, we will build a ping program that connects two endpoints using
+a ticket over DNS. The full example of this code can be [viewed on
+github](https://github.com/n0-computer/iroh-ping). 
 
 # Set up
 
@@ -167,6 +163,10 @@ I   Compiling ping-pong v0.1.0 (/dev/ping-pong)
 ping took: 1.189375ms to complete
 ```
 
+<Note>
+**Having trouble?** If your ping isn't working or you want to see what's happening under the hood, check out our [troubleshooting guide](/deployment/troubleshooting) to enable logging and diagnose issues.
+</Note>
+
 ## Part 2: Discovering Peers with Tickets
 
 Round-trip time isn't very useful when both roles live in the same binary
@@ -176,10 +176,18 @@ on one machine and the sender on another.
 ### What is a ticket?
 
 When an iroh endpoint comes online, it has an address containing its node ID,
-relay URL, and direct addresses. An `EndpointTicket` wraps this address into a
-serializable ticket -- a short string you can copy and paste. Share this ticket
-with senders so they can dial the receiver without manually exchanging
-networking details.
+relay URL, and direct addresses. An address is a structured representation of
+this information that can be consumed by iroh endpoints to dial each other.
+
+An `EndpointTicket` wraps this address into a serializable format -- a short
+string you can copy and paste. Share this sting with senders so they can dial
+the receiver without manually exchanging networking details.
+
+This out of band information must be sent between the endpoints so that they can
+discover and connect to each other, while maintaining security bootstrapping the
+end-to-end encrypted connection. In this example, we will just use a string for
+users to copy/paste, but in your app, you could publish it to a server or send
+it as a QR code or as a query string at the end of a URL. It's up to you.
 
 A ticket is made from an endpoint's address like this:
 
@@ -206,22 +214,28 @@ use iroh_tickets::{Ticket, endpoint::EndpointTicket};
 use std::env;
 
 async fn run_receiver() -> Result<()> {
-    let endpoint = Endpoint::builder().bind().await?;
+     // Create an endpoint, it allows creating and accepting
+    // connections in the iroh p2p world
+    let endpoint = Endpoint::bind().await?;
+
+    // Wait for the endpoint to be accessible by others on the internet
     endpoint.online().await;
 
+    // Then we initialize a struct that can accept ping requests over iroh connections
     let ping = Ping::new();
 
+    // get the address of this endpoint to share with the sender
     let ticket = EndpointTicket::new(endpoint.addr());
     println!("{ticket}");
 
-    Router::builder(endpoint)
+    // receiving ping requests
+    let _router = Router::builder(endpoint)
         .accept(iroh_ping::ALPN, ping)
         .spawn();
 
-    // Keep the receiver running indefinitely
-    loop {
-        tokio::time::sleep(tokio::time::Duration::from_secs(60)).await;
-    }
+    // Keep the receiver running until Ctrl+C
+    tokio::signal::ctrl_c().await?;
+    Ok(())
 }
 ```
 
@@ -232,7 +246,7 @@ The sender parses the ticket, creates its own endpoint, and pings the receiver's
 ```rust
 // filepath: src/main.rs
 async fn run_sender(ticket: EndpointTicket) -> Result<()> {
-    let send_ep = Endpoint::builder().bind().await?;
+    let send_ep = Endpoint::bind().await?;
     let send_pinger = Ping::new();
     let rtt = send_pinger.ping(&send_ep, ticket.endpoint_addr().clone()).await?;
     println!("ping took: {:?} to complete", rtt);
@@ -285,12 +299,16 @@ cargo run -- sender <TICKET>
 
 You should see the round-trip time printed by the sender.
 
+<Note>
+**Connection issues?** If the sender can't reach the receiver or you're seeing errors, visit our [troubleshooting guide](/deployment/troubleshooting) to enable detailed logging and use `iroh-doctor` to diagnose network problems.
+</Note>
+
 ## More Tutorials
 
 You've now successfully built a small tool for sending messages over a peer to peer network! 🎉
 
-The full example with the very latest version of iroh and iroh-ping can be
-[viewed on github](https://github.com/n0-computer/iroh-ping).
+The full example of this code can be [viewed on
+github](https://github.com/n0-computer/iroh-ping).
 
 If you're hungry for more, check out
 - [Blob storage with iroh-blobs](/protocols/blobs)
