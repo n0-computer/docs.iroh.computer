@@ -1,0 +1,35 @@
+---
+title: "Dedicated Infrastructure"
+---
+
+By default, iroh will use public shared infrastructure to facilitate connections over
+DNS and end-to-end encryption over relays. This infrastructure comprises:
+
+1. [Relays](/concepts/relays)
+2. [Discovery Servers (DNS)](/concepts/discovery)
+
+Relays forward traffic when direct peer-to-peer connections are not possible as well
+as facilitates holepunching for direct connections. These servers are managed and
+maintained by the [n0 team](https://n0.computer), and are shared by a global public network of
+developers.
+
+We recommend using the public relays for development and testing, as they are
+free to use and require no setup. However, for production systems, we recommend
+using dedicated relays instead.
+
+## Why use dedicated relays in production?
+
+Using a dedicated relays can provide several benefits, including improved performance,
+enhanced security, better uptime guarantees, and greater control over your network infrastructure. By
+using your own servers, you can optimize connection speeds and reduce
+latency for your specific use case. 
+
+If you require more control over your relay infrastructure, you can choose to
+[self-host your own
+relay](https://github.com/n0-computer/iroh/tree/main/iroh-relay) or [upgrade to
+a managed relay service](https://n0des.iroh.computer). This managed relay
+service is monitored by the number zero team who maintain the iroh project, and
+offers SLAs around uptime and performance.
+
+[Sign up for a free trial of n0des](https://n0des.iroh.computer) to get access
+to purchase a managed relay with uptime SLAs.

@@ -51,27 +51,26 @@
               "protocols/automerge",
               "protocols/streaming",
               "examples/chat",
-              "protocols/writing-a-protocol"
+              "protocols/writing-a-protocol",
+              "protocols/using-quic"
             ]
           },
           {
             "group": "Deployment",
             "pages": [
-              "deployment/managing-relays",
+              "deployment/dedicated-infrastructure",
               "deployment/metrics",
               "deployment/security-privacy",
-              "deployment/iroh-doctor",
+              "deployment/troubleshooting",
               "deployment/wasm-browser-support"
             ]
           },
           {
             "group": "About",
             "pages": [
-              "about/changelog",
-              "about/roadmap",
-              "about/faq",
-              "about/discord",
-              "license"
+              "https://www.iroh.computer/changelog",
+              "https://www.iroh.computer/roadmap",
+              "about/faq"
             ]
           }
         ]
@@ -85,18 +84,18 @@
   "navbar": {
     "links": [
       {
-        "label": "Discord Support",
+        "label": "Support",
         "href": "https://www.iroh.computer/discord"
       },
         {
           "label": "Blog",
-          "href": "https://mintlify.com/blog"
+          "href": "https://iroh.computer/blog"
         }
     ],
     
     "primary": {
       "type": "button",
-      "label": "Dashboard",
+      "label": "Login",
       "href": "https://n0des.iroh.computer"
     }
   },

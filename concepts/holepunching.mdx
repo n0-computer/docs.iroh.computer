@@ -2,4 +2,64 @@
 title: "Holepunching"
 ---
 
-Placeholder: Describe NAT traversal and holepunching techniques.
+When two devices want to connect directly over the internet, they face a common problem: **Network Address Translation (NAT)**. Most home and office networks use NAT, which acts like a one-way door—devices inside the network can reach out to the internet, but the internet can't easily reach back in.
+
+## The Problem: NAT Blocks Direct Connections
+
+Imagine you're trying to video call a friend. Both of you are behind routers at home. When you try to connect directly to each other, your routers block the incoming connection because they don't recognize it as a response to something you requested. This is NAT protecting your network.
+
+Traditionally, this problem was solved by:
+- **Port forwarding**: Manually configuring your router to allow specific connections (tedious and requires technical knowledge)
+- **Relay servers**: Routing all traffic through a third-party server (slow and expensive)
+
+Neither solution is ideal for peer-to-peer applications.
+
+## The Solution: Holepunching
+
+**Holepunching** is a clever technique that tricks NAT routers into allowing direct connections between peers without manual configuration or relying entirely on relay servers.
+
+Here's how it works:
+
+### 1. Initial Contact Through a Relay
+
+Both peers first connect to a shared [relay server](/concepts/relays). The relay acts as a meeting point where peers can coordinate without being able to connect directly yet.
+
+### 2. Sharing Connection Information
+
+Through the relay, peers exchange their:
+- **Public IP addresses** (how they appear to the outside internet)
+- **Port numbers** (the specific door number the router assigned them)
+- **Local addresses** (in case they're on the same network)
+
+### 3. Simultaneous Outbound Connection
+
+Here's the magic: both peers try to connect to each other **at the same time**. When peer A sends a packet to peer B's public address, A's router creates a temporary rule allowing responses from B. When peer B sends a packet to peer A at the same moment, B's router does the same.
+
+Because both routers now have rules expecting traffic from each other, the packets get through, and a direct connection is established!
+
+### 4. Fallback to Relay
+
+If holepunching fails (some networks use particularly strict NAT configurations), iroh automatically falls back to routing traffic through the relay server. This ensures connections always work, even if they can't be direct.
+
+## Why This Matters
+
+With holepunching, iroh applications can:
+- **Connect directly** between devices without manual network configuration
+- **Reduce latency** by avoiding relay servers when possible
+- **Save bandwidth** by keeping data transfer peer-to-peer
+- **Maintain privacy** by not routing all traffic through third parties
+
+The best part? All of this happens automatically—you don't need to understand the technical details to benefit from it.
+
+## How iroh Implements Holepunching
+
+iroh uses a sophisticated holepunching implementation built on top of QUIC and integrates with the relay system. For technical details on the implementation, see:
+
+- [iroh's holepunching implementation](https://docs.rs/iroh/latest/iroh/endpoint/index.html#nat-traversal)
+- [Relay system documentation](/concepts/relays)
+- [Dedicated infrastructure setup](/deployment/dedicated-infrastructure)
+- [Endpoint configuration](https://docs.rs/iroh/latest/iroh/endpoint/struct.Endpoint.html)
+
+<Note>
+Holepunching works in most network configurations, but some corporate firewalls or cellular networks may still require relay fallback. iroh handles this automatically.
+</Note>

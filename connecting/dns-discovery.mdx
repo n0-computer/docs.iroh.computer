@@ -9,22 +9,42 @@ home relay addresses. This allows any iroh endpoint to be discoverable globally,
 as long as they are connected to the same relay that is reachable from the public
 internet.
 
+## Using DNS Discovery
+
+DNS discovery is the default discovery mechanism in iroh, so you don't need to
+do anything special to enable it.
+
+[Number 0](https://n0.computer) provides a set of public DNS servers that are
+free to use, and are configured by default. You're more than welcome to run
+production systems using the public relays if you find performance acceptable.
+The public servers do rate-limit traffic, there is no guaranteed uptime. 
+
+If you need more capacity or uptime guarantees or SLAs, you can
+run your own DNS server, or [contact us about hosted DNS
+options](https://cal.com/team/number-0/n0-protocol-services?overlayCalendar=true).
+
+
 ```rust
 use iroh::Endpoint;
+use iroh_tickets::endpoint::EndpointTicket;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let endpoint = Endpoint::bind().await?;
 
     println!("endpoint id: {:?}", endpoint.id());
+
+   let ticket = EndpointTicket::new(endpoint.addr());
+   println!("Share this ticket to let others connect to your endpoint: {ticket}");
+
     Ok(())
 }
 ```
 
-To discover other endpoints, you can use an EndpointId or a [Ticket](/concepts/tickets) that contains
+To discover other endpoints over DNS, you can use an EndpointId or a [Ticket](/concepts/tickets) that contains
 an EndpointId.
 
-## Dedicated DNS Server
+## Use your own DNS Server
 
 By default, iroh will look up the endpoint on a public shared instance of the
 DNS discovery server. If you'd like to run your own private DNS discovery server
@@ -32,18 +52,30 @@ for more guaranteed privacy and uptime guarantees, you can configure iroh to use
 it.
 
 
+Two nodes must connect to the same DNS discovery server to find each other using
+DNS discovery.
+
 TODO: rust code for custom dns server
+
+## Disable DNS Discovery
+
+DNS discovery is opt-out, so if you don't want your endpoint to be discoverable
+via DNS, you can disable it by using the `Endpoint::empty_builder` method
+instead of `Endpoint::builder`.
+
+
+```rust
+use iroh::Endpoint;
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+      let endpoint = Endpoint::empty_builder().bind().await?;
+      // your code here
+      Ok(())
+}
+```   
 
 ## Important notes 
 
-1. DNS discovery is the default discovery mechanism in iroh, so you don't need
-   to do anything special to enable it.
-2. DNS discovery only publishes the home relay of an endpoint, not its direct
-   addresses. 
-3. DNS discovery is opt-out, so if you don't want your endpoint to be
-   discoverable via DNS, you can disable it by using the
-   `Endpoint::empty_builder` method instead of `Endpoint::builder`.
-4. Two nodes must connect to the same DNS discovery server to find each other using DNS discovery.
 
 
 

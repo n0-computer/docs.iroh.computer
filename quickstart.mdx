@@ -163,6 +163,10 @@ I   Compiling ping-pong v0.1.0 (/dev/ping-pong)
 ping took: 1.189375ms to complete
 ```
 
+<Note>
+**Having trouble?** If your ping isn't working or you want to see what's happening under the hood, check out our [troubleshooting guide](/deployment/troubleshooting) to enable logging and diagnose issues.
+</Note>
+
 ## Part 2: Discovering Peers with Tickets
 
 Round-trip time isn't very useful when both roles live in the same binary
@@ -288,6 +292,10 @@ cargo run -- sender <TICKET>
 ```
 
 You should see the round-trip time printed by the sender.
+
+<Note>
+**Connection issues?** If the sender can't reach the receiver or you're seeing errors, visit our [troubleshooting guide](/deployment/troubleshooting) to enable detailed logging and use `iroh-doctor` to diagnose network problems.
+</Note>
 
 ## More Tutorials
 
