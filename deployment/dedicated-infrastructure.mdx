@@ -10,7 +10,7 @@ DNS and end-to-end encryption over relays. This infrastructure comprises:
 
 Relays forward traffic when direct peer-to-peer connections are not possible as well
 as facilitates holepunching for direct connections. These servers are managed and
-maintained by the [n0 team](https://n0.computer), and are shared by a global public network of
+maintained by [the n0 team](https://n0.computer), and are shared by a global public network of
 developers.
 
 We recommend using the public relays for development and testing, as they are
@@ -28,8 +28,47 @@ If you require more control over your relay infrastructure, you can choose to
 [self-host your own
 relay](https://github.com/n0-computer/iroh/tree/main/iroh-relay) or [upgrade to
 a managed relay service](https://n0des.iroh.computer). This managed relay
-service is monitored by the number zero team who maintain the iroh project, and
+service is monitored by [the n0 team](https://n0.computer) who maintain the iroh project, and
 offers SLAs around uptime and performance.
 
 [Sign up for a free trial of n0des](https://n0des.iroh.computer) to get access
 to purchase a managed relay with uptime SLAs.
+
+
+## Recommended setup
+
+We recommend setting up at least two relays for redundancy in different regions.
+For example, you could set up one relay in North America and another in Europe.
+
+### Why this architecture is powerful
+
+This approach makes uptime management significantly easier compared to
+traditional client-server architectures:
+
+**Stateless servers, stateful clients**  
+Unlike traditional servers that store your application's data and state, relay
+servers are just connection facilitators. All your business logic and data lives
+in your clients. This means:
+
+- **No database synchronization** - You don't need to worry about keeping multiple server databases in sync or handling data replication
+- **No state migration** - When a relay goes down, clients simply reconnect to another relay without any data loss or state transfer
+- **Simple server management** - Relay servers are lightweight and easy to spin up or down. No complex deployment procedures or data migration steps
+
+**Automatic failover**  
+iroh clients automatically try multiple relays when connecting. If one relay is unavailable, clients seamlessly fall back to another relay in your list without application-level retry logic. Your peers will find each other as long as at least one relay is reachable.
+
+**Multi-cloud resilience**  
+For even better guarantees, you can distribute relays across multiple cloud providers. If one provider experiences an outage, your application keeps running on relays hosted elsewhere. Since relays don't store state, you can freely mix providers without worrying about cross-cloud data consistency.
+
+**Cost-effective scaling**  
+Adding capacity means spinning up more lightweight relay instances, not provisioning databases or managing complex stateful server infrastructure. You can easily scale up for peak usage and scale down during quiet periods.
+
+This architecture inverts the traditional model: instead of treating servers as precious stateful resources and clients as disposable, relay-based architectures treat relays as disposable connection facilitators while clients own the application state and logic.
+
+## Using dedicated relays
+
+To use dedicated relays with your iroh endpoint, you need to configure the
+endpoint to use your relay's URL.
+
+You can configure your iroh endpoint to use multiple relays by
+providing a list of relay URLs.

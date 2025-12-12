@@ -16,6 +16,10 @@ Many developers reach for iroh expecting it to completely abstract away the unde
 
 Think of iroh as giving you **reliable, secure tunnels between peers**. This guide shows you how to use QUIC's streaming patterns to build efficient protocols inside those tunnels. Whether you're adapting an existing protocol or designing something new, understanding these patterns will help you make the most of iroh's capabilities.
 
+<Note>
+iroh uses a fork of [Quinn](https://docs.rs/iroh-quinn/latest/iroh_quinn/), a pure-Rust implementation of QUIC maintained by [the n0 team](https://n0.computer). Quinn is production-ready, actively maintained, and used by projects beyond iroh. If you need lower-level QUIC access or want to understand the implementation details, check out the [Quinn documentation](https://docs.rs/iroh-quinn/latest/iroh_quinn/).
+</Note>
+
 ## Introduction
 
 Implementing a new protocol on the QUIC protocol can be a little daunting initially. Although the API is not that extensive, it's more complicated than e.g. TCP where you can only send and receive bytes, and eventually have an end of stream.
@@ -28,11 +32,11 @@ One thing to point out is that we're looking at interaction patterns *after* est
 Unlike TCP, in QUIC you can open multiple streams. Either side of a connection can decide to "open" a stream at any time:
 ```rs
 impl Connection {
-    async fn open_uni(&self) -> Result<SendStream>;
-    async fn accept_uni(&self) -> Result<RecvStream>;
+    async fn open_uni(&self) -> Result<SendStream, ConnectionError>;
+    async fn accept_uni(&self) -> Result<Option<RecvStream>, ConnectionError>;
     
-    async fn open_bi(&self) -> Result<(SendStream, RecvStream)>;
-    async fn accept_bi(&self) -> Result<(SendStream, RecvStream)>;
+    async fn open_bi(&self) -> Result<(SendStream, RecvStream), ConnectionError>;
+    async fn accept_bi(&self) -> Result<Option<(SendStream, RecvStream)>, ConnectionError>;
 }
 ```
 Similar to how each `write` on one side of a TCP-based protocol will correspond to a `read` on the other side, when a protocol `open`s a stream on one end, the other side of the protocol can `accept` such a stream.
@@ -49,16 +53,16 @@ Speaking of "finishing writing data", there are some additional ways to communic
   This "notification" can be received on the other end in various ways:
 	- `RecvStream::read` will return `Ok(None)`, if all pending data was read and the stream was finished. Other methods like `read_chunk` work similarly.
 	- `RecvStream::read_to_end` will resolve once the finishing notification comes in, returning all pending data. **If the sending side never calls `.finish()`, this will never resolve**.
-	- `RecvStream::received_reset` will resolve with `Ok(None)`.
+	- `RecvStream::stop` will resolve with `Ok(None)` if the stream was finished (or `Ok(Some(code))` if it was reset).
 - The `SendStream` side can also `.reset()` the stream. This will have the same effect as `.finish()`ing the stream, except for two differences:
-  Resetting will happen immediately and discard any pending bytes that haven't been sent yet. You can provide an application-specific "error code" to signal the reason for the reset to the other side.
+  Resetting will happen immediately and discard any pending bytes that haven't been sent yet. You can provide an application-specific "error code" (a `VarInt`) to signal the reason for the reset to the other side.
   This "notification" is received in these ways on the other end:
-	- `RecvStream::read` and other methods like `read_exact`, `read_chunks` and `read_to_end` will return a `ReadError::Reset(code)` with the error code given on the send side.
-	- `RecvStream::received_reset` will resolve to the error code `Ok(Some(code))`.
+	- `RecvStream::read` and other methods like `read_exact`, `read_chunk` and `read_to_end` will return a `ReadError::Reset(code)` with the error code given on the send side.
+	- `RecvStream::stop` will resolve to the error code `Ok(Some(code))`.
 - The other way around, the `RecvStream` side can also notify the sending side that it's not interested in reading any more data by calling `RecvStream::stop` with an application-specific code.
   This notification is received on the *sending* side:
-	- `SendStream::write` and similar methods like `write_all`, `write_chunks` etc. will error out with a `WriteError::Stopped(code)`.
-	- `SendStream::stopped` resolves with `Ok(Some(code))`.
+	- `SendStream::write` and similar methods like `write_all`, `write_chunk` etc. will error out with a `WriteError::Stopped(code)`.
+	- `SendStream::stopped` resolves with `Ok(code)`.
 
 <Note>
 What is the difference between a bi-directional stream and two uni-directional streams?
@@ -73,9 +77,9 @@ A bi-directional stream has 3 different ways *each side* can close *some* aspect
 Finally, there's one more important "notification" we have to cover:
 Closing the connection.
 
-Either end of the connection can decide to close the connection at any point by calling `Connection::close` with an application-specific error code, (and even a bunch of bytes indicating a "reason", possibly some human-readable ASCII, but without a guarantee that it will be delivered).
+Either end of the connection can decide to close the connection at any point by calling `Connection::close` with an application-specific error code (a `VarInt`), (and even a bunch of bytes indicating a "reason", possibly some human-readable ASCII, but without a guarantee that it will be delivered).
 
-Once this notification is received on the other end, all stream writes return `WriteError::ConnectionLost(ApplicationClose { .. })` and all reads return `ReadError::ConnectionLost(ApplicationClose { .. }).
+Once this notification is received on the other end, all stream writes return `WriteError::ConnectionLost(ConnectionError::ApplicationClosed { .. })` and all reads return `ReadError::ConnectionLost(ConnectionError::ApplicationClosed { .. })`.
 It can also be received by waiting for `Connection::closed` to resolve.
 
 Importantly, this notification interrupts all flows of data:
@@ -107,14 +111,14 @@ async fn connecting_endpoint(conn: Connection, request: &[u8]) -> Result<Vec<u8>
     
     conn.close(0u32.into(), b"I have everything, thanks!");
     
-    Ok(response);
+    Ok(response)
 }
 
 async fn accepting_endpoint(conn: Connection) -> Result<()> {
-    let (mut send, mut recv) = conn.accept_bi().await?;
+    let (mut send, mut recv) = conn.accept_bi().await?.ok_or_else(|| anyhow!("connection closed"))?;
     let request = recv.read_to_end(MAX_REQUEST_SIZE).await?;
     
-    let response = compute_response(request);
+    let response = compute_response(&request);
     send.write_all(&response).await?;
     send.finish()?;
     
@@ -131,12 +135,12 @@ This makes it possible to handle arbitrarily big requests in O(1) memory.
 In this toy example we're reading `u64`s from the client and send back each of them doubled.
 
 ```rs
-async fn connecting_endpoint(conn: Connection, mut request: impl Stream<u64>) -> Result<()> {
+async fn connecting_endpoint(conn: Connection, mut request: impl Stream<Item = u64>) -> Result<()> {
     let (mut send, mut recv) = conn.open_bi().await?;
     
     // concurrently read the responses
     let read_task = tokio::spawn(async move {
-	    let mut buf = [u8; size_of::<u64>()];
+	    let mut buf = [0u8; size_of::<u64>()];
 	    // read_exact will return `Err` once the other side
 	    // finishes its stream
         while recv.read_exact(&mut buf).await.is_ok() {
@@ -146,24 +150,26 @@ async fn connecting_endpoint(conn: Connection, mut request: impl Stream<u64>) ->
     });
     
     while let Some(number) = request.next().await {
-        send.write_u64(number).await?;
+        let bytes = number.to_be_bytes();
+        send.write_all(&bytes).await?;
     }
     send.finish()?;
     
     // we close the connection after having read all data
     read_task.await?;
-    conn.close();
+    conn.close(0u32.into(), b"done");
     
     Ok(())
 }
 
 async fn accepting_endpoint(conn: Connection) -> Result<()> {
-    let (mut send, mut recv) = conn.accept_bi().await?;
+    let (mut send, mut recv) = conn.accept_bi().await?.ok_or_else(|| anyhow!("connection closed"))?;
     
-    let mut buf = [u8; size_of::<u64>()];
+    let mut buf = [0u8; size_of::<u64>()];
     while recv.read_exact(&mut buf).await.is_ok() {
 	    let number = u64::from_be_bytes(buf);
-	    send.write_u64(number.wrapping_mul(2)).await?;
+	    let doubled = number.wrapping_mul(2).to_be_bytes();
+	    send.write_all(&doubled).await?;
     }
     send.finish()?;
     
@@ -202,17 +208,22 @@ async fn request(conn: &Connection, request: &[u8]) -> Result<Vec<u8>> {
 // The accepting endpoint will call this to handle all
 // incoming requests on a single connection.
 async fn handle_requests(conn: Connection) -> Result<()> {
-    while let Ok((send, recv)) = conn.accept_bi().await {
-        tokio::spawn(handle_request(send, recv));
+    loop {
+        let stream = conn.accept_bi().await?;
+        match stream {
+            Some((send, recv)) => {
+                tokio::spawn(handle_request(send, recv));
+            }
+            None => break, // connection closed
+        }
     }
-    // conn.accept_bi() will error out once the connection was
-    // closed, so we don't need to use conn.closed().
+    Ok(())
 }
 
 async fn handle_request(mut send: SendStream, mut recv: RecvStream) -> Result<()> {
     let request = recv.read_to_end(MAX_REQUEST_SIZE).await?;
     
-    let response = compute_response(request);
+    let response = compute_response(&request);
     send.write_all(&response).await?;
     send.finish()?;
     
@@ -227,29 +238,29 @@ Please not that, in this case, the client doesn't immediately close the connecti
 Sending and receiving multiple notifications that can be handled one-by-one can be done by adding framing to the bytes on a uni-directional stream.
 
 ```rs
-async fn connecting_endpoint(conn: Connection, mut notifications: impl Stream<Item = Bytes>) -> Result<()> {
-    let send = conn.open_uni().await?;
+async fn connecting_endpoint(conn: Connection, mut notifications: impl Stream<Item = Bytes> + Unpin) -> Result<()> {
+    let mut send = conn.open_uni().await?;
     
     let mut send_frame = LengthDelimitedCodec::builder().new_write(send);
-    while let Some(notfication) = notifications.next().await {
+    while let Some(notification) = notifications.next().await {
         send_frame.send(notification).await?;
     }
     
-    send.finish()?;
+    send_frame.get_mut().finish()?;
     conn.closed().await;
     
     Ok(())
 }
 
 async fn accepting_endpoint(conn: Connection) -> Result<()> {
-    let recv = conn.accept_uni().await?;
+    let recv = conn.accept_uni().await?.ok_or_else(|| anyhow!("connection closed"))?;
     let mut recv_frame = LengthDelimitedCodec::builder().new_read(recv);
     
     while let Some(notification) = recv_frame.try_next().await? {
         println!("Received notification: {notification:?}");
     }
     
-    conn.close(0u32, b"got everything!");
+    conn.close(0u32.into(), b"got everything!");
     
     Ok(())
 }
@@ -277,25 +288,26 @@ async fn connecting_endpoint(conn: Connection, request: &[u8]) -> Result<()> {
 	send.write_all(request).await?;
 	send.finish()?;
 	
-	let mut recv_frame = LengthDelimitedCodec::builder().new_read(recv).await?;
+	let mut recv_frame = LengthDelimitedCodec::builder().new_read(recv);
 	while let Some(response) = recv_frame.try_next().await? {
 	    println!("Received response: {response:?}");
 	}
 	
-	conn.close(0u32, b"thank you!");
+	conn.close(0u32.into(), b"thank you!");
     
     Ok(())
 }
 
 async fn accepting_endpoint(conn: Connection) -> Result<()> {
-	let (send, mut recv) = conn.accept_bi().await?;
+	let (send, mut recv) = conn.accept_bi().await?.ok_or_else(|| anyhow!("connection closed"))?;
 	let request = recv.read_to_end(MAX_REQUEST_SIZE).await?;
 	
 	let mut send_frame = LengthDelimitedCodec::builder().new_write(send);
-	let mut responses = responses_for_Request(&request);
+	let mut responses = responses_for_request(&request);
 	while let Some(response) = responses.next().await {
 	    send_frame.send(response).await?;
 	}
+	send_frame.get_mut().finish()?;
 
 	conn.closed().await;
 	
@@ -329,13 +341,19 @@ async fn connnecting_side(conn: Connection, request: &[u8]) -> Result<()> {
     send.finish()?;
     
     let recv_tasks = TaskTracker::new();
-    // accept_uni will return `Err` once the connection is closed
-	while let Ok(recv) = conn.accept_uni().await? {
-	    recv_tasks.spawn(handle_response(recv));
-	}
+    // accept_uni will return `Ok(None)` once the connection is closed
+    loop {
+        match conn.accept_uni().await? {
+            Some(recv) => {
+                recv_tasks.spawn(handle_response(recv));
+            }
+            None => break,
+        }
+    }
 	recv_tasks.wait().await;
-	conn.close(0u32, b"Thank you!");
+	conn.close(0u32.into(), b"Thank you!");
 	
+	Ok(())
 }
 ```
 
@@ -395,7 +413,7 @@ async fn handle_connection(conn: Connection) -> Result<()> {
 			conn.closed().await;
 			anyhow::Ok(())
 		},
-    )?;
+    ).await?;
     Ok(())
 }
 
@@ -428,12 +446,12 @@ On the server side, this happens automatically - you don't need to do anything s
 
 ```rs
 async fn accepting_endpoint(conn: Connection) -> Result<()> {
-    let (mut send, mut recv) = conn.accept_bi().await?;
+    let (mut send, mut recv) = conn.accept_bi().await?.ok_or_else(|| anyhow!("connection closed"))?;
     let request = recv.read_to_end(MAX_REQUEST_SIZE).await?;
     
     // We can start sending the response immediately without waiting
     // for the client to finish the handshake
-    let response = compute_response(request);
+    let response = compute_response(&request);
     send.write_all(&response).await?;
     send.finish()?;
     
