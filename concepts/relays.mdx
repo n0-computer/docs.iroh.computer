@@ -2,22 +2,41 @@
 title: "Relays"
 ---
 
-Relays are servers that help establish connections between devices. 
-
-Relays temporarily route encrypted traffic until a direct, P2P connection is
+Relays are servers that temporarily route encrypted traffic until a direct, P2P connection is
 feasible. Once this direct path is set up, the relay server steps back, and the
 data flows directly between devices. This approach allows Iroh to maintain a
 secure, low-latency connection, even in challenging network situations.
 
-Relays are also open source! You can run your own relay server, or use one of
-the public relays. Code is
-[here](https://github.com/n0-computer/iroh/tree/main/iroh-relay), and we build
-relay binaries for most platforms with each iroh
-[release](https://github.com/n0-computer/iroh/releases)
+There are situations where a direct connection _can't_ be established, and in
+those cases traffic falls back to running through the relay. Relay servers **do
+not** have access to the data being transmitted, as it's encrypted end-to-end.
 
-There are situations where a direct connection _can't_ be established, and in those cases traffic falls back to running through the relay. Relay servers **do not** have access to the data being transmitted, as it's encrypted end-to-end.
+We're working on formally collecting the direct connection rate from production
+iroh networks. Anecdotal evidence points to the holepunching rate being around
+90%, meaning 9 out of 10 times, a direct connection is established.
 
-We're working on formally collecting the direct connection rate from production iroh networks. Anecdotal evidence points to the holepunching rate being around 90%, meaning 9 out of 10 times, a direct connection is established.
+## Public relays
+
+iroh is configured with a set of public relays provided by [The n0
+team](https://n0.computer) that are free to use. The public relays rate-limit
+traffic that flows through the relay. This is to prevent abuse, and ensure the
+relays are available to everyone. There are no guarantees around uptime or
+performance when using the public relays.
+
+We recommend using the public relays for development and testing, as they are
+free to use and require no setup. However, for production systems, we recommend
+using dedicated relays instead.
+
+## Dedicated relays
+
+For production use, we recommend using dedicated relays. Dedicated relays are relay
+servers that are either self-hosted or provided as a managed service. Dedicated
+relays provide better performance, security, and uptime guarantees compared to
+the public relays. 
+
+Relay code is open source! You can run your own relay server, or [pick a hosting
+provider](https://n0des.iroh.computer).
+
 
 ### Why this architecture is powerful
 
@@ -53,12 +72,10 @@ to relayed, or even a mixed combination of the two. Iroh will automatically
 switch between direct and relayed connections as needed, without any action
 required from the application.
 
-## number 0 public relays
+## Read more
 
-number 0 provides a set of public relays that are free to use, and are
-configured by default. You're more than welcome to run production systems using
-the public relays if you find performance acceptable. The public relays do
-rate-limit traffic that flows through the relay. This is to prevent abuse, and
-ensure the relays are available to everyone. If you need more capacity, you can
-run your own relay server, or [contact us about a custom relay
-setup](https://n0.computer/n0ps/).
+- [Dedicated infrastructure guide](/deployment/dedicated-infrastructure)
+- [Relay source code](https://github.com/n0-computer/iroh/tree/main/iroh-relay)
+- [Relay binary releases](https://github.com/n0-computer/iroh/releases)
+- [Managed relay service](https://n0des.iroh.computer)
+
