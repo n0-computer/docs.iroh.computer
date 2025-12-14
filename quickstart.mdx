@@ -88,7 +88,7 @@ use iroh_ping::Ping;
 async fn main() -> anyhow::Result<()> {
     // Create an endpoint, it allows creating and accepting
     // connections in the iroh p2p world
-    let endpoint = Endpoint::builder().bind().await?;
+    let endpoint = Endpoint::bind().await?;
 
     // bring the endpoint online before accepting connections
     endpoint.online().await;
@@ -107,7 +107,6 @@ async fn main() -> anyhow::Result<()> {
 }
 ```
 
-With these two lines, we've initialized iroh-blobs and gave it access to our `Endpoint`.
 
 ### Ping: Send
 At this point what we want to do depends on whether we want to accept incoming iroh connections from the network or create outbound iroh connections to other endpoints.
@@ -124,7 +123,7 @@ use iroh_ping::Ping;
 async fn main() -> Result<()> {
     // Create an endpoint, it allows creating and accepting
     // connections in the iroh p2p world
-    let endpoint = Endpoint::builder().bind().await?;
+    let endpoint = Endpoint::bind().await?;
 
     // Then we initialize a struct that can accept ping requests over iroh connections
     let ping = Ping::new();
@@ -138,7 +137,7 @@ async fn main() -> Result<()> {
     let addr = recv_router.endpoint().addr();
 
     // create a send side & send a ping
-    let send_ep = Endpoint::builder().bind().await?;
+    let send_ep = Endpoint::bind().await?;
     let send_pinger = Ping::new();
     let rtt = send_pinger.ping(&send_ep, addr).await?;
 
@@ -180,7 +179,7 @@ relay URL, and direct addresses. An address is a structured representation of
 this information that can be consumed by iroh endpoints to dial each other.
 
 An `EndpointTicket` wraps this address into a serializable format -- a short
-string you can copy and paste. Share this sting with senders so they can dial
+string you can copy and paste. Share this string with senders so they can dial
 the receiver without manually exchanging networking details.
 
 This out of band information must be sent between the endpoints so that they can

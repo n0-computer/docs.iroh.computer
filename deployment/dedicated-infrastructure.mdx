@@ -17,9 +17,18 @@ We recommend using the public relays for development and testing, as they are
 free to use and require no setup. However, for production systems, we recommend
 using dedicated relays instead.
 
+## Using dedicated relays
+
+To use dedicated relays with your iroh endpoint, you need to configure the
+endpoint to use your relay's URL.
+
+For detailed information on configuring custom relays, including code examples
+and API documentation, see the [iroh relay configuration
+guide](https://n0des.iroh.computer/docs/relays/managed).
+
 ## Why use dedicated relays in production?
 
-Using a dedicated relays can provide several benefits, including improved performance,
+Using dedicated relays can provide several benefits, including improved performance,
 enhanced security, better uptime guarantees, and greater control over your network infrastructure. By
 using your own servers, you can optimize connection speeds and reduce
 latency for your specific use case. 
@@ -64,12 +73,3 @@ For even better guarantees, you can distribute relays across multiple cloud prov
 Adding capacity means spinning up more lightweight relay instances, not provisioning databases or managing complex stateful server infrastructure. You can easily scale up for peak usage and scale down during quiet periods.
 
 This architecture inverts the traditional model: instead of treating servers as precious stateful resources and clients as disposable, relay-based architectures treat relays as disposable connection facilitators while clients own the application state and logic.
-
-## Using dedicated relays
-
-To use dedicated relays with your iroh endpoint, you need to configure the
-endpoint to use your relay's URL.
-
-For detailed information on configuring custom relays, including code examples
-and API documentation, see the [iroh relay configuration
-guide](https://n0des.iroh.computer/docs/relays/managed).
