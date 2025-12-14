@@ -200,7 +200,7 @@ async fn request(conn: &Connection, request: &[u8]) -> Result<Vec<u8>> {
     
     let response = recv.read_to_end(MAX_RESPONSE_SIZE).await?;
     
-    Ok(response);
+    Ok(response)
 }
 
 // The accepting endpoint will call this to handle all
@@ -229,7 +229,7 @@ async fn handle_request(mut send: SendStream, mut recv: RecvStream) -> Result<()
 }
 ```
 
-Please not that, in this case, the client doesn't immediately close the connection after a single request (duh!). Instead, it might want to optimistically keep the connection open for some idle time or until it knows the application won't need to make another request, and only then close the connection. All that said, it's still true that **the connecting side closes the connection**.
+Please note that, in this case, the client doesn't immediately close the connection after a single request (duh!). Instead, it might want to optimistically keep the connection open for some idle time or until it knows the application won't need to make another request, and only then close the connection. All that said, it's still true that **the connecting side closes the connection**.
 
 ## Multiple ordered Notifications
 
@@ -333,7 +333,7 @@ In that case, we need to break up the single response stream into multiple respo
 We can do this by "conceptually" splitting the "single" bi-directional stream into one uni-directional stream for the request and multiple uni-directional streams in the other direction for all the responses:
 
 ```rs
-async fn connnecting_side(conn: Connection, request: &[u8]) -> Result<()> {
+async fn connecting_side(conn: Connection, request: &[u8]) -> Result<()> {
     let mut send = conn.open_uni().await?;
     send.write_all(request).await?;
     send.finish()?;
@@ -362,9 +362,6 @@ Another thing that might or might not be important for your use case is knowing 
 You can either introduce another message type that is interpreted as a finishing token, but there's another elegant way of solving this. Instead of only opening a uni-directional stream for the request, you open a bi-directional one. The response stream will only be used to indicate the final response stream ID. It then acts as a sort of "control stream" to provide auxiliary information about the request for the connecting endpoint.
 </Note>
 
-## Proxying UDP traffic using the unreliable datagram extension
-
-
 ## Time-sensitive Real-time interaction
 
 We often see users reaching for the QUIC datagram extension when implementing real-time protocols. Doing this is in most cases misguided.
@@ -376,9 +373,6 @@ A real-world example is the media over QUIC protocol (MoQ in short): MoQ is used
 
 The receiver then stops streams that are "too old" to be delivered, e.g. because it's a live video stream and newer frames were already fully received.
 Similarly, the sending side will also reset older streams for the application level to indicate to the QUIC stack it doesn't need to keep re-trying the transmission of an outdated live video frame. (MoQ will actually also use stream prioritization to make sure the newest video frames get scheduled to be sent first.)
-
-https://discord.com/channels/1161119546170687619/1195362941134962748/1407266901939327007
-https://discord.com/channels/976380008299917365/1063547094863978677/1248723504246030336
 
 ## Closing Connections
 
@@ -428,7 +422,40 @@ And again, after `handle_connection` we need to make sure to wait for `Endpoint:
 
 ## Aborting Streams
 
-https://discord.com/channels/949724860232392765/1399719019292000329/1399721482522984502
+Sometimes you need to abandon a stream before it completes - either because the data has become stale, or because you've decided you no longer need it. QUIC provides mechanisms for both the sender and receiver to abort streams gracefully.
+
+### When to abort streams
+
+A real-world example comes from Media over QUIC (MoQ), which streams live video frames. Consider this scenario:
+
+- Each video frame is sent on its own uni-directional stream
+- Frames arrive out of order due to network conditions
+- By the time an old frame finishes transmitting, newer frames have already been received
+- Continuing to receive the old frame wastes bandwidth and processing time
+
+### How to abort streams
+
+**From the sender side:**
+
+Use `SendStream::reset(error_code)` to immediately stop sending data and discard any buffered bytes. This tells QUIC to stop retrying lost packets for this stream.
+
+
+**From the receiver side:**
+
+Use `RecvStream::stop(error_code)` to tell the sender you're no longer interested in the data. This allows the sender's QUIC stack to stop retransmitting lost packets.
+
+
+### Key insights
+
+1. **Stream IDs indicate order**: QUIC stream IDs are monotonically increasing. You can compare stream IDs to determine which streams are newer without relying on application-level sequencing.
+
+2. **Both sides can abort**: Either the sender (via `reset`) or receiver (via `stop`) can abort a stream. Whichever side detects the data is no longer needed first should initiate the abort.
+
+3. **QUIC stops retransmissions**: When a stream is reset or stopped, QUIC immediately stops trying to recover lost packets for that stream, saving bandwidth and processing time.
+
+4. **Streams are cheap**: Opening a new stream is very fast (no round-trips required), so it's perfectly fine to open one stream per video frame, message, or other small unit of data.
+
+This pattern of using many short-lived streams that can be individually aborted is one of QUIC's most powerful features for real-time applications. It gives you fine-grained control over what data is worth transmitting, without the head-of-line blocking issues that would occur with a single TCP connection.
 
 ## QUIC 0-RTT features
 

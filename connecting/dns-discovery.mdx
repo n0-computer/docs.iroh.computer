@@ -34,8 +34,8 @@ async fn main() -> anyhow::Result<()> {
 
     println!("endpoint id: {:?}", endpoint.id());
 
-   let ticket = EndpointTicket::new(endpoint.addr());
-   println!("Share this ticket to let others connect to your endpoint: {ticket}");
+    let ticket = EndpointTicket::new(endpoint.addr());
+    println!("Share this ticket to let others connect to your endpoint: {ticket}");
 
     Ok(())
 }
