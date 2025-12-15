@@ -68,8 +68,8 @@
           {
             "group": "About",
             "pages": [
-              "https://www.iroh.computer/changelog",
-              "https://www.iroh.computer/roadmap",
+              "about/changelog",
+              "about/roadmap",
               "about/faq"
             ]
           }
