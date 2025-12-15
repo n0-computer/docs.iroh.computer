@@ -43,7 +43,7 @@
             ]
           },
           {
-            "group": "Communicating over Iroh",
+            "group": "Building your App",
             "pages": [
               "protocols/kv-crdts",
               "protocols/blobs",
