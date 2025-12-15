@@ -4,7 +4,7 @@ title: "Using QUIC"
 
 ## Why this matters for iroh
 
-iroh is built on top of QUIC, providing peer-to-peer connectivity, NAT traversal, and encrypted connections out of the box. While iroh handles the hard parts of networking—holepunching, relay servers, and discovery—**you still need to design how your application exchanges data once connected**.
+iroh is built on top of QUIC, providing connectivity, NAT traversal, and encrypted connections out of the box. While iroh handles the hard parts of networking—holepunching, relay servers, and discovery—**you still need to design how your application exchanges data once connected**.
 
 Many developers reach for iroh expecting it to completely abstract away the underlying transport. However, iroh intentionally exposes QUIC's powerful stream API because:
 

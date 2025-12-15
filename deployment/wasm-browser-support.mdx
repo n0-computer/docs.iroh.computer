@@ -28,8 +28,10 @@ This is because we can't port our hole-punching logic in iroh to browsers: They 
 Keep in mind that *connections are end-to-end encrypted*, as always with iroh.
 So even though traffic from browsers is always relayed, it can't be decrypted by the relay.
 
-There are other ways of getting peer-to-peer connections going, such as WebTransport with `serverCertificateHashes`, or WebRTC.
-We may expand iroh's browser support to make use of these to try to generate fully peer-to-peer connections even when a browser node is involved in the connection.
+There are other ways of getting direct connections going, such as WebTransport
+with `serverCertificateHashes`, or WebRTC.  We may expand iroh's browser support
+to make use of these to try to generate direct connections even when a browser
+node is involved in the connection.
 
 ### `iroh` crate features
 
