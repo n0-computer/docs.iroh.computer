@@ -44,7 +44,7 @@ See the [EndpointID](https://docs.rs/iroh/latest/iroh/type.EndpointId.html) docu
 Endpoint Addresses or [`EndpointAddrs`](https://docs.rs/iroh/latest/iroh/struct.EndpointAddr.html) are a common struct you'll interact when working with iroh to tell iroh what & where to dial. In rust they look like this:
 
 ```rust
-pub struct Addr {
+pub struct EndpointAddr {
     pub id: PublicKey,
     pub addrs: BTreeSet<TransportAddr>,
 }
@@ -81,12 +81,34 @@ roundtrip required to either do initial address discovery, or update cached
 addresses. So if you have a source of up to date home relay & dialing info,
 provide it!
 
-### Don't store relay_url & direct_addresses values
+### What to persist in your application
 
-If you're persisting the contents of `EndpointAddrs` in your app, it's probably
-not worth keeping the `relay_url` and `direct_address` fields, unless you _know_
-these details are unlikely to change. Providing stale details to the endpoint
-can slow down connection construction.
+When storing endpoint information in your application database, what you should
+persist depends on whether you're using discovery:
+
+**If you're using discovery (recommended):**
+Store just the `EndpointID`. When you need to connect, construct an
+`EndpointAddr` from the ID and let discovery resolve the current dialing
+details. This is the most robust approach since relay URLs and direct addresses
+can change frequently in P2P networks.
+
+```rust
+// Store in your database
+let endpoint_id: EndpointId = ...;
+
+// Later, when connecting
+let addr = EndpointAddr::from(endpoint_id);
+endpoint.connect(addr, ALPN).await?;
+```
+
+**If you're not using discovery:**
+You'll need to store full `EndpointAddr` information (including the `addrs`
+field with relay and direct address information). Without discovery, iroh has no
+way to resolve an `EndpointID` to dialing details.
+
+Keep in mind that stored dialing details can become stale quickly. Providing
+outdated information may slow down connection establishment as iroh tries
+addresses that no longer work before falling back to other methods.
 
 ## Building on Endpoints
 

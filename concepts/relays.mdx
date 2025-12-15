@@ -12,8 +12,7 @@ those cases traffic falls back to running through the relay. Relay servers **do
 not** have access to the data being transmitted, as it's encrypted end-to-end.
 
 We're working on formally collecting the direct connection rate from production
-iroh networks. Anecdotal evidence points to the holepunching rate being around
-90%, meaning 9 out of 10 times, a direct connection is established.
+iroh networks. Anecdotal evidence points to roughly 9 out of 10 networking conditions we see in practice allowing a direct connection to be established. Our holepunching implementation is deterministic - if it works between two devices once, it should continue to work as long as their networking setup remains stable.
 
 ## Public relays
 

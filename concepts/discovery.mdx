@@ -3,25 +3,25 @@ title: "Discovery"
 ---
 
 
-Discovery is the glue that connects an [Endpoint](/concepts/endpoints#endpoint-identifiers) to something we can dial. Discovery services resolve EndpointIds to either a home Relay URL or direct-dialing information. 
+Discovery is the glue that connects an [Endpoint](/concepts/endpoints#endpoint-identifiers) to something we can dial. Discovery services resolve EndpointIDs to either a home Relay URL or direct-dialing information. 
 
 <Note>
   More details on discovery in the discovery module [documentation](https://docs.rs/iroh/latest/iroh/discovery/index.html)
 </Note>
 
-Endpoint discovery is an automated system for an [Endpoint](/concepts/endpoints) to retrieve addressing information. Each iroh endpoint will automatically publish their own addressing information with configured discovery services. Usually this means publishing which [Home Relay](/concepts/relay#home-relay) an endpoint is findable at, but they could also publish their direct addresses.
+Endpoint discovery is an automated system for an [Endpoint](/concepts/endpoints) to retrieve addressing information. Each iroh endpoint will automatically publish their own addressing information with configured discovery services. Usually this means publishing which [Home Relay](/concepts/relays) an endpoint is findable at, but they could also publish their direct addresses.
 
 
 ## Discovery Services
 
-There are four different implementations of the discovery service in iroh. **By default, iroh uses DNS discovery** to resolve EndpointIds to addresses. Local and DHT discovery are **disabled by default** and must be explicitly configured if you want to use them.
+There are four different implementations of the discovery service in iroh. **By default, iroh uses DNS discovery** to resolve EndpointIDs to addresses. Local and DHT discovery are **disabled by default** and must be explicitly configured if you want to use them.
 
 
 | Name | Description | Default |
 | --- | --- | --- |
-| [DNS](#node-discovery-via-dns) | uses a custom Domain Name System server | ✅ Enabled |
+| [DNS](#endpoint-discovery-via-dns) | uses a custom Domain Name System server | ✅ Enabled |
 | [Local](#local-discovery) | uses an mDNS-like system to find endpoints on the local network | ❌ Disabled |
-| [Pkarr](#node-announces-via-pkarr) | uses Pkarr Servers over HTTP | ✅ Enabled (via DNS) |
+| [Pkarr](#endpoint-announces-via-pkarr) | uses Pkarr Servers over HTTP | ✅ Enabled (via DNS) |
 |  [DHT](#dht-discovery) | uses the BitTorrent Mainline DHT | ❌ Disabled |
 
 ### The motivation
@@ -32,27 +32,27 @@ iroh. Now, devs no longer need to worry about opening up ports on their servers
 / firewalls or be resigned to only creating peer-to-peer connections to
 computers inside their local NAT.
 
-But even with holepunching, you need to know *where* to dial. Dialing a node in
+But even with holepunching, you need to know *where* to dial. Dialing an endpoint in
 iroh needs either an IP address to talk to, or the URL of a relay to which the
-remote node is connected. To make things easier, you can use
+remote endpoint is connected. To make things easier, you can use
 [tickets](/concepts/tickets) early-on. Tickets are easily encodable
-bytestrings that contain a node id, socket addresses and a relay URL. Tickets
+bytestrings that contain an endpoint ID, socket addresses and a relay URL. Tickets
 work well, but they are long - and they expire: People change networks or
 relays, and then old tickets cannot find you anymore. So while tickets work well
 in some scenarios, they are not frictionless or universally usable.
 
-But what if you didn’t need to know the relay URL or socket address in order to
-dial a node? Could we enable iroh users to dial peers using _the least amount of
-information possible_, ie can we enable dialing _only by Node ID_, and no other
+But what if you didn't need to know the relay URL or socket address in order to
+dial an endpoint? Could we enable iroh users to dial peers using _the least amount of
+information possible_, ie can we enable dialing _only by EndpointID_, and no other
 address data?
 
 ### The solution
 
-We had two “guiding lights” while doing research on global node discovery:
+We had two "guiding lights" while doing research on global endpoint discovery:
 
 First, we needed to see a path forward that would allow for a fully distributed
 topology, even if our first solution had a federated structure. If we (or some
-contributor) wanted to create or opt into a fully p2p version of global node
+contributor) wanted to create or opt into a fully p2p version of global endpoint
 discovery in the future, that needed to work in tandem with whatever federated
 solution we came up with.
 
@@ -61,7 +61,7 @@ protocols and specs unnecessarily. Can we instead leverage standards that have
 stood the test of time (and scrutiny) in novel ways to solve our problem? It
 turns out, we can! And we can do it using one of the oldest and most dependable
 technologies we have on the internet: DNS. Using the DNS standard along side
-Pkarr (public-key addressable resource records), **we now have global node
+Pkarr (public-key addressable resource records), **we now have global endpoint
 discovery in iroh**!
 
 ## The approach
@@ -74,33 +74,32 @@ names_ to [_resource
 records_](https://datatracker.ietf.org/doc/html/rfc1035#section-3.2), of which
 IP addresses are one type. Pkarr allows us to publish DNS records that resolve
 **elliptic curve keys** (not domain names) to resource records instead. Our
-**Node IDs** in iroh are elliptic curve public keys. This means we can publish
-an association between iroh Node IDs and some resource records. Importantly,
+**EndpointIDs** in iroh are elliptic curve public keys. This means we can publish
+an association between iroh EndpointIDs and some resource records. Importantly,
 these records are signed, so that you can verify that the record was actually
-published by the node with the given Node ID.
+published by the endpoint with the given EndpointID.
 
-As long as iroh has a Node ID and its associated relay URL (the address of the
-relay server that node uses to hole-punch and proxy relay packets), we can dial
-that node. So the Pkarr packet currently only needs to contain the Node ID and
-the relay URL of its preferred relay server (which we call its “home relay”).
-When Pkarr publishing is enabled on your iroh node, your node will create a
-Pkarr packet with its Node ID and relay URL, sign it, and defaults to publishing
+As long as iroh has an EndpointID and its associated relay URL (the address of the
+relay server that endpoint uses to hole-punch and proxy relay packets), we can dial
+that endpoint. So the Pkarr packet currently only needs to contain the EndpointID and
+the relay URL of its preferred relay server (which we call its "home relay").
+When Pkarr publishing is enabled on your iroh endpoint, your endpoint will create a
+Pkarr packet with its EndpointID and relay URL, sign it, and defaults to publishing
 on an `iroh-dns` server that is run by [the n0 team](https://n0.computer).
 
-From there, others can discover your dialing information by resolving your Node
-ID using regular DNS. It’s worth noting that others must still learn your node
-ID for this to work,
+From there, others can discover your dialing information by resolving your EndpointID using regular DNS. It's worth noting that others must still learn your endpoint
+ID for this to work.
 
-The following sections describe the format of the Pkarr publishing records and Node discovery via DNS queries in greater detail.
+The following sections describe the format of the Pkarr publishing records and endpoint discovery via DNS queries in greater detail.
 
-## Node discovery via DNS
+## Endpoint discovery via DNS
 
-When connecting to an unknown `EndpointId`, the DNS discovery mechanism in iroh will perform a DNS query to discover relays or addresses for the node. The DNS discovery is configured with a *origin domain* (which defaults to *dns.iroh.link*, a server run by n0). iroh will then perform a DNS query through the configured DNS resolver (which defaults to using the host system's nameservers):
+When connecting to an unknown `EndpointId`, the DNS discovery mechanism in iroh will perform a DNS query to discover relays or addresses for the endpoint. The DNS discovery is configured with a *origin domain* (which defaults to *dns.iroh.link*, a server run by n0). iroh will then perform a DNS query through the configured DNS resolver (which defaults to using the host system's nameservers):
 
-`_iroh.<z32-node-id>.<origin-domain> TXT`
+`_iroh.<z32-endpoint-id>.<origin-domain> TXT`
 
 - `_iroh` is the record name defined in this spec
-- `<z32-node-id>` is the [z32](https://crates.io/crates/z32) encoding of the 32-byte long `EndpointId` (which is a string of 52 characters)
+- `<z32-endpoint-id>` is the [z32](https://crates.io/crates/z32) encoding of the 32-byte long `EndpointId` (which is a string of 52 characters)
 - `<origin-domain>` is the configured origin domain
 - `TXT` is the queried record type
 
@@ -108,19 +107,19 @@ The returned TXT records must contain a string value of the form `key=value`, as
 
 This spec defines the following attributes:
 
-- `relay=<url>`: The home relay for this node, e.g. `https://euw1-1.derp.iroh.network`.
-- `addr=<addr> <addr> ..` A space-separated list of socket addresses for this iroh node. Each address is an IPv4 or IPv6 address with a port (e.g. `1.2.3.4:7367` or `[::1]:3521`)
+- `relay=<url>`: The home relay for this endpoint, e.g. `https://euw1-1.derp.iroh.network`.
+- `addr=<addr> <addr> ..` A space-separated list of socket addresses for this iroh endpoint. Each address is an IPv4 or IPv6 address with a port (e.g. `1.2.3.4:7367` or `[::1]:3521`)
 
 <Note>
 **Ready to use DNS discovery?** Learn how to configure DNS discovery in your application in the [DNS Discovery guide](/connecting/dns-discovery).
 </Note>
 
-## Node announces via `pkarr`
+## Endpoint announces via `pkarr`
 
-Nodes announce their address information in
+Endpoints announce their address information in
 [Pkarr](https://github.com/Nuhvi/pkarr/) signed packets. The TXT records, as
 described below, are added to the `answers` section of a DNS server. Their name
-must be `_iroh.<node-id>.` The encoded node ID must be the root name, no other
+must be `_iroh.<endpoint-id>.` The encoded endpoint ID must be the root name, no other
 origin but `.` (the single dot) is permitted.
 
 Those packets are published to a Pkarr relay server, which is a HTTP service
@@ -136,27 +135,4 @@ with the DNS server's configured *origin domain* appended to all record names.
 
 <Note>
 **Want to publish via Pkarr?** This is handled automatically when using DNS discovery. See the [DNS Discovery guide](/connecting/dns-discovery) for configuration details.
-</Note>
-
-## Local Discovery
-
-**Note: Local discovery is disabled by default and must be explicitly enabled.**
-
-Global servers aren't the only way to find other iroh endpoints. Iroh also supports local
-discovery, where endpoints on the same local network can find each other &
-exchange dialing information without a relay using mDNS. This is useful for
-offline environments, or for bootstrapping a network before a relay is available.
-
-<Note>
-**Want to enable local discovery?** Learn how to configure and enable mDNS-based local discovery in the [Local Discovery guide](/connecting/local-discovery).
-</Note>
-
-## DHT Discovery
-
-**Note: DHT discovery is disabled by default and must be explicitly enabled.**
-
-The Distributed Hash Table (DHT) discovery uses the BitTorrent Mainline DHT to publish and discover node addresses in a fully decentralized manner. This allows nodes to find each other without relying on centralized DNS servers.
-
-<Note>
-**Want to enable DHT discovery?** Learn how to configure and enable DHT-based discovery in the [DHT Discovery guide](/connecting/dht-discovery).
 </Note>
