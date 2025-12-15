@@ -7,12 +7,14 @@ behavior. Once you've established an iroh connection, protocols determine what
 happens next: transferring files, syncing documents, broadcasting messages, or
 whatever your application needs.
 
-iroh provides the encrypted, peer-to-peer connections - protocols define what to
+iroh provides the pool of encrypted QUIC connections - protocols define what to
 do with them.
 
 ## Peer-to-peer protocols
 
-Unlike HTTP's client/server model where one side only sends requests and the other only responds, peer-to-peer protocols typically support **both** initiating and accepting connections on the same endpoint.
+Unlike HTTP's client/server model where one side only sends requests and the
+other only responds, peer-to-peer protocols typically support **both**
+initiating and accepting connections on the same endpoint.
 
 This means:
 - Any peer can request data from any other peer

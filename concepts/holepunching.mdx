@@ -10,16 +10,14 @@ Imagine you're trying to video call a friend. Both of you are behind routers at
 home. When you try to connect directly to each other, your routers' firewalls
 block the incoming connection because they don't recognize it as a response to
 something you requested. The combination of NAT (which translates addresses) and
-firewall rules (which filter traffic) makes direct peer-to-peer connections
+firewall rules (which filter traffic) makes direct connections
 challenging.
 
 Traditionally, this problem was solved by:
 - **Port forwarding**: Manually configuring your router to allow specific connections (tedious and requires technical knowledge)
 - **Relay servers**: Routing all traffic through a third-party server (slow and expensive)
 
-Neither solution is ideal for peer-to-peer applications.
-
-## The Solution: Holepunching
+## The Innovation: Holepunching
 
 **Holepunching** is a clever technique that works around NAT and firewall restrictions to allow direct connections between peers without manual configuration or relying entirely on relay servers.
 

@@ -62,7 +62,7 @@ The postcard encoding keeps tickets compact despite containing multiple pieces o
 
 ## Security considerations
 
-**Tickets contain IP addresses**: When you create a ticket, it embeds the IP addresses you're currently reachable at. Sharing a ticket means sharing your IP address with whoever receives it. This is intentional - it enables direct peer-to-peer connections without a central server.
+**Tickets contain IP addresses**: When you create a ticket, it embeds the IP addresses you're currently reachable at. Sharing a ticket means sharing your IP address with whoever receives it. This is intentional - it enables direct connections without a central server.
 
 This is actually *better* than many P2P systems that broadcast your IP to all peers. With tickets, you form a "cozy network" between peers you explicitly choose to connect with.
 

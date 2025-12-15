@@ -10,8 +10,8 @@ eventually converging to the same state on every replica.
 
 ## Example
 
-This example highlights how to integrate [automerge's sync protocol](https://automerge.org/docs/hello/) with
-[iroh's peer-to-peer connectivity](/concepts/discovery).
+This example highlights how to integrate [automerge's local-first CRDT](https://automerge.org/docs/hello/) with
+[iroh's connectivity](/concepts/discovery).
 
 
 ```bash
@@ -31,7 +31,7 @@ Endpoint Id: lkpz2uw6jf7qahl7oo6qc46qad5ysszhtdzqyotkb3pwtd7sv3va
 
 You can exchange this public key with anyone to establish a secure, encrypted
 connection anywhere.  In most cases this connection is even automatically
-upgraded to a direct peer-to-peer connection.
+upgraded to a direct connection.
 
 Now, let's start another endpoint in the second terminal that will connect to the
 first endpoint:
@@ -95,4 +95,4 @@ that round.
 ## Learn more
 - [iroh-automerge example source code on Github](https://github.com/n0-computer/iroh-examples/blob/main/iroh-automerge/src/protocol.rs)
 - [automerge's sync protocol](https://docs.rs/automerge/latest/automerge/sync/)
-- [iroh's peer-to-peer connectivity](https://docs.rs/iroh/latest/iroh/net/index.html)
+- [iroh docs](https://docs.rs/iroh/latest/iroh/net/index.html)
