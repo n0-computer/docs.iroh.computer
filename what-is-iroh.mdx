@@ -7,25 +7,30 @@ the building blocks to create applications that can communicate
 using fast, cheap, and reliable connections.
 
 ## Core features
-- **Direct**: iroh enables direct connections between
+- **Fast**: iroh enables direct connections between
   devices, allowing them to communicate without relying on centralized servers.
-  It uses relay servers as a fallback when direct connections are not possible.
-- **Secure**: All connections established through iroh are
-  authenticated and encrypted end-to-end using the QUIC protocol, ensuring data
-  privacy and integrity.
+- **Reliable**: iroh is designed to work in challenging network conditions.  It
+uses relay servers as a fallback when direct connections are not possible.
+- **Secure**: All connections established through iroh are authenticated and
+encrypted end-to-end using the QUIC protocol, ensuring data privacy and
+integrity.
 - **Modular**: iroh is built around a system of composable protocols
   that can be mixed and matched to suit the needs of different applications. This
   allows developers to easily add functionality such as file sharing, messaging,
   and real-time collaboration.
 
 ## Use cases
-- **Local-first, offline-first applications**: iroh provides the networking foundation for
-  building applications that can operate without 100% reliance on servers.
-- **File sharing**: With protocols like iroh-blobs, iroh enables efficient
-  file sharing.
-- **Structured data**: iroh's support for flexible data protocols allows
+- **Local-first, offline-first, peer-to-peer applications**: iroh provides the networking foundation for
+  building applications that can operate without reliance on servers.
+- **Files & blobs**: With protocols like [iroh-blobs](/protocols/blobs), iroh enables efficient
+  file transfer.
+- **Structured data**: iroh's support for flexible data protocols like [KV
+CRDTs](/protocols/kv-crdts) and [Automerge](/protocols/automerge) allows
 developers to build applications that support real-time collaborative editing
 and data synchronization. Any kind of CRDT or OT sync protocol can be integrated.
+- **Real-time communication**: Build [chat applications](/examples/chat), [RPC
+services](/protocols/rpc), and [streaming data](/protocols/streaming) with
+iroh's communication protocols.
 
 ## Getting started
 To get started with iroh, check out the [quickstart guide](/quickstart) or explore the
