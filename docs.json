@@ -21,6 +21,7 @@
               "examples/examples",
             {
               "group": "How it works",
+              "expanded": true,
               "pages": [
                 "concepts/endpoints",
                 "concepts/tickets",
