@@ -6,7 +6,12 @@ When two devices want to connect directly over the internet, they face a common 
 
 ## The Problem: NAT Blocks Direct Connections
 
-Imagine you're trying to video call a friend. Both of you are behind routers at home. When you try to connect directly to each other, your routers block the incoming connection because they don't recognize it as a response to something you requested. This is NAT protecting your network.
+Imagine you're trying to video call a friend. Both of you are behind routers at
+home. When you try to connect directly to each other, your routers' firewalls
+block the incoming connection because they don't recognize it as a response to
+something you requested. The combination of NAT (which translates addresses) and
+firewall rules (which filter traffic) makes direct peer-to-peer connections
+challenging.
 
 Traditionally, this problem was solved by:
 - **Port forwarding**: Manually configuring your router to allow specific connections (tedious and requires technical knowledge)
@@ -16,7 +21,7 @@ Neither solution is ideal for peer-to-peer applications.
 
 ## The Solution: Holepunching
 
-**Holepunching** is a clever technique that tricks NAT routers into allowing direct connections between peers without manual configuration or relying entirely on relay servers.
+**Holepunching** is a clever technique that works around NAT and firewall restrictions to allow direct connections between peers without manual configuration or relying entirely on relay servers.
 
 Here's how it works:
 
@@ -33,9 +38,9 @@ Through the relay, peers exchange their:
 
 ### 3. Simultaneous Outbound Connection
 
-Here's the magic: both peers try to connect to each other **at the same time**. When peer A sends a packet to peer B's public address, A's router creates a temporary rule allowing responses from B. When peer B sends a packet to peer A at the same moment, B's router does the same.
+Here's the magic: both peers try to connect to each other **at the same time**. When peer A sends a packet to peer B's public address, A's NAT creates a mapping and the firewall creates a temporary rule allowing responses from B. When peer B sends a packet to peer A at the same moment, B's NAT and firewall do the same.
 
-Because both routers now have rules expecting traffic from each other, the packets get through, and a direct connection is established!
+Because both NAT mappings are established and both firewalls now have rules expecting traffic from each other, the packets get through, and a direct connection is established!
 
 ### 4. Fallback to Relay
 

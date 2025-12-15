@@ -2,74 +2,82 @@
 title: "Protocols"
 ---
 
-Iroh is organized into _protocols_: Composable networking software built on iroh
-connections. 
+A **protocol** defines how two iroh endpoints exchange messages and coordinate
+behavior. Once you've established an iroh connection, protocols determine what
+happens next: transferring files, syncing documents, broadcasting messages, or
+whatever your application needs.
 
-A protocol sets up everything we need to both provide data we have locally when
-others request it, and ask other endpoints that run the protocol to do whatever
-business or application logic we need.
+iroh provides the encrypted, peer-to-peer connections - protocols define what to
+do with them.
 
-The foundation of iroh is direct connections, which protocols use to extend up
-to higher-level functionality. When integrating iroh into an application you can
-use protocols to quickly add functionality, or write your own protocol(s) to
-maintain total control over how your application communicates.
+## Peer-to-peer protocols
 
-Iroh is entirely composable and modular. You can run multiple protocols on the
-same endpoint, and each protocol can be used independently. This allows you to
-only include the protocols you need for your application, keeping connections
-lightweight and fast.
+Unlike HTTP's client/server model where one side only sends requests and the other only responds, peer-to-peer protocols typically support **both** initiating and accepting connections on the same endpoint.
 
-## Compare to HTTP
+This means:
+- Any peer can request data from any other peer
+- Any peer can offer data to any other peer  
+- Roles can change over time (today's client is tomorrow's server)
 
-Coming from the world of HTTP client/server models, protocols are similar to 
-request handlers. However, they go beyond request/response by creating multiple
-streams of data and usually include both initiating & accepting protocol
-connections in the same client.
-
-Peer to peer protocols do not require a client/server distinction, both sides
-can initiate and accept connections. However, you can still build client/server
-style protocols on top of iroh if you want to.
+You can still build client/server-style protocols if your application needs that
+distinction, but iroh's P2P foundation gives you more flexibility.
 
 
-## ALPN identifiers
+## Building blocks, not a framework
 
-Iroh builds on QUIC connections, and uses [application level protocol
-negotiation](https://datatracker.ietf.org/doc/html/rfc7301) (ALPN, a widely used
-and well specified TLS extension) to run multiple protocols on the same QUIC
-endpoint. An ALPN identifier is the string that identifies the protocol and is
-used for protocol negotiation between endpoints. 
+iroh is designed as a set of composable building blocks. The core `iroh` crate
+gives you endpoints and connections. From there, you choose:
 
-For example, the [iroh-blobs](/proto/iroh-blobs) protocol ALPN is
-[`/iroh-bytes/4`](https://github.com/n0-computer/iroh-blobs/blob/124820698cd85691e0d72aeed6e1ac028886b34a/src/protocol.rs#L353).
-This makes sure that an endpoint that accepts a connection can gracefully
-indicate whether it supports the requested protocol.
+**Use existing protocols** - Pick from protocols built by the iroh community:
+- [`iroh-blobs`](/protocols/blobs) - Content-addressed blob storage and transfer
+- [`iroh-docs`](/protocols/kv-crdts) - Collaborative key-value documents with CRDTs
+- [`iroh-gossip`](/connecting/gossip) - Topic-based message broadcasting in swarms
+- [`iroh-automerge`](https://github.com/n0-computer/iroh-experiments/tree/main/iroh-automerge) - Automerge document sync (experimental)
 
-You can also use multiple ALPN identifiers when connecting as a way to negotiate e.g.
-protocol versions. For example, you would connect using `/iroh-bytes/5` as well
-as `/iroh-bytes/4`, and the other side could respond with `/iroh-bytes/4` to
-indicating it doesn't have support for `/iroh-bytes/5`.
+**Build your own** - Create custom protocols using:
+- Raw QUIC streams via iroh's connection API (most common approach)
+- RPC frameworks like [`irpc`](https://github.com/n0-computer/irpc) with [`iroh-irpc`](https://github.com/n0-computer/irpc)
 
+Each protocol is a separate crate you can add as needed. You're never locked
+into a particular set of protocols - mix and match, or build something entirely
+new.
 
-## The Accept Loop
+## How protocols work
 
-The accept loop is the main loop of an iroh server. It listens for incoming
-connections, and then processes them. The accept loop is the entry point for all
-iroh protocols, and is where you can add your own protocol to the iroh stack.
+### ALPN identifiers
 
-Coming from the world of HTTP servers, the accept loop is similar to the main loop of an HTTP server. The main difference is that the accept loop is more flexible, as it can run multiple protocols on the same endpoint. Normally HTTP servers hide the raw accept loop from you, and instead route to the correct handler based on the URL. In iroh, the accept loop is exposed to you, and you can use it to route to the correct protocol based on the ALPN.
+Protocols use [Application-Layer Protocol
+Negotiation](https://datatracker.ietf.org/doc/html/rfc7301) (ALPN) strings to
+identify themselves. When an endpoint accepts a connection, it uses the ALPN to
+route to the correct protocol handler.
 
-Assuming we have two endpoints connected, yay! Now we just have to… do something… with that connection. That’s where protocols come in.
+For example, `iroh-blobs` uses the ALPN `/iroh-bytes/VERSION`. When a peer connects
+with this ALPN, the endpoint knows to handle it as a blobs request.
+
+You can also use multiple ALPN identifiers for version negotiation. A connecting
+peer might offer `/my-protocol/2` and `/my-protocol/1`, letting the accepting
+peer respond with whichever version it supports.
+
+### The accept loop
+
+When your endpoint receives an incoming connection, it checks the requested ALPN
+and routes to the appropriate protocol handler. This is similar to HTTP routing,
+but happens at the connection level rather than per-request.
+
+You can handle this routing yourself by accepting connections directly, or use
+iroh's [`Router`](https://docs.rs/iroh/latest/iroh/protocol/struct.Router.html)
+to automatically route connections to registered protocol handlers.
 
 ## Learn more
 
-Protocols are modules you compose together to add functionality to connections.
-Protocols exist for file transfer, game server sync, message broadcasting,
-document collaboration, all kinds of stuff. You can use off-the-shelf protocols
-to quickly add functionality, work directly with QUIC streams & build a fully
-custom protocol that does exactly what you want, or fork an existing protocol to
-get what you need.
+Ready to start building with protocols?
 
-- [Gossip Broadcast](/connecting/gossip): creating swarms of peers for broadcasting messages on topics.
-- [Blobs](/protocols/blobs): storing and transferring large binary blobs of data.
-- [Key-value CRDTs](/protocols/kv-crdts): collaborative key-value store. 
-- [Writing Custom Protocols](/protocols/writing-a-protocol): guide on building your own protocols on top of iroh.
+**Using existing protocols:**
+- [Blob storage with iroh-blobs](/protocols/blobs)
+- [Document collaboration with iroh-docs](/protocols/kv-crdts)
+- [Message broadcasting with iroh-gossip](/connecting/gossip)
+
+**Building your own:**
+- [Write your own protocol guide](/protocols/writing-a-protocol)
+- [QUIC streaming patterns](/protocols/using-quic)
+- [Router API documentation](https://docs.rs/iroh/latest/iroh/protocol/struct.Router.html)
