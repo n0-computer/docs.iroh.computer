@@ -36,3 +36,48 @@ you use [dedicated infrastructure](/deployment/dedicated-infrastructure) for pro
 We monitor the public relays for abuse and malicious activity. If we detect
 abuse, we reserve the right to block offending IP addresses or users from
 accessing the public relays.
+
+## IP Privacy and Peer-to-Peer Connections
+
+Peer-to-peer networking with direct connections and hole-punching is fundamentally
+incompatible with IP address privacy. When two endpoints establish a direct
+connection, they necessarily exchange and expose their IP addresses to each other.
+This is a core requirement of how direct peer-to-peer connections work.
+
+However, peer-to-peer in the sense of **end-to-end encryption** is fully compatible
+with IP privacy, as encryption protects the content of your communications regardless
+of network topology.
+
+If you need both end-to-end encryption and IP address privacy, you have several options:
+
+### Option 1: Use Tor or Similar Onion Routing
+
+Services like Tor provide onion routing, which encrypts packet metadata for each
+relay in the route. This offers strong IP privacy guarantees through multi-hop
+routing with layered encryption.
+
+### Option 2: Relay-Only Mode (Upcoming)
+
+Upcoming releases of iroh will support disabling hole-punching to send all traffic
+exclusively through relays. This provides IP privacy with some important caveats:
+
+- **Single-hop routing**: Traffic passes through one relay, not multiple hops
+- **Trust required**: The relay operator can technically see which endpoints are
+  communicating and their IP addresses
+- **Data remains encrypted**: The relay cannot read the actual content due to
+  end-to-end encryption
+
+This mode is suitable when you trust your relay infrastructure but still want to
+avoid direct IP exposure between endpoints.
+
+### Future: Multi-Hop Relay Routing
+
+We've explored the possibility of adding multi-hop relay routing to iroh. While
+technically feasible, this feature is not currently on the near-term roadmap.
+
+It's important to note that even with multi-hop relay routing, this would not be
+equivalent to onion routing. True onion routing requires encrypting packet metadata
+for each relay in the route, which would require significant protocol changes.
+
+If these features are interesting to you, please [contact us](https://n0.computer/)
+to discuss your specific requirements.
