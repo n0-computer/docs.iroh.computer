@@ -137,7 +137,7 @@ This example demonstrates how hooks can feed information to external tasks, givi
 ### [Aggregating information about remote endpoints](https://github.com/n0-computer/iroh/blob/feat-multipath/iroh/examples/remote-info.rs)
 
 This example implements a `RemoteMap` that tracks and aggregates information about all remotes our endpoint knows about.
-This can be useful if your app needs to chose between remotes, or for building diagnostic tools.
+This can be useful if your app needs to choose between remotes, or for building diagnostic tools.
 
 * A hook forwards `ConnectionInfo` updates into a worker task.
 * The worker maintains a map of all remotes with counts of active connections and observed statistics (e.g. latency/RTT, whether relay/IP paths were used, etc).
