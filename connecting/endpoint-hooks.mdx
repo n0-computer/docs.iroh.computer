@@ -1,9 +1,16 @@
 ---
-title: Endpoint Hooks
+title: Observing & Rejecting Connections
 ---
 
-Endpoint hooks allow you to intercept the connection-establishment process of an iroh `Endpoint`.  
-They are a lightweight, flexible mechanism for observing connection events or rejecting connections based on conditions. The latter can be used to implement custom authentication schemes.
+<Note>
+Available in iroh v.96 and later.
+</Note>
+
+Endpoint Hooks allow you to intercept the connection-establishment process of an iroh `Endpoint`.  
+
+They are a lightweight, flexible mechanism for observing connection events or
+rejecting connections based on conditions. The latter can be used to implement
+custom authentication schemes.
 
 Hooks run at two points:
 
