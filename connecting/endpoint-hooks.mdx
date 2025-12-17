@@ -82,7 +82,7 @@ async fn main() -> n0_error::Result<()> {
 Hooks can be used to enforce policy. If a hook returns a rejection result, the connection is immediately aborted.
 The example below rejects all incoming connections after the handshake. Outgoing connections will still dial.
 
-In real applications, you would inspect `ConnectionInfo` and reject connections by checking the connection's remote id or aLPN against authentication state in your app.
+In real applications, you would inspect `ConnectionInfo` and reject connections by checking the connection's remote id or ALPN against authentication state in your app.
 
 ```rust
 use iroh::endpoint::{AfterHandshakeOutcome, ConnectionInfo, Endpoint, EndpointHooks, Side};
