@@ -63,7 +63,7 @@
               "deployment/metrics",
               "deployment/security-privacy",
               "deployment/troubleshooting",
-              "deployment/wasm-browser-support"
+              "deployment/other-languages"
             ]
           },
           {
