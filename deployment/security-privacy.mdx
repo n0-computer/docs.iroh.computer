@@ -6,7 +6,7 @@ iroh is designed with security and privacy as core principles. This document
 outlines the key security and privacy features of iroh, as well as best
 practices for deploying and using iroh in a secure manner.
 
-## End-to-End Encryption
+## Data Privacy with End-to-End Encryption
 
 All data transmitted between iroh endpoints is protected with end-to-end
 encryption. This means that data is encrypted on the sender's device and can only
@@ -23,11 +23,12 @@ endpoint creation.
 
 ## Public Relays
 
-All traffic sent through the public relays is end-to-end encrypted. The relays
-are not able to read any of the traffic that they forward or help connect.
-However, the relays are able to see metadata about connections, such as source
-and destination IP addresses, connection times, and the amount of data
-transferred.
+iroh is by default configured to use shared public infrastructure that is
+operated by [the n0 team](https://n0.computer/). Because traffic is end-to-end
+encrypted, relays are not able to read any of the traffic that they forward or
+help connect.  However, the relays are able to see metadata about connections,
+such as source and destination IP addresses, connection times, and the amount of
+relayed data.
 
 We recommend that you do not use the public relays for sensitive or confidential
 data. If you need more control over your relay infrastructure, we recommend that
@@ -36,3 +37,66 @@ you use [dedicated infrastructure](/deployment/dedicated-infrastructure) for pro
 We monitor the public relays for abuse and malicious activity. If we detect
 abuse, we reserve the right to block offending IP addresses or users from
 accessing the public relays.
+
+
+## Protecting leakage of IP Addresses 
+
+Any direct connection between two devices stands a high chance of being the fastest
+connection, but always requires IP addresses to be disclosed. As with the majority
+of the deployed internet stack today, when two endpoints establish a direct
+connection, they expose and exchange their IP addresses to each other.
+
+IP address privacy considerations are primarily relevant for consumer or peer-to-peer applications
+where strangers or untrusted parties connect directly over the internet. In these
+scenarios, developers cannot guarantee anonymity or trust between endpoints, and
+exposing IP addresses can lead to privacy risks such as location tracking or
+targeted attacks.
+
+To mitigate these risks, we recommend the following strategies to protect IP
+address privacy when using iroh, depending on your specific use case and threat model:
+
+### Basic Protection: Use dedicated infrastructure
+
+If you own the infrastructure, run your own DNS server, and
+manage the devices connecting to your network, you have control over the network
+topology and can implement appropriate security measures. We do not recommend using
+public relays for production systems, as this is shared public
+infrastructure that has no guarantees around privacy or uptime.
+
+We recommend reviewing our [dedicated
+infrastructure](/deployment/dedicated-infrastructure) guidance to set up relay
+and DNS infrastructure that fits your needs.
+
+### More protection: Use Tor or Similar Onion Routing
+
+Services like Tor provide onion routing, which encrypts packet metadata for each
+relay in the route. This offers strong IP privacy guarantees through multi-hop
+routing with layered encryption.
+
+### Upcoming
+
+#### Relay-Only Mode 
+
+Upcoming releases of iroh will support disabling hole-punching to send all traffic
+exclusively through relays. This provides IP privacy with some important caveats:
+
+- **Single-hop routing**: Traffic passes through one relay, not multiple hops
+- **Trust required**: The relay operator can technically see which endpoints are
+  communicating and their IP addresses
+- **Data remains encrypted**: The relay cannot read the actual content due to
+  end-to-end encryption
+
+This mode is suitable when you trust your relay infrastructure but still want to
+avoid direct IP exposure between endpoints.
+
+#### Multi-Hop Relay Routing
+
+We've explored the possibility of adding multi-hop relay routing to iroh. While
+technically feasible, this feature is not currently on the near-term roadmap.
+
+It's important to note that even with multi-hop relay routing, this would not be
+equivalent to onion routing. True onion routing requires encrypting packet metadata
+for each relay in the route, which would require significant protocol changes.
+
+If these features are interesting to you, please [contact us](https://n0.computer/)
+to discuss your specific requirements.

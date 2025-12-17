@@ -2,7 +2,13 @@
 title: "Holepunching"
 ---
 
-When two devices want to connect directly over the internet, they face a common problem: **Network Address Translation (NAT)**. Most home and office networks use NAT, which acts like a one-way door—devices inside the network can reach out to the internet, but the internet can't easily reach back in.
+With holepunching, iroh applications can:
+- **Connect directly** between devices without manual network configuration
+- **Reduce latency** by avoiding servers when possible
+- **Save bandwidth** by keeping data transfer peer-to-peer
+- **Improve resilience and reliability** by not depending on all traffic being sent through third parties
+
+The best part? All of this happens automatically—you don't need to understand the technical details to benefit from it.
 
 ## The Problem: NAT Blocks Direct Connections
 
@@ -13,19 +19,37 @@ something you requested. The combination of NAT (which translates addresses) and
 firewall rules (which filter traffic) makes direct connections
 challenging.
 
+Most home and office networks use NAT, which acts like a one-way door—devices
+inside the network can reach out to the internet, but the internet can't easily
+reach back in. This causes reliance on central servers, which can introduce
+latency and reliability issues.
+
 Traditionally, this problem was solved by:
 - **Port forwarding**: Manually configuring your router to allow specific connections (tedious and requires technical knowledge)
 - **Relay servers**: Routing all traffic through a third-party server (slow and expensive)
+
 
 ## The Innovation: Holepunching
 
 **Holepunching** is a clever technique that works around NAT and firewall restrictions to allow direct connections between peers without manual configuration or relying entirely on relay servers.
 
-Here's how it works:
+iroh uses a sophisticated holepunching implementation built on top of QUIC and integrates with the relay system. The process relies on two key elements:
+
+Holepunching works in most network configurations, but some corporate firewalls or cellular networks may still require relay fallback. iroh handles this automatically.
+
+
+## How Holepunching Works in iroh
 
 ### 1. Initial Contact Through a Relay
 
-Both peers first connect to a shared [relay server](/concepts/relays). The relay acts as a meeting point where peers can coordinate without being able to connect directly yet.
+Both peers first connect to a shared [relay server](/concepts/relays). The relay
+acts as a meeting point where peers can coordinate without being able to connect
+directly yet.
+
+The relay server observes each node's public IP address and port (the address
+from which it sees incoming traffic). This *reflective address* can be used by
+the remote peer to reach through the firewall, provided the firewall considers
+it expected traffic.
 
 ### 2. Sharing Connection Information
 
@@ -33,6 +57,18 @@ Through the relay, peers exchange their:
 - **Public IP addresses** (how they appear to the outside internet)
 - **Port numbers** (the specific door number the router assigned them)
 - **Local addresses** (in case they're on the same network)
+
+Nodes coordinate their holepunching attempts through the relay as a side
+channel. Both nodes simultaneously send UDP datagrams to each other's reflective
+addresses. Since both are sending on the same 4-tuple (source IP, source port,
+destination IP, destination port), the firewalls recognize the incoming packets
+as matching outbound traffic and allow them through.
+
+Importantly, the relay server doesn't actively participate in holepunching -- it
+simply forwards encrypted packets between nodes without knowledge of whether
+they contain application data or coordination messages.
+
+
 
 ### 3. Simultaneous Outbound Connection
 
@@ -44,25 +80,12 @@ Because both NAT mappings are established and both firewalls now have rules expe
 
 If holepunching fails (some networks use particularly strict NAT configurations), iroh automatically falls back to routing traffic through the relay server. This ensures connections always work, even if they can't be direct.
 
-## Why This Matters
+## Read more
 
-With holepunching, iroh applications can:
-- **Connect directly** between devices without manual network configuration
-- **Reduce latency** by avoiding relay servers when possible
-- **Save bandwidth** by keeping data transfer peer-to-peer
-- **Maintain privacy** by not routing all traffic through third parties
-
-The best part? All of this happens automatically—you don't need to understand the technical details to benefit from it.
-
-## How iroh Implements Holepunching
-
-iroh uses a sophisticated holepunching implementation built on top of QUIC and integrates with the relay system. For technical details on the implementation, see:
+For technical details on the implementation, see:
 
 - [iroh's holepunching implementation](https://docs.rs/iroh/latest/iroh/endpoint/index.html#nat-traversal)
 - [Relay system documentation](/concepts/relays)
 - [Dedicated infrastructure setup](/deployment/dedicated-infrastructure)
 - [Endpoint configuration](https://docs.rs/iroh/latest/iroh/endpoint/struct.Endpoint.html)
 
-<Note>
-Holepunching works in most network configurations, but some corporate firewalls or cellular networks may still require relay fallback. iroh handles this automatically.
-</Note>
