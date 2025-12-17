@@ -11,7 +11,7 @@
   "navigation": {
     "tabs": [
       {
-      "tab": "Docs",
+        "tab": "Docs",
         "groups": [
           {
             "group": "Getting Started",
@@ -19,18 +19,18 @@
               "what-is-iroh",
               "quickstart",
               "examples/examples",
-            {
-              "group": "How it works",
-              "expanded": true,
-              "pages": [
-                "concepts/endpoints",
-                "concepts/tickets",
-                "concepts/discovery",
-                "concepts/relays",
-                "concepts/holepunching",
-                "concepts/protocols"
-              ]
-            }
+              {
+                "group": "How it works",
+                "expanded": true,
+                "pages": [
+                  "concepts/endpoints",
+                  "concepts/tickets",
+                  "concepts/discovery",
+                  "concepts/relays",
+                  "concepts/holepunching",
+                  "concepts/protocols"
+                ]
+              }
             ]
           },
           {
@@ -68,11 +68,7 @@
           },
           {
             "group": "About",
-            "pages": [
-              "about/changelog",
-              "about/roadmap",
-              "about/faq"
-            ]
+            "pages": ["about/changelog", "about/roadmap", "about/faq"]
           }
         ]
       }
@@ -88,12 +84,12 @@
         "label": "Support",
         "href": "https://www.iroh.computer/discord"
       },
-        {
-          "label": "Blog",
-          "href": "https://iroh.computer/blog"
-        }
+      {
+        "label": "Blog",
+        "href": "https://iroh.computer/blog"
+      }
     ],
-    
+
     "primary": {
       "type": "button",
       "label": "Login",
@@ -101,12 +97,14 @@
     }
   },
   "contextual": {
-    "options": [
-   ]
+    "options": []
   },
   "footer": {
     "socials": {
       "github": "https://github.com/n0-computer/iroh"
     }
+  },
+  "integrations": {
+    "plausible": { "domain": "docs.iroh.computer" }
   }
 }
