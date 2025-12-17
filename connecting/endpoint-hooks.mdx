@@ -12,7 +12,7 @@ Hooks run at two points:
 
 Hooks are registered with `Endpoint::builder().hooks(...)`. If multiple hooks are installed, they run in the order they were added, and a rejection from any hook short-circuits the rest.
 
-Note that hooks cannot *use* connections, they can only *observe* or *reject* them. This is an important separation of concerns: If hooks were allowed to use the connections in any way, they could interfer with the actual protocols running within these connections. Hooks can, however, *reject* connections before they are passed on to protocol handlers. This makes it possible to implement custom authentication schemes with hooks that work without any support from the protocols running in these connections.
+Note that hooks cannot *use* connections, they can only *observe* or *reject* them. This is an important separation of concerns: If hooks were allowed to use the connections in any way, they could interfere with the actual protocols running within these connections. Hooks can, however, *reject* connections before they are passed on to protocol handlers. This makes it possible to implement custom authentication schemes with hooks that work without any support from the protocols running in these connections.
 
 > **Note:** Hooks live on the `Endpoint` instance. Never store an `Endpoint` inside your hook type (even indirectly), or it may cause reference-counting cycles and prevent clean shutdown.
 
