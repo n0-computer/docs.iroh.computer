@@ -1,0 +1,44 @@
+---
+title: "Public Relays"
+description: "Free shared relays for development and hobby use"
+---
+
+
+By default, all endpoints will use public shared relays to facilitate connections, both forwarding traffic when direct
+peer-to-peer connections are not possible as well as facilitate holepunching for
+direct connections. These relays are managed and maintained by [the n0 team](https://n0.computer),
+and are shared by a global public network of developers.
+
+## Support policy
+
+The public relays will always be available for free and hobby plans, but are not
+covered by any SLA or uptime guarantee.
+
+The public relays will only officially support the latest stable release of
+iroh. If older versions of iroh work with the public relay, this is a happy
+accident, and not something to be relied upon for production use cases. 
+
+There is no version locking. This means that iroh team reserves the right to remove
+support for old versions of iroh from the public relay infrastructure at any
+time.
+
+For version locking, blue/green deployments, multi-region or multi-cloud
+support, we recommend that you upgrade to a [managed
+relay](/iroh-online/relays/managed).
+
+## Privacy and Security
+
+All traffic sent through the public relays is end-to-end encrypted. The relays
+are not able to read any of the traffic that they forward or help connect.
+However, the relays are able to see metadata about connections, such as source
+and destination IP addresses, connection times, and the amount of data
+transferred.
+
+We recommend that you do not use the public relays for sensitive or
+confidential data. If you need more control over your relay infrastructure, we
+recommend that you upgrade to a [managed relay](/iroh-online/relays/managed) or
+[self-host your own relay](https://iroh.computer).
+
+We monitor the public relays for abuse and malicious activity. If we detect
+abuse, we reserve the right to block offending IP addresses or users from
+accessing the public relays.

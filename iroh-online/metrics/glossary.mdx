@@ -1,0 +1,94 @@
+---
+title: "Metrics Glossary"
+description: "Complete reference of all available metrics in n0des"
+---
+
+List of all available metrics. Below is a reference grouping of every metric exposed by the frontend metrics registry, organized by level:
+
+## Project-level metrics
+
+These metrics are aggregated at the project level (overall project view / dashboard).
+
+| Metric (group.metric) | Short description | Units |
+|---|---|---:|
+| direct_data_rate | Measured traffic that doesn't pass through a relay, as a percentage of total traffic | Percentage |
+| direct_connection_rate | Measured connections that become direct at least once during the lifetime of the connection | Percentage |
+| blobs.egress | Blobs egress | Bytes |
+| blobs.ingress | Blobs ingress | Bytes |
+| connections.active | Active connections through relay servers | Count |
+| latency.p50 | 50th percentile latency between endpoints | Milliseconds |
+| latency.p90 | 90th percentile latency between endpoints | Milliseconds |
+| latency.p99 | 99th percentile latency between endpoints | Milliseconds |
+
+## Relay-level metrics
+
+Metrics in this section relate to relays and relay servers (visibility about relay processes/servers).
+
+| Metric (group.metric) | Short description | Units |
+|---|---|---:|
+| relay.bytes_recv | Total bytes received (relay side) | Bytes |
+| relay.bytes_sent | Total bytes sent (relay side) | Bytes |
+| relay.conns_rx_ratelimited | Connections rate-limited events | Count |
+| relay.disco_packets_dropped | Discovery packets dropped | Count |
+| relay.disco_packets_recv | Discovery packets received | Count |
+| relay.disco_packets_sent | Discovery packets sent | Count |
+| relay.disconnects | Disconnect events | Count |
+| relay.frames_rx_ratelimited | Frames rate-limited events | Count |
+| relay.got_ping | Got ping events | Count |
+| relay.other_packets_dropped | Other packets dropped | Count |
+| relay.other_packets_recv | Other packets received | Count |
+| relay.other_packets_sent | Other packets sent | Count |
+| relay.relay_accepts | Relay accepts (new relay connections accepted) | Count |
+| relay.send_packets_dropped | Sent packets dropped | Count |
+| relay.send_packets_recv | Sent packets received | Count |
+| relay.send_packets_sent | Sent packets sent | Count |
+| relay.sent_pong | Sent pong events | Count |
+| relay.unique_client_keys | Unique client keys observed | Count |
+| relay.unknown_frames | Unknown frame types observed | Count |
+| relay.websocket_accepts | WebSocket accepts | Count |
+| relay.relay_server.connections | Relay server connections | Count |
+| relay.relay_server.egress | Number of bytes relayed (egress) | Bytes |
+
+## Endpoint-level metrics
+
+These metrics are collected at the endpoint/node level to give per-endpoint visibility.
+
+| Metric (group.metric) | Short description | Units |
+|---|---|---:|
+| connection_became_direct | Count of connections that switched from using a relay to a direct connection at least once | Count |
+| connection_handshake_success | Count of successfully established secure connections | Count |
+| recv_data_ipv4 | Measured data received directly by nodes through IPv4 | Bytes |
+| recv_data_ipv6 | Measured data received directly by nodes through IPv6 | Bytes |
+| recv_data_relay | Measured data received by nodes through relay (IPv4 or IPv6) | Bytes |
+| send_data | Measured data sent from nodes in the network | Bytes |
+| send_ipv4 | Amount of data sent directly via IPv4 | Bytes |
+| send_ipv6 | Amount of data sent directly via IPv6 | Bytes |
+| send_relay | Amount of data sent through relay (measured by nodes sending data) | Bytes |
+| send_data_network_down | Data send events when network down | Bytes |
+| nodes_contacted_directly | Number of nodes contacted directly | Count |
+| nodes_contacted | Number of nodes contacted (any) | Count |
+| num_direct_conns_added | Number of direct connections added | Count |
+| num_direct_conns_removed | Number of direct connections removed | Count |
+| num_relay_conns_added | Number of relay connections added | Count |
+| num_relay_conns_removed | Number of relay connections removed | Count |
+| recv_datagrams | Received datagrams | Count |
+| recv_gro_datagrams | Received GRO datagram counts | Count |
+| update_direct_addrs | Direct address update events | Count |
+| portmap.external_address_updated | External address updated events | Count |
+| portmap.local_port_updates | Local port updates events | Count |
+| portmap.mapping_attempts | Mapping attempts (NAT traversal attempts) | Count |
+| portmap.mapping_failures | Mapping failures (failed NAT mappings) | Count |
+| portmap.pcp_available | PCP (Port Control Protocol) availability events | Count |
+| portmap.pcp_probes | PCP probe events | Count |
+| portmap.probes_started | Portmap probes started | Count |
+| portmap.upnp_available | UPnP availability events | Count |
+| portmap.upnp_gateway_updated | UPnP gateway updated events | Count |
+| portmap.upnp_probes_failed | UPnP probes failed | Count |
+| portmap.upnp_probes | UPnP probe events | Count |
+| netreport.report_reports_full | NetReport: reports_full (report fullness events) | Count |
+| netreport.report_reports | NetReport: reports (report events) | Count |
+| netreport.report_stun_packets_dropped | STUN packets dropped (netreport) | Count |
+| netreport.report_stun_packets_recv_ipv4 | STUN packets received (IPv4) | Count |
+| netreport.report_stun_packets_recv_ipv6 | STUN packets received (IPv6) | Count |
+| netreport.report_stun_packets_sent_ipv4 | STUN packets sent (IPv4) | Count |
+| netreport.report_stun_packets_sent_ipv6 | STUN packets sent (IPv6) | Count |

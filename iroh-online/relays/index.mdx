@@ -1,0 +1,45 @@
+---
+title: "Relays"
+description: "Relays route encrypted traffic when direct P2P connections aren't possible"
+---
+
+# Relays
+
+##### Relays route encrypted traffic unless a direct, P2P connection is feasible. This approach allows devices to maintain secure, low-latency connection, even in challenging network situations.
+
+Devices running iroh will attempt to connect to each other directly either on the
+local area network (LAN), or over the internet using NAT traversal techniques like
+hole punching.  
+
+However, in some situations direct connections are not possible. This can be due to
+strict NATs, firewalls, or other network configurations that prevent direct peer-to-peer
+connections. 
+
+In these cases, relays provide a reliable fallback mechanism to ensure
+connectivity between devices by forwarding traffic between them over the relay
+server. This traffic is end-to-end encrypted, so the relay server cannot read
+the contents of the communication.
+
+Relays help in the following ways:
+- **NAT Traversal**: Many devices are behind Network Address Translators (NATs) or firewalls that prevent direct connections. Relays help bypass these restrictions by acting as a middleman.
+- **Connection Stability**: Relays can provide a stable connection point, especially in cases where direct connections are unreliable.
+- **Global Reach**: By using relays located in various geographic locations, devices can connect more efficiently, reducing latency and improving uptime.  
+
+For more information on relays, please refer to the [Relay concepts documentation](/concepts/relays).
+
+## Hosted Relays
+
+By default, iroh endpoints will use Iroh Online hosted relays to facilitate connections when direct
+peer-to-peer connections are not possible. These relays are managed and
+maintained by the Iroh Online team, and are shared by a global public network of
+developers.
+
+However, for production use cases you may want to set up your own private relays, to
+ensure that your traffic is not mixed with other users, and to have more control
+over the relay infrastructure.
+
+You can do this in one of two ways:
+
+1. **[Public Cloud Relays](/iroh-online/relays/public)**: By default, all iroh nodes will connect to the public cloud relays. These relays have no guaranteed uptime and can be subject to noisy neighbors.
+2. **[Dedicated Relays](/iroh-online/relays/managed)**: You can have relays run by the number0 team, by adding them to your project through the Iroh Online platform. This is the easiest way to get started with relays, as Iroh Online will handle the setup and maintenance of the relay servers for you.
+3. **[Self-hosted](https://github.com/n0-computer/iroh/tree/main/iroh-relay)**: You can set up and manage your own relay servers using the iroh relay software. This gives you full control over the relay infrastructure, but requires more effort to set up and maintain.

@@ -1,0 +1,60 @@
+---
+title: "Access Control"
+description: "Manage authorization and API keys for your Iroh Online project"
+---
+
+Some features on your Iroh Online project require authorization.
+
+Examples of what **doesn't** require authorization:
+- Synchronizing data across relays 
+- [Holepunching](/concepts/holepunching) connections to other iroh endpoints
+
+Examples of what **does** require authorization:
+- Uploading metrics from endpoints to your project
+- Creating custom metrics
+
+# API Keys
+
+The Iroh Online platform adds access control on top of iroh's permissionless system to control who
+can & cannot make use of resources backed by cloud infrastructure.
+
+Access control in Iroh Online aims to be as minimal as possible, leaving room for your
+app to have its own opinion of how access control should work within your app.
+
+Connections over iroh are end-to-end encrypted, using ED25519 keypairs on either
+end of the connection. Iroh Online re-uses ED keys for SSH-style access.
+
+To authorize endpoints to push metrics to your project, Iroh Online uses API Keys.
+
+## Creating an API Key
+
+1. Go to your project dashboard
+2. Click on the "API Keys" tab
+3. Click "Create API Key"
+4. Give your API Key a name
+5. Click "Create"
+
+```rust
+use iroh::Endpoint;
+use iroh_n0des::Client;
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let endpoint = Endpoint::builder().bind().await?;
+    endpoint.online().await;
+    
+    // Use your API key to authenticate
+    let client = Client::new(&endpoint, "YOUR_API_KEY").await?;
+    
+    Ok(())
+}
+```
+
+See the [quickstart](/iroh-online/quickstart) for a full example of using the n0des client.
+
+## Permissions
+
+Right now, API Keys only control access to pushing metrics to your project.
+In the future, API Keys may be used to control access to other resources
+within your project. If you are interested in permissions or time-based access
+control, please [contact us](https://n0.computer/contact).
