@@ -126,7 +126,7 @@
     "primary": {
       "type": "button",
       "label": "Login",
-      "href": "/iroh-online"
+      "href": "https://n0des.iroh.computer"
     }
   },
   "contextual": {
