@@ -1,9 +1,9 @@
 ---
 title: "Access Control"
-description: "Manage authorization and API keys for your Iroh Online project"
+description: "Manage authorization and API keys for your Iroh Services project"
 ---
 
-Some features on your Iroh Online project require authorization.
+Some features on your Iroh Services project require authorization.
 
 Examples of what **doesn't** require authorization:
 - Synchronizing data across relays 
@@ -15,16 +15,16 @@ Examples of what **does** require authorization:
 
 # API Keys
 
-The Iroh Online platform adds access control on top of iroh's permissionless system to control who
+The Iroh Services platform adds access control on top of iroh's permissionless system to control who
 can & cannot make use of resources backed by cloud infrastructure.
 
-Access control in Iroh Online aims to be as minimal as possible, leaving room for your
+Access control in Iroh Services aims to be as minimal as possible, leaving room for your
 app to have its own opinion of how access control should work within your app.
 
 Connections over iroh are end-to-end encrypted, using ED25519 keypairs on either
-end of the connection. Iroh Online re-uses ED keys for SSH-style access.
+end of the connection. Iroh Services re-uses ED keys for SSH-style access.
 
-To authorize endpoints to push metrics to your project, Iroh Online uses API Keys.
+To authorize endpoints to push metrics to your project, Iroh Services uses API Keys.
 
 ## Creating an API Key
 
@@ -50,7 +50,7 @@ async fn main() -> anyhow::Result<()> {
 }
 ```
 
-See the [quickstart](/iroh-online/quickstart) for a full example of using the Iroh Online client.
+See the [quickstart](/iroh-services/quickstart) for a full example of using the Iroh Services client.
 
 ## Permissions
 

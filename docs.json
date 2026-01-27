@@ -73,34 +73,34 @@
         ]
       },
       {
-        "tab": "Iroh Online",
+        "tab": "Iroh Services",
         "groups": [
           {
             "group": "Getting Started",
             "pages": [
-              "iroh-online/index",
-              "iroh-online/quickstart",
-              "iroh-online/projects",
-              "iroh-online/access",
-              "iroh-online/support"
+              "iroh-services/index",
+              "iroh-services/quickstart",
+              "iroh-services/projects",
+              "iroh-services/access",
+              "iroh-services/support"
             ]
           },
           {
             "group": "Metrics",
             "pages": [
-              "iroh-online/metrics/index",
-              "iroh-online/metrics/how-it-works",
-              "iroh-online/metrics/custom",
-              "iroh-online/metrics/endpoint",
-              "iroh-online/metrics/glossary"
+              "iroh-services/metrics/index",
+              "iroh-services/metrics/how-it-works",
+              "iroh-services/metrics/custom",
+              "iroh-services/metrics/endpoint",
+              "iroh-services/metrics/glossary"
             ]
           },
           {
             "group": "Relays",
             "pages": [
-              "iroh-online/relays/index",
-              "iroh-online/relays/public",
-              "iroh-online/relays/managed"
+              "iroh-services/relays/index",
+              "iroh-services/relays/public",
+              "iroh-services/relays/managed"
             ]
           }
         ]

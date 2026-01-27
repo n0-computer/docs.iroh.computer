@@ -1,24 +1,24 @@
 ---
 title: "Quickstart"
-description: "Get started with Iroh Online in minutes"
+description: "Get started with Iroh Services in minutes"
 ---
 
-This guide will walk you through setting up your first Iroh Online-enabled application.
+This guide will walk you through setting up your first Iroh Services-enabled application.
 
 ## Prerequisites
 
-- An Iroh Online account. [Sign up for Iroh Online](/iroh-online)
+- An Iroh Services account. [Sign up for Iroh Services](/iroh-services)
 - Rust installed on your machine
 
 ## Step 1: Create a Project
 
-After signing in to Iroh Online, create a new project. This will be your control center for managing relays, metrics, and endpoints.
+After signing in to Iroh Services, create a new project. This will be your control center for managing relays, metrics, and endpoints.
 
 ## Step 2: Get Your API Key
 
 Navigate to your project's API Keys tab and create a new API key. You'll need this to authenticate your endpoints.
 
-## Step 3: Add the Iroh Online Client
+## Step 3: Add the Iroh Services Client
 
 Add the `iroh-n0des` crate to your `Cargo.toml`:
 
@@ -42,10 +42,10 @@ async fn main() -> anyhow::Result<()> {
     // Wait for the endpoint to be online
     endpoint.online().await;
     
-    // Create the Iroh Online client with your API key
+    // Create the Iroh Services client with your API key
     let client = Client::new(&endpoint, "YOUR_API_KEY").await?;
     
-    // Your endpoint is now reporting metrics to Iroh Online!
+    // Your endpoint is now reporting metrics to Iroh Services!
     
     Ok(())
 }
@@ -53,6 +53,6 @@ async fn main() -> anyhow::Result<()> {
 
 ## Next Steps
 
-- [Access Control](/iroh-online/access): Learn how to manage API keys and permissions
-- [Metrics](/iroh-online/metrics): Understand the metrics collected by Iroh Online
-- [Relays](/iroh-online/relays): Set up dedicated relay servers for your network
+- [Access Control](/iroh-services/access): Learn how to manage API keys and permissions
+- [Metrics](/iroh-services/metrics): Understand the metrics collected by Iroh Services
+- [Relays](/iroh-services/relays): Set up dedicated relay servers for your network

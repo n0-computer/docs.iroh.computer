@@ -1,28 +1,28 @@
 ---
 title: "How Metrics Work"
-description: "Understanding how Iroh Online collects and processes metrics"
+description: "Understanding how Iroh Services collects and processes metrics"
 ---
 
 ## What are metrics?
 
 To enable metrics collection, simply add endpoints to your network through the
-Iroh Online dashboard. Metrics will be automatically collected and reported once:
+Iroh Services dashboard. Metrics will be automatically collected and reported once:
 1. The ssh key is uploaded to the platform.
-2. The endpoint is built using the uploaded ssh key and Iroh Online platform endpoint id.
-3. The endpoint sends metrics data to the project in the Iroh Online platform.
+2. The endpoint is built using the uploaded ssh key and Iroh Services platform endpoint id.
+3. The endpoint sends metrics data to the project in the Iroh Services platform.
 
 ## How it works 
 
 Once an iroh endpoint is integrated in rust program, you can add an 
-`iroh_n0des::Client` to begin sending metrics to the Iroh Online platform. 
+`iroh_n0des::Client` to begin sending metrics to the Iroh Services platform. 
 
 1. The `iroh_n0des::Client` will automatically detect any running iroh instance in your
 endpoint and begin sending metrics as long as the secret and the ssh
-key match what has been set up in your project on the Iroh Online platform.
+key match what has been set up in your project on the Iroh Services platform.
 2. Call `endpoint.online().await` before creating the Client. The endpoint must be online before the client is instantiated in order to
 authenticate to the platform. 
 3. Once authenticated, endpoints will start sending granular-level data about their behavior and connection status. 
-4. Every 10 seconds, the Iroh Online platform will aggregate key project-level metrics which are visible in the project dashboard.
+4. Every 10 seconds, the Iroh Services platform will aggregate key project-level metrics which are visible in the project dashboard.
 
 ## Metrics Retention
 
