@@ -11,7 +11,7 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Docs",
+        "tab": "Rust Library",
         "groups": [
           {
             "group": "Getting Started",
@@ -69,6 +69,39 @@
           {
             "group": "About",
             "pages": ["about/changelog", "about/roadmap", "about/faq"]
+          }
+        ]
+      },
+      {
+        "tab": "Iroh Services",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "iroh-services/index",
+              "iroh-services/quickstart",
+              "iroh-services/projects",
+              "iroh-services/access",
+              "iroh-services/support"
+            ]
+          },
+          {
+            "group": "Metrics",
+            "pages": [
+              "iroh-services/metrics/index",
+              "iroh-services/metrics/how-it-works",
+              "iroh-services/metrics/custom",
+              "iroh-services/metrics/endpoint",
+              "iroh-services/metrics/glossary"
+            ]
+          },
+          {
+            "group": "Relays",
+            "pages": [
+              "iroh-services/relays/index",
+              "iroh-services/relays/public",
+              "iroh-services/relays/managed"
+            ]
           }
         ]
       }

@@ -1,0 +1,54 @@
+---
+title: "Custom Metrics"
+description: "Create behavioral aggregations to monitor the health of your software"
+---
+
+Custom metrics enable you to create behavioral aggregations that can help you monitor the health of your software. 
+
+## Project-level Metrics
+
+For free, the Iroh Services platform will calculate the following metrics for all projects:
+
+- **Connections**: The number of successful and active connections made through the relay servers.
+- **Latency**: The time it takes for a request to travel from one endpoint to another.
+- **Throughput**: Also known as data transfer rate, this is a measurement of the amount of data processed by the relay server in a given time period.
+
+## Relay-level Metrics
+
+Additionally, for projects on the Pro or Enterprise
+plans, the Iroh Services platform will calculate the following relay-level metrics:
+
+- **Holepunching Rate**: The success rate of holepunching attempts made by the relay server.
+- **Uptime**: The amount of time the relay server is operational and available to handle requests.
+
+For a list of all metrics, see the [metrics glossary](/iroh-services/metrics/glossary).
+
+## Creating Custom Metrics
+
+These built-in metrics are not always sufficient for monitoring the health of
+your application, especially when you have specific performance indicators that are
+unique to your use case.
+
+In this tutorial, we will build our first custom metric which will be based on a
+simple iroh-docs protocol implementation. Each time a document is written
+successfully, we will report the metric to the Iroh Services platform. 
+
+For a complete example, see the [iroh-ping example on GitHub](https://github.com/n0-computer/iroh-ping).
+
+```rust
+use iroh::Endpoint;
+use iroh_n0des::Client;
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let endpoint = Endpoint::builder().bind().await?;
+    endpoint.online().await;
+    
+    let client = Client::new(&endpoint, "YOUR_API_KEY").await?;
+    
+    // Report a custom metric
+    client.metric("document_written", 1).await?;
+    
+    Ok(())
+}
+```

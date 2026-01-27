@@ -79,7 +79,7 @@ We rely on iroh remaining open source, and are committed to keeping it that way,
 
 ## How do iroh and libp2p compare?
 
-Generally, we've put a lot of effort into making iroh "peer to peer connections that *just work*".
+Generally, we've put a lot of effort into making "connections that *just work*".
 This means we've kept the scope small: There's no DHT, swarm, or gossipsub.
 Instead, what you get are reliable direct [QUIC](https://en.wikipedia.org/wiki/QUIC) connections between iroh endpoints.
 On top of these, some of said libp2p features can be implemented as *protocols* on top, see for example [iroh-gossip](https://github.com/n0-computer/iroh-gossip/) which provides gossipsub-like functionality.

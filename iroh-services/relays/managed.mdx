@@ -1,0 +1,58 @@
+---
+title: "Managed Relays"
+description: "Dedicated relay infrastructure managed by the Iroh Services team"
+---
+
+By default, iroh endpoints will use Iroh Services hosted relays to facilitate connections when direct
+peer-to-peer connections are not possible. These relays are managed and
+maintained by the Iroh Services team. For production use cases, you will want to set up
+your own private relays, to ensure that your traffic is not mixed with other
+users, and to have more control over the relay infrastructure.
+
+If you want to deploy your own hosted relay, you can do that through the Iroh Services
+platform, and then add it to your rust client endpoint configuration.
+
+## Key Benefits
+
+- **Fully Managed Service**: Number 0's engineering experts handle all day-to-day operations and infrastructure maintenance.
+- **Isolation**: Maintain full control over your cloud infrastructure and scaling properties, with no noisy neighbors.
+- **Version locking**: Ensure compatibility by locking to specific iroh versions or enable blue/green deployments.
+- **Multi-Region & Multi-Cloud Support**: Enhance reliability and performance by deploying relays across various regions and cloud providers.
+- **On-prem**: Deploy relays within your own data centers or private clouds for enhanced security and compliance. Please [contact us](mailto:hello@n0.computer) for more information.
+- **Custom SLAs**: Tailor service level agreements to meet your specific business needs. Please [contact us](mailto:hello@n0.computer) for more information.
+
+## Configuration
+
+```rust
+use iroh::Endpoint;
+use iroh::relay::RelayUrl;
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    // Configure your endpoint with dedicated relays
+    let relay_url1: RelayUrl = "RELAY_URL_1".parse()?;
+    let relay_url2: RelayUrl = "RELAY_URL_2".parse()?;
+    
+    let endpoint = Endpoint::builder()
+        .relay_mode(iroh::endpoint::RelayMode::Custom(vec![relay_url1, relay_url2]))
+        .bind()
+        .await?;
+    
+    Ok(())
+}
+```
+
+## Recommended Relay Setup
+
+For production use cases, we recommend setting up at least two relays in
+different geographic regions. This ensures that if one relay goes down or
+becomes unreachable, your endpoints can still connect through the other relay.
+
+Each relay can handle up to 10,000 concurrent connections, so for larger scale
+deployments, you may need to set up multiple relays in each region or [contact
+us to increase the size of your relays](mailto:hello@n0.computer).
+
+## Support policy
+
+As part of your project-level and relay-level metrics, you will be able to
+monitor status of your relays. On the pro plan, we offer priority support.
