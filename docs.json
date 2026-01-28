@@ -37,6 +37,7 @@
             "group": "Forming a Network",
             "pages": [
               "connecting/creating-endpoint",
+              "connecting/custom-relays",
               "connecting/dns-discovery",
               "connecting/dht-discovery",
               "connecting/local-discovery",
