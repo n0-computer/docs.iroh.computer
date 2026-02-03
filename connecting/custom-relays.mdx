@@ -1,0 +1,42 @@
+
+
+By default, iroh endpoints will use public relays to facilitate connections when direct
+peer-to-peer connections are not possible. These relays are managed and
+maintained by [n0.computer](https://n0.computer).
+
+For production use cases, you will want to set up your own private relays, to
+ensure that your traffic is not mixed with other users, and to have more control
+over the relay infrastructure.
+
+For more information about getting help with hosting, please see our [hosting page](https://iroh.computer/services/hosting) or [professional services](https://iroh.computer/services/support).
+
+## Configuration
+
+```rust
+use iroh::Endpoint;
+use iroh::relay::RelayUrl;
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    // Configure your endpoint with dedicated relays
+    let relay_url1: RelayUrl = "RELAY_URL_1".parse()?;
+    let relay_url2: RelayUrl = "RELAY_URL_2".parse()?;
+    
+    let endpoint = Endpoint::builder()
+        .relay_mode(iroh::endpoint::RelayMode::Custom(vec![relay_url1, relay_url2]))
+        .bind()
+        .await?;
+    
+    Ok(())
+}
+```
+
+## Recommended Relay Setup
+
+For production use cases, we recommend setting up at least two relays in
+different geographic regions. This ensures that if one relay goes down or
+becomes unreachable, your endpoints can still connect through the other relay.
+
+Each relay can handle up to 10,000 concurrent connections, so for larger scale
+deployments, you may need to set up multiple relays in each region or [contact
+us to increase the size of your relays](https://cal.com/team/number-0/n0-protocol-services).

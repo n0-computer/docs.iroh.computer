@@ -29,17 +29,17 @@ For more information on relays, please refer to the [Relay concepts documentatio
 
 ## Hosted Relays
 
-By default, iroh endpoints will use Iroh Services hosted relays to facilitate connections when direct
+By default, iroh endpoints will use public relays to facilitate connections when direct
 peer-to-peer connections are not possible. These relays are managed and
-maintained by the Iroh Services team, and are shared by a global public network of
-developers.
+maintained by the [n0.computer](https://n0.computer), and are shared by a global public network of
+developers, with rate limits.
 
-However, for production use cases you may want to set up your own private relays, to
+However, for production use cases you will want to set up your own private relays, to
 ensure that your traffic is not mixed with other users, and to have more control
 over the relay infrastructure.
 
-You can do this in one of two ways:
+You can do this in one of three ways:
 
 1. **[Public Cloud Relays](/iroh-services/relays/public)**: By default, all iroh nodes will connect to the public cloud relays. These relays have no guaranteed uptime and can be subject to noisy neighbors.
-2. **[Dedicated Relays](/iroh-services/relays/managed)**: You can have relays run by the number0 team, by adding them to your project through the Iroh Services platform. This is the easiest way to get started with relays, as Iroh Services will handle the setup and maintenance of the relay servers for you.
+2. **[Dedicated Relays](/iroh-services/relays/managed)**: You can have relays run by the [n0.computer](https://n0.computer) , by adding them to your project through the Iroh Services platform. This is the easiest way to get started with relays.
 3. **[Self-hosted](https://github.com/n0-computer/iroh/tree/main/iroh-relay)**: You can set up and manage your own relay servers using the iroh relay software. This gives you full control over the relay infrastructure, but requires more effort to set up and maintain.
