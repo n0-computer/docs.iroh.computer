@@ -17,7 +17,7 @@ You'll need to add the `discovery-local-network` feature flag to your
 ```toml
 [dependencies]
 # Make sure to use the most recent version here instead of nn. (at the time of writing: 0.32)
-iroh = { version = "0.nn", features = ["discovery-local-network"] }
+iroh = { version = "0.nn", features = ["address-lookup-mdns"] }
 ```
 
 Then configure your endpoint to use local discovery concurrently with the default DNS discovery:
@@ -25,9 +25,9 @@ Then configure your endpoint to use local discovery concurrently with the defaul
 ```rust
 use iroh::Endpoint;
 
-let mdns = iroh::discovery::mdns::MdnsDiscovery::builder();
+let mdns = iroh::address_lookup::mdns::MdnsAddressLookup::builder();
 let ep = Endpoint::builder()
-    .discovery(mdns)
+    .address_lookup(mdns)
     .bind()
     .await?;
 ```
@@ -37,7 +37,7 @@ presence on the local network, and listen for other endpoints doing the same. Wh
 another endpoint is discovered, the dialing information is exchanged, and a
 connection can be established directly over the local network without needing a relay.
 
-For more information on how mDNS discovery works, see the [mDNS documentation](https://docs.rs/iroh/latest/iroh/discovery/mdns/index.html).
+For more information on how mDNS discovery works, see the [mDNS documentation](https://docs.rs/iroh/latest/iroh/address_lookup/mdns/index.html).
 
 ## Bluetooth
 
