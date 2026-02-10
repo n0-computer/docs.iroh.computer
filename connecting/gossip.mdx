@@ -35,6 +35,15 @@ application. Similar to a router in webserver library, it runs a loop accepting
 incoming connections and routes them to the specific protocol handler, based on
 ALPN.
 
+### Structuing your application
+
+Every gossip network should have a `TopicID`. This `TopicId` should be a string
+shared between all endpoints that want to take part in the broadcast group.
+
+There are different ways to structure your application around topics, depending on your use case:
+- **One topic for all peers** – Use a single topic ID when everyone should receive all messages. Scales to a few thousand peers.
+- **Scoped topics** – Use separate topic IDs (or hashes derived from them) for distinct groups, spaces, or documents.
+
 ### Example
 
 ```rust
