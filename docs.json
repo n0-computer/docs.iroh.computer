@@ -104,6 +104,10 @@
               "iroh-services/relays/public",
               "iroh-services/relays/managed"
             ]
+          },
+          {
+            "group": "Net Diagnostics",
+            "pages": ["iroh-services/net-diagnostics"]
           }
         ]
       }

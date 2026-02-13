@@ -1,0 +1,131 @@
+---
+title: "Network Diagnostics"
+description: "Diagnose user connectivity issues with remote diagnostic reporting"
+---
+
+Net Diagnostics lets you run network connectivity reports on your endpoints from iroh-services. Reports cover NAT type, UDP connectivity, relay latency, port mapping protocol availability, and direct addresses — everything you need to debug connection issues. You can initiate reports from iroh-services, which will reach out to configured remote nodes that have authorized diagnostics, gather details about the endpoint's connectivity context, and forward the report to your project on iroh services to assess how to help your user get the best connection they can.
+
+Net Diagnostics is available on the **Enterprise plan**.
+
+## Quick Start
+
+### 1. Get your API secret
+
+Go to your project's **Settings** page and copy the API secret. In your terminal, export it as an environment variable:
+
+```bash
+export N0DES_API_SECRET=<your-api-secret>
+```
+
+### 2. Run the diagnostics client
+
+Clone the [iroh-n0des](https://github.com/n0-computer/iroh-n0des) repo and run the `net_diagnostics` example:
+
+```bash
+git clone https://github.com/n0-computer/iroh-n0des.git
+cd iroh-n0des
+cargo run --example net_diagnostics --features net_diagnostics,client_host
+```
+
+Leave this terminal open. The example connects to n0des, grants the diagnostics capability to your project, and waits for incoming diagnostics requests.
+
+### 3. Run a diagnostic from the dashboard
+
+Go to your project's **Endpoints** page. You should see the example client listed as an online endpoint. Click **Run Diagnostics** to generate a report.
+
+The report appears on the **Net Diagnostics** page and includes:
+
+- **NAT Type** — No NAT, Endpoint-Independent, Endpoint-Dependent, or Unknown
+- **UDP Connectivity** — IPv4 and IPv6 status with public addresses
+- **NAT Mapping** — whether mapping varies by destination (symmetric NAT detection)
+- **Direct Addresses** — local addresses the endpoint is listening on
+- **Port Mapping** — UPnP, PCP, and NAT-PMP availability
+- **Relay Latencies** — per-relay IPv4, IPv6, and HTTPS round-trip times
+- **Captive Portal** — detection of captive portal interference
+
+## Understanding the Report
+
+### NAT Types
+
+| NAT Type | What it means | Connection quality |
+|---|---|---|
+| **No NAT** | Local address matches public address | Direct connections work with correct firewall config |
+| **Endpoint-Independent** | One outbound UDP packet opens a port for any sender | Holepunching works reliably |
+| **Endpoint-Dependent** | Only the specific destination can reply (symmetric NAT) | Connections will primarily use relays |
+| **Unknown** | NAT behavior could not be determined | Check UDP connectivity |
+
+### Connectivity Summary
+
+The report includes a color-coded connectivity summary:
+
+- **Green** — UDP works and NAT is favorable. Direct connections should work.
+- **Orange** — Endpoint-Dependent NAT. Direct connections may be difficult; traffic will often be relayed.
+- **Red** — No UDP connectivity. Traffic will be relayed.
+
+## Integrating Net Diagnostics Into Your App
+
+To add net diagnostics support to your own iroh application, you need to:
+
+1. Connect to n0des with an `iroh_n0des::Client`
+2. Grant the `NetDiagnosticsCap::GetAny` capability to n0des so it can request diagnostics from your endpoint
+3. Run a `ClientHost` so n0des can dial back into your endpoint
+
+Here's a minimal integration:
+
+```rust
+use anyhow::Result;
+use iroh::{Endpoint, protocol::Router};
+use iroh_n0des::{
+    ApiSecret, Client, ClientHost, CLIENT_HOST_ALPN, API_SECRET_ENV_VAR_NAME,
+    caps::NetDiagnosticsCap,
+};
+
+async fn setup_net_diagnostics(endpoint: &Endpoint) -> Result<Router> {
+    // Parse the API secret from the environment
+    let secret = ApiSecret::from_env_var(API_SECRET_ENV_VAR_NAME)?;
+    let remote_id = secret.addr().id;
+
+    // Build the n0des client
+    let client = Client::builder(endpoint)
+        .api_secret(secret)?
+        .build()
+        .await?;
+
+    // Grant the GetAny capability so n0des can request diagnostics
+    // from this endpoint on demand
+    let client2 = client.clone();
+    tokio::spawn(async move {
+        client2
+            .grant_capability(remote_id, vec![NetDiagnosticsCap::GetAny])
+            .await
+            .unwrap();
+    });
+
+    // Set up a ClientHost so n0des can dial back into this endpoint
+    let host = ClientHost::new(endpoint);
+    let router = Router::builder(endpoint.clone())
+        .accept(CLIENT_HOST_ALPN, host)
+        .spawn();
+
+    Ok(router)
+}
+```
+
+Add the following to your `Cargo.toml`:
+
+```toml
+[dependencies]
+iroh-n0des = { version = "...", features = ["net_diagnostics", "client_host"] }
+```
+
+### How It Works
+
+When you click **Run Diagnostics** in the dashboard, n0des dials back into your endpoint using the capability token your app granted. Your `ClientHost` receives the request, runs the diagnostics locally (probing UDP connectivity, NAT behavior, relay latency, and port mapping), and returns the report to n0des for display.
+
+The capability grant (`NetDiagnosticsCap::GetAny`) authorizes n0des to request diagnostics from your endpoint. Without this grant, the **Run Diagnostics** button will be disabled in the dashboard even if the endpoint is online.
+
+### Requirements
+
+- The `net_diagnostics` and `client_host` cargo features must be enabled on `iroh-n0des`
+- The `N0DES_API_SECRET` environment variable must be set before your app starts
+- The `ClientHost` must be registered on the `Router` with `CLIENT_HOST_ALPN` so n0des can reach it
