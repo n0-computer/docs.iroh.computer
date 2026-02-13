@@ -84,6 +84,7 @@
               "iroh-services/quickstart",
               "iroh-services/projects",
               "iroh-services/access",
+              "iroh-services/tickets",
               "iroh-services/support"
             ]
           },
