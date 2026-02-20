@@ -2,9 +2,34 @@
 title: "Blobs"
 ---
 
-Content-addressed blob storage and transfer. `iroh-blobs` implements
-request/response and streaming transfers of arbitrary-sized byte blobs, using
-BLAKE3-verified streams and content-addressed links.
+the blobs protocol works with sequences of opaque data ("blobs"), which are often the bytes of a file.
+It's a protocol for data storage and transfer. `iroh-blobs` is _content-addressed_, which means data is always referenced to by it's cryptographic hash. Blobs implements request/response and 
+streaming transfers blobs or ranges of blobs, using hashes to verify streams remain intact.
+
+All blobs within iroh are referred to by the BLAKE3 hash of its content. BLAKE3 is a _tree hashing_ algorithm, that splits its input into uniform chunks and arranges them as the leaves of a binary tree, producing intermediate _chunk hashes_ that accumulate up to a _root hash._ Iroh uses the 32 byte root hash (or just “hash”) as an immutable blob identifier. 
+
+<Frame>
+  <img className="block dark:hidden" src="/images/blobs_fig_1_blob.svg" alt="Blobs are sequences of opaque data, which are referred to by their hash" style={{ borderRadius: '0.5rem' }} />
+  <img className="hidden dark:block" src="/images/blobs_fig_1_blob_dark.svg" alt="Blobs are sequences of opaque data, which are referred to by their hash" style={{ borderRadius: '0.5rem' }} />
+</Frame>
+
+The blobs protocol leverages the tree hash structure of BLAKE3 as a basis for _incremental verification_. When data is sent over the network, the integrity of each chunk is checked both by the sender and the receiver, as described by Section 6.4 “Verified Streaming” of the [BLAKE3 paper](https://github.com/BLAKE3-team/BLAKE3-specs). Iroh caches all chunk hashes as external metadata, leaving the unaltered input blob as the canonical source of bytes. Verified streaming also facilitates _range requests:_ fetching a verifiable contiguous subsequence of a blob by streaming only the portions of the BLAKE3 binary tree required to verify the designated subsequence.
+
+Chunk hashes are distinct from root hashes and only used during data transfer. The chunk size of BLAKE3 is a tunable constant that defaults to 1KiB, which results in a 6% overhead on on the size of the input blob. Increasing the chunk size reduces overhead, at the cost of requiring more data transfer before an incremental verification checkpoint is reached. The chunk size constant can be modified & recalculated *without affecting the root hash.* This opens the door to experiment with different chunk size constants, even at runtime. We intend to investigate chunk size optimization in future work.
+
+## Collections
+
+A *Collection* is an ordered sequence of hashes that refer to other blobs. Collection reference counts can range from 0-billions. Collections are the _only_ means of relating blobs, and form the basis of synchronization & querying. Collections cannot be queried nested as graphs.
+
+The serialized form of a collection is each 32 byte hash in the collection, concatenated without any separator. A collection is only valid if it's byte length is a multiple of 32, which also makes indexing into a collection with a known byte length trivial: multiply the desired index by 32.
+
+By convention, the initial element in a collection is the _metadata blob:_ it stores information about all other blobs in the collection. The contents of a metadata blob can be defined by applications.
+
+<Frame>
+  <img className="block dark:hidden" src="/images/blobs_fig_2_collection.svg" alt="collections are an ordered sequence of" style={{ borderRadius: '0.5rem' }} />
+  <img className="hidden dark:block" src="/images/blobs_fig_2_collection_dark.svg" alt="collections are an ordered sequence of" style={{ borderRadius: '0.5rem' }} />
+</Frame>
+
 
 ## Concepts
 
