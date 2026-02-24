@@ -92,7 +92,6 @@
             "pages": [
               "iroh-services/metrics/index",
               "iroh-services/metrics/how-it-works",
-              "iroh-services/metrics/custom",
               "iroh-services/metrics/endpoint",
               "iroh-services/metrics/glossary"
             ]
