@@ -1,0 +1,56 @@
+---
+title: "Quickstart"
+description: "Diagnose user connectivity issues with remote diagnostic reporting"
+---
+
+Net Diagnostics lets you run network connectivity reports on your endpoints.
+
+Reports cover NAT type, UDP connectivity, relay latency, port
+mapping protocol availability, and direct addresses — everything you need to
+debug connection issues. 
+
+You can initiate reports from iroh-services, which will reach out to configured
+remote nodes that have authorized diagnostics, gather
+details about the endpoint's connectivity context, and forward the report to
+your project on iroh services to assess how to help your user get the best
+connection they can.
+
+
+#### 1. Get your API secret
+
+Go to your project's **Settings** page and copy the API secret. In your terminal, export it as an environment variable:
+
+```bash
+export N0DES_API_SECRET=<your-api-secret>
+```
+
+### 2. Run the diagnostics client
+
+Clone the repository and run the `net_diagnostics` example:
+
+```bash
+git clone https://github.com/n0-computer/iroh-n0des.git
+cd iroh-n0des
+cargo run --example net_diagnostics --features net_diagnostics,client_host
+```
+
+Leave this terminal open. The example connects to n0des, grants the diagnostics capability to your project, and waits for incoming diagnostics requests.
+
+### 3. Run a diagnostic from the dashboard
+
+Go to your project's **Endpoints** page. You should see the example client listed as an online endpoint. Click **Run Diagnostics** to generate a report.
+
+The report appears on the **Net Diagnostics** page and includes:
+
+- **NAT Type** — No NAT, Endpoint-Independent, Endpoint-Dependent, or Unknown
+- **UDP Connectivity** — IPv4 and IPv6 status with public addresses
+- **NAT Mapping** — whether mapping varies by destination (symmetric NAT detection)
+- **Direct Addresses** — local addresses the endpoint is listening on
+- **Port Mapping** — UPnP, PCP, and NAT-PMP availability
+- **Relay Latencies** — per-relay IPv4, IPv6, and HTTPS round-trip times
+- **Captive Portal** — detection of captive portal interference
+
+## Next Steps
+
+- [Integrate diagnostics into your own app with the usage guide](./usage) to get on-demand reports from your users' endpoints.
+- [Learn more about report details](./reports) to understand what each metric means and how it impacts connectivity.

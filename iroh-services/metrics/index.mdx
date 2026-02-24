@@ -15,18 +15,39 @@ All endpoint metrics are aggregated at the project level, to provide insights
 into overall network performance. This aggregated data helps in understanding
 trends and patterns without exposing individual endpoint details.  
 
-Read more about [project metrics](/iroh-services/metrics/index). 
+![Project metrics dashboard](/images/metrics-dashboard.png)
 
-## Endpoint metrics
+### Online Endpoints
 
-Mmore detailed metrics are available for each endpoint added to the network.
-These metrics are available at the endpoint level, so you can drill down into
-specific behaviors to better understand performance issues. Projects that have
-been upgraded to Enterprise plan have access to endpoint-level
-metrics retention and lookback.
+The number of endpoints currently online and connected to your project. This gives you a real-time view of your network's active nodes.
 
-Read more about [endpoint metrics](/iroh-services/metrics/endpoint). 
+![Online endpoints metric](/images/metrics-online-endpoints.png)
 
+### Direct Data Rate
+
+Direct data rate measures the amount of data being transferred directly between
+endpoints in your network, without relaying through a server. A higher direct
+data rate indicates better peer-to-peer connectivity and can lead to improved
+performance and lower latency for your users.
+
+![Direct data rate metric](/images/metrics-direct-data-rate.png)
+
+### Traffic Sent & Received
+
+This metric tracks the amount of data being sent and received by your endpoints.
+Monitoring traffic patterns can help you identify potential bottlenecks and
+optimize network performance.
+
+![Traffic sent and received metric](/images/metrics-traffic-received.png)
+
+![Traffic sent metric](/images/metrics-traffic-sent.png)
+
+## Relay metrics
+
+If you have dedicated relays set up for your project, you can also view metrics
+related to relay performance, such as number of endpoints over time and relay data transfer.
+
+![Relay metrics dashboard](/images/metrics-relay.png)
 
 ## Privacy
 
