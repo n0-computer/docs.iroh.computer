@@ -3,7 +3,7 @@ title: "Quickstart"
 description: "Get started with Iroh Services in minutes"
 ---
 
-This guide will walk you through setting up your first Iroh Services-enabled application.
+This guide will walk you through hooking up your first endpoint to Iroh Services.
 
 ## Prerequisites
 
@@ -36,13 +36,14 @@ this to authenticate your endpoints.
 
 Add the `iroh-n0des` crate to your `Cargo.toml`:
 
-```toml
-[dependencies]
-iroh = "0.35"
-iroh-n0des = "0.1"
+```
+cargo add iroh-n0des
 ```
 
+
 ## Step 4: Connect Your Endpoint
+
+Then, in your code, create a client and connect your endpoint to Iroh Services.
 
 ```rust
 use iroh::Endpoint;
@@ -65,8 +66,20 @@ async fn main() -> anyhow::Result<()> {
 }
 ```
 
+## Step 5: View Your Endpoint on the Dashboard
+
+Go to your project's **Endpoints** page. You should see your endpoint listed as
+online. Click on it to view details.
+
+## Step 6: View Metrics
+
+Navigate to the **Metrics** tab to see real-time and historical metrics about your endpoint's connectivity, direct data rate, and more.
+
+![Metrics Dashboard](/images/metrics-dashboard.png)
+
 ## Next Steps
 
 - [Access Control](/iroh-services/access): Learn how to manage API keys and permissions
 - [Metrics](/iroh-services/metrics): Understand the metrics collected by Iroh Services
 - [Relays](/iroh-services/relays): Set up dedicated relay servers for your network
+- [Net Diagnostics](/iroh-services/net-diagnostics): Run remote diagnostics on your endpoints to understand connectivity issues

@@ -106,7 +106,7 @@
           },
           {
             "group": "Net Diagnostics",
-            "pages": ["iroh-services/net-diagnostics"]
+            "pages": ["iroh-services/net-diagnostics/quickstart", "iroh-services/net-diagnostics/usage", "iroh-services/net-diagnostics/reports"]
           }
         ]
       }
