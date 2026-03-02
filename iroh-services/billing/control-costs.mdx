@@ -12,12 +12,12 @@ Spend caps let you set a maximum monthly budget for your project. When your usag
 ### Setting a spend cap
 
 1. Go to your project dashboard.
-2. Navigate to **Settings** > **Billing**.
+2. Navigate to **Settings**
 3. Under **Spend cap**, enter your maximum monthly budget.
 4. Click **Save**.
 
 <Note>
-Your spend cap does not include your base plan cost. It only applies to usage-based charges that exceed what's included in your plan.
+Your spend cap applies to your total invoice, including the base plan cost, any applicable taxes, and usage-based charges that exceed what's included in your plan.
 </Note>
 
 ### What happens when you hit your cap
@@ -26,16 +26,8 @@ When your usage-based charges reach your spend cap:
 
 - **Metrics ingestion** will be paused. Endpoints will stop sending new metrics until the next billing cycle.
 - **Your existing data** is preserved. Dashboards and historical metrics remain accessible.
-- **Relay connections** are not affected. Your endpoints will continue to connect through relays.
-
-You can raise or remove your spend cap at any time from the billing settings.
-
-## Monitor usage
-
-Track your current usage from the project dashboard:
-
-- **Metrics volume** — the number of metric events ingested this billing cycle.
-- **Endpoint connections** — the number of active connections sending metrics to your project.
+- **Endpoint connections** — the number of active connections sending metrics to your project will be throttled.
+- **Active relay connections** are not affected. Your endpoints will continue to connect through relays.
 
 Usage resets at the start of each billing cycle.
 
