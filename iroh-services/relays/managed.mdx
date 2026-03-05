@@ -1,56 +1,63 @@
 ---
-title: "Managed Relays"
-description: "Dedicated relay infrastructure managed by n0.computer"
+title: "Managed Hosting"
+description: "Deploy and configure dedicated relay infrastructure through Iroh Services"
 ---
 
-By default, iroh endpoints will use publically-hosted relays to facilitate connections when direct
-peer-to-peer connections are not possible. These relays are managed and
-maintained by [n0.computer](https://n0.computer). 
+import RelayEndpointConfig from '/snippets/relay-endpoint-config.mdx';
 
-For production, you will need to deploy your own hosted relay. you can do that through the [Iroh Services](https://n0des.iroh.computer?utm_source=docs&utm_content=managed-relays)
-platform, and then add it to your rust client endpoint configuration.
+Managed relays are dedicated relay servers provisioned through the Iroh Services platform and operated by n0.computer. Unlike the [public relays](/iroh-services/relays/public), managed relays are exclusively yours — no shared traffic, no rate limits, and with uptime SLAs.
 
-## Key Benefits
+## What you get
 
-- **Fully Managed Service**: Number 0's engineering experts handle all day-to-day operations and infrastructure maintenance.
-- **Isolation**: Maintain full control over your cloud infrastructure and scaling properties, with no noisy neighbors.
-- **Version locking**: Ensure compatibility by locking to specific iroh versions or enable blue/green deployments.
-- **Multi-Region & Multi-Cloud Support**: Enhance reliability and performance by deploying relays across various regions and cloud providers.
-- **On-prem**: Deploy relays within your own data centers or private clouds for enhanced security and compliance. Please [contact us](mailto:support@iroh.computer) for more information.
-- **Custom SLAs**: Tailor service level agreements to meet your specific business needs. Please [contact us](mailto:support@iroh.computer) for more information.
+- **Fully managed** — n0.computer handles operations, maintenance, and upgrades
+- **Isolation** — your traffic only; no noisy neighbors
+- **Version locking** — pin to a specific iroh version or run blue/green deployments
+- **Multi-region & multi-cloud** — deploy across regions and providers for resilience
+- **On-prem** — available on Enterprise plans; [contact us](mailto:support@iroh.computer)
+- **Custom SLAs** — [contact us](mailto:support@iroh.computer)
 
-## Configuration
+## Deploy a relay
 
-```rust
-use iroh::Endpoint;
-use iroh::relay::RelayUrl;
+### 1. Sign up and create a project
 
-#[tokio::main]
-async fn main() -> anyhow::Result<()> {
-    // Configure your endpoint with dedicated relays
-    let relay_url1: RelayUrl = "RELAY_URL_1".parse()?;
-    let relay_url2: RelayUrl = "RELAY_URL_2".parse()?;
-    
-    let endpoint = Endpoint::builder()
-        .relay_mode(iroh::endpoint::RelayMode::Custom(vec![relay_url1, relay_url2]))
-        .bind()
-        .await?;
-    
-    Ok(())
-}
-```
+Sign up at [services.iroh.computer](https://services.iroh.computer?utm_source=docs&utm_content=managed-relays) and create a project if you haven't already.
 
-## Recommended Relay Setup
+{/* TODO: screenshot of the new project screen */}
+![Create a project](/images/placeholder-create-project.png)
 
-For production use cases, we recommend setting up at least two relays in
-different geographic regions. This ensures that if one relay goes down or
-becomes unreachable, your endpoints can still connect through the other relay.
+### 2. Add a relay
 
-Each relay can handle up to 60,000 concurrent connections, so for larger scale
-deployments, you may need to set up multiple relays in each region or [contact
-us to increase the size of your relays](mailto:support@iroh.computer).
+Navigate to **Relays** in your project sidebar and click **Add Relay**. Select a region for your relay.
 
-## Support policy
+{/* TODO: screenshot of the Add Relay dialog with region picker */}
+![Add relay dialog](/images/placeholder-add-relay.png)
 
-As part of your project-level and relay-level metrics, you will be able to
-monitor status of your relays. On the pro plan, we offer priority support.
+### 3. Copy your relay URL
+
+Once deployed, your relay URL will appear in the dashboard. Copy it — you'll need it to configure your endpoints.
+
+{/* TODO: screenshot of the Relays page showing the relay URL */}
+![Relay URL in dashboard](/images/placeholder-relay-url.png)
+
+### 4. Configure your endpoint
+
+Set your endpoint to use your dedicated relay URLs instead of the public relays:
+
+<RelayEndpointConfig />
+
+### 5. Verify connectivity
+
+Go to your project's **Relays** page to confirm your endpoints are connecting through your dedicated relay. You should see connected endpoint counts and traffic metrics.
+
+{/* TODO: screenshot of relay metrics dashboard showing connected endpoints */}
+![Relay metrics](/images/placeholder-relay-metrics.png)
+
+## Recommended setup
+
+For production, deploy at least two relays in different geographic regions. If one relay becomes unreachable, iroh automatically falls back to the next one in your list — your peers will still find each other.
+
+Each relay handles up to 60,000 concurrent connections. For larger deployments, [contact us](mailto:support@iroh.computer) to increase relay capacity.
+
+## Support
+
+Relay status and metrics are available in your project dashboard under **Relays**. On the Pro plan, we offer priority support. [Contact us](mailto:support@iroh.computer) for Enterprise SLAs.

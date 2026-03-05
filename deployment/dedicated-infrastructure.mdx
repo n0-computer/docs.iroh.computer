@@ -2,6 +2,8 @@
 title: "Dedicated Infrastructure"
 ---
 
+import RelayEndpointConfig from '/snippets/relay-endpoint-config.mdx';
+
 By default, iroh will use public shared infrastructure to facilitate connections over
 DNS and end-to-end encryption over relays. This infrastructure comprises:
 
@@ -17,14 +19,30 @@ We recommend using the public relays for development and testing, as they are
 free to use and require no setup. However, for production systems, we recommend
 using dedicated relays instead.
 
+<Card
+  title="Deploy a dedicated relay"
+  icon="server"
+  href="https://services.iroh.computer?utm_source=docs&utm_content=concepts-relays"
+>
+  Sign up for Iroh Services and spin up a managed relay for your project in minutes.
+</Card>
+
+
+<Card
+  title="Self-host a relay"
+  icon="wrench"
+  href="https://github.com/n0-computer/iroh/tree/main/iroh-relay"
+>
+  Learn how to self-host a relay for your project.
+</Card>
+
 ## Using dedicated relays
 
-To use dedicated relays with your iroh endpoint, you need to configure the
-endpoint to use your relay's URL.
+To use dedicated relays with your iroh endpoint, configure it with your relay URLs:
 
-For detailed information on configuring custom relays, including code examples
-and API documentation, see the [iroh relay configuration
-guide](/iroh-services/relays/managed).
+<RelayEndpointConfig />
+
+For full deployment steps, see the [managed relay guide](/iroh-services/relays/managed).
 
 ## Why use dedicated relays in production?
 
@@ -33,21 +51,13 @@ enhanced security, better uptime guarantees, and greater control over your netwo
 using your own servers, you can optimize connection speeds and reduce
 latency for your specific use case. 
 
-If you require more control over your relay infrastructure, you can choose to
-[self-host your own
-relay](https://github.com/n0-computer/iroh/tree/main/iroh-relay) or [upgrade to
-a managed relay service](/iroh-services/relays). This managed relay
-service is monitored by [n0.computer](https://n0.computer) who maintain the iroh project, and
-offers SLAs around uptime and performance.
-
-[Sign up for a free account](https://n0des.iroh.computer?utm_source=docs&utm_content=dedicated-infrastructure) to get started.
 
 ## Recommended setup
 
 We recommend setting up at least two relays for redundancy in different regions.
 For example, you could set up one relay in North America and another in Europe.
 
-### Why this architecture is powerful
+## Why this architecture is powerful
 
 This approach makes uptime management significantly easier compared to
 traditional client-server architectures:
