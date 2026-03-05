@@ -2,74 +2,77 @@
 title: "Relays"
 ---
 
-Relays are servers that temporarily route encrypted traffic until a direct, P2P connection is
-feasible. Once this direct path is set up, the relay server steps back, and the
-data flows directly between devices. This approach allows Iroh to maintain a
-secure, low-latency connection, even in challenging network situations.
+Relays are servers that temporarily route encrypted traffic until a direct, P2P connection is feasible. Once this direct path is set up, the relay server steps back, and the data flows directly between devices. This approach allows Iroh to maintain a secure, low-latency connection, even in challenging network situations.
+There are situations where a direct connection can’t be established, and in those cases traffic falls back to running through the relay. Relay servers do not have access to the data being transmitted, as it’s encrypted end-to-end.
 
-There are situations where a direct connection _can't_ be established, and in
-those cases traffic falls back to running through the relay. Relay servers **do
-not** have access to the data being transmitted, as it's encrypted end-to-end.
+Relays serve two roles in iroh:
 
-We're working on formally collecting the direct connection rate from production
-iroh networks. Anecdotal evidence points to roughly 9 out of 10 networking conditions we see in practice allowing a direct connection to be established. Our NAT traversal implementation is deterministic - if it works between two devices once, it should continue to work as long as their networking setup remains stable.
+1. **NAT Traversal.**  When two endpoints first connect, they exchange network information through the relay to attempt a direct P2P connection.
+2. **Encrypted traffic fallback.** If a direct connection can't be established (due to strict NATs, firewalls, or other network conditions), traffic flows through the relay instead.
+
+Once a direct path is established, the relay steps back and data flows peer-to-peer. Relay servers **cannot read** any of the traffic they handle — it's encrypted end-to-end.
+
+In practice, roughly 9 out of 10 networking conditions allow a direct connection. iroh's holepunching implementation is deterministic: if it works between two devices once, it will continue to work as long as their networking setup stays stable.
+
+## Deploy your own relay
+
+<Card
+  title="Deploy a dedicated relay"
+  icon="server"
+  href="https://services.iroh.computer?utm_source=docs&utm_content=concepts-relays"
+>
+  Sign up for Iroh Services and spin up a managed relay for your project in minutes.
+</Card>
+
+
+## Why relays are better
+
+Unlike traditional servers, relay servers are **stateless**. They don't store your application data — they just facilitate connections. 
+
+- **No database synchronization.** Nothing to replicate across relay instances.
+- **No state migration.** When a relay goes down, clients reconnect to another with no data loss.
+- **Simple scaling.** Spin relay instances up or down like any lightweight service.
+- **Automatic failover.** Iroh can attempt to connect to multiple relays automatically; as long as one is reachable, your peers find each other.
+
+This inverts the traditional model: relays are disposable connection facilitators, while your clients own all the application state and logic.
 
 ## Public relays
 
-iroh is configured with a set of public relays provided by [n0.computer](https://n0.computer) that are free to use. The public relays rate-limit
-traffic that flows through the relay. This is to prevent abuse, and ensure the
-relays are available to everyone. There are no guarantees around uptime or
-performance when using the public relays.
+Iroh hardcodes a set of public relays provided by
+[n0.computer](https://n0.computer), free to use. 
 
-We recommend using the public relays for development and testing, as they are
-free to use and require no setup. However, for production systems, we recommend
-using dedicated relays instead.
+Public relays:
+
+- Rate-limit traffic to prevent abuse
+- Carry no uptime or performance guarantees
+- Are shared across all iroh developers worldwide
+
+**Public relays are suitable for development and testing.** For production, use dedicated relays.
 
 ## Dedicated relays
 
-For production use, we recommend using dedicated relays. Dedicated relays are relay
-servers that are either self-hosted or provided as a managed service. Dedicated
-relays provide better performance, security, and uptime guarantees compared to
-the public relays. 
+Dedicated relays are relay servers provisioned exclusively for your project — either managed through Iroh Services or self-hosted. 
 
-## Why this architecture is powerful
+They offer:
 
-This approach makes uptime management significantly easier compared to
-traditional client-server architectures:
+- **Isolation** — no noisy neighbors; your traffic is yours alone
+- **Uptime guarantees** — SLAs available via [Iroh Services](/iroh-services/relays)
+- **Version locking** — stay on a specific iroh version or run blue/green deployments
+- **Multi-region & multi-cloud** — deploy relays across regions and providers for resilience
 
-**Stateless servers, stateful clients**  
-Unlike traditional servers that store your application's data and state, relay
-servers are just connection facilitators. All your business logic and data lives
-in your clients. This means:
+## Deploy your own relay
 
-- **No database synchronization** - You don't need to worry about keeping multiple server databases in sync or handling data replication
-- **No state migration** - When a relay goes down, clients simply reconnect to another relay without any data loss or state transfer
-- **Simple server management** - Relay servers are lightweight and easy to spin up or down. No complex deployment procedures or data migration steps
+<Card
+  title="Deploy a dedicated relay"
+  icon="server"
+  href="https://services.iroh.computer?utm_source=docs&utm_content=concepts-relays"
+>
+  Sign up for Iroh Services and spin up a managed relay for your project in minutes.
+</Card>
 
-**Automatic failover**  
-iroh clients automatically try multiple relays when connecting. If one relay is unavailable, clients seamlessly fall back to another relay in your list without application-level retry logic. Your peers will find each other as long as at least one relay is reachable.
+Or self-host using the open-source relay binary:
 
-**Multi-cloud resilience**  
-For even better guarantees, you can distribute relays across multiple cloud providers. If one provider experiences an outage, your application keeps running on relays hosted elsewhere. Since relays don't store state, you can freely mix providers without worrying about cross-cloud data consistency.
-
-**Cost-effective scaling**  
-Adding capacity means spinning up more lightweight relay instances, not provisioning databases or managing complex stateful server infrastructure. You can easily scale up for peak usage and scale down during quiet periods.
-
-This architecture inverts the traditional model: instead of treating servers as precious stateful resources and clients as disposable, relay-based architectures treat relays as disposable connection facilitators while clients own the application state and logic.
-
-## Connection Changes
-
-During the lifespan of a connection, networking conditions can change, for
-example when a user switched from 5G to WiFi, plugs in an ethernet cable, or a
-sysadmin modifies router configurations. The connection may change from direct
-to relayed, or even a mixed combination of the two. Iroh will automatically
-switch between direct and relayed connections as needed, without any action
-required from the application.
-
-## Read more
-
-- [Dedicated infrastructure guide](/deployment/dedicated-infrastructure)
 - [Relay source code](https://github.com/n0-computer/iroh/tree/main/iroh-relay)
 - [Relay binary releases](https://github.com/n0-computer/iroh/releases)
-- [Managed relay service](/iroh-services/relays)
+- [Dedicated infrastructure guide](/deployment/dedicated-infrastructure)
 

@@ -140,7 +140,7 @@
     "primary": {
       "type": "button",
       "label": "Login",
-      "href": "https://n0des.iroh.computer?utm_source=docs&utm_content=nav-login"
+      "href": "https://services.iroh.computer?utm_source=docs&utm_content=nav-login"
     }
   },
   "contextual": {
