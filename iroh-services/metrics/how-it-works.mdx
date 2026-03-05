@@ -11,15 +11,15 @@ Iroh Services dashboard. Metrics will be automatically collected and reported on
 1. The endpoint is built using the API Secret Key
 2. The endpoint sends metrics data to a Cloud endpoint hosted in the Iroh Services platform.
 3. The Iroh Services platform aggregates the data and makes it available in the project dashboard.
-4. Iroh services deletes data on a rolling bases outside the retention window, based on your [plan](https://n0des.iroh.computer/pricing). 
+4. Iroh services deletes data on a rolling bases outside the retention window, based on your [plan](https://services.iroh.computer/pricing). 
 
 
 ## How it works 
 
 Once an iroh endpoint is integrated in rust program, you can add an 
-`iroh_n0des::Client` to begin sending metrics to the Iroh Services platform. 
+`iroh_services::Client` to begin sending metrics to the Iroh Services platform. 
 
-1. The `iroh_n0des::Client` will automatically detect any running iroh instance in your
+1. The `iroh_services::Client` will automatically detect any running iroh instance in your
 endpoint and begin sending metrics as long as the secret and the ssh
 key match what has been set up in your project on the Iroh Services platform.
 2. Call `endpoint.online().await` before creating the Client. The endpoint must be online before the client is instantiated in order to
@@ -30,7 +30,7 @@ authenticate to the platform.
 ## Metrics Retention
 
 Project-level metrics are retained based on your events plan. Please refer to the
-[pricing page for more details on plan features and benefits](https://n0des.iroh.computer/pricing).
+[pricing page for more details on plan features and benefits](https://services.iroh.computer/pricing).
 
 Endpoint level metrics are only available on Enterprise plans. For projects on
 these plans, the amount of endpoint-level raw data retained is calculated on

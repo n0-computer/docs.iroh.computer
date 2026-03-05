@@ -13,11 +13,11 @@ display.
 
 To add net diagnostics support to your own iroh application, you need to:
 
-1. Connect to the n0des platform with an `iroh_n0des::Client`
+1. Connect to the n0des platform with an `iroh_services::Client`
 2. Grant the `NetDiagnosticsCap::GetAny` capability to n0des so it can request diagnostics from your endpoint
 3. Run a `ClientHost` so n0des can dial back into your endpoint
 
-[See the `net_diagnostics` example in the `iroh-n0des` repository for a complete working example of this integration.](https://github.com/n0-computer/iroh-n0des/tree/main/examples/net_diagnostics.rs)
+[See the `net_diagnostics` example in the `iroh-services` repository for a complete working example of this integration.](https://github.com/n0-computer/iroh-services/tree/main/examples/net_diagnostics.rs)
 
 
 ### 1. Update Cargo.toml
@@ -25,7 +25,7 @@ Add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-iroh-n0des = { version = "...", features = ["net_diagnostics", "client_host"] }
+iroh-services = { version = "...", features = ["net_diagnostics", "client_host"] }
 ```
 
 ### 2. Get Your API Secret
@@ -45,7 +45,7 @@ Here's a minimal integration:
 ```rust
 use anyhow::Result;
 use iroh::{Endpoint, protocol::Router};
-use iroh_n0des::{
+use iroh_services::{
     ApiSecret, Client, ClientHost, CLIENT_HOST_ALPN, API_SECRET_ENV_VAR_NAME,
     caps::NetDiagnosticsCap,
 };

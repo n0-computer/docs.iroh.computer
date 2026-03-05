@@ -7,7 +7,7 @@ This guide will walk you through hooking up your first endpoint to Iroh Services
 
 ## Prerequisites
 
-- [An Iroh Services Account](https://n0des.iroh.computer?utm_source=docs&utm_content=quickstart)
+- [An Iroh Services Account](https://services.iroh.computer?utm_source=docs&utm_content=quickstart)
 - [Rust Language](https://rust-lang.org/tools/install/) 
 
 *While iroh is currently only available in Rust, it can be deployed in many other languages and environments.
@@ -16,11 +16,11 @@ Languages](deployment/other-languages) guide for more information.*
 
 ## Step 1: Create a Project
 
-After signing in, [create a new project](https://n0des.iroh.computer/projects/projects/new?utm_source=docs&utm_content=quickstart). This will be your
+After signing in, [create a new project](https://services.iroh.computer/projects/projects/new?utm_source=docs&utm_content=quickstart). This will be your
 sandbox for all endpoints. This is the control center where you can manage and
 monitor your infrastructure, including relays, metrics, and networks.
 
-[![Create Project](/images/new-project.png)](https://n0des.iroh.computer/projects/projects/new?utm_source=docs&utm_content=quickstart)
+[![Create Project](/images/new-project.png)](https://services.iroh.computer/projects/projects/new?utm_source=docs&utm_content=quickstart)
 
 
 ## Step 2: Get Your API Key
@@ -34,10 +34,10 @@ this to authenticate your endpoints.
 
 ## Step 3: Add the Iroh Services Client
 
-Add the `iroh-n0des` crate to your `Cargo.toml`:
+Add the `iroh-services` crate to your `Cargo.toml`:
 
 ```
-cargo add iroh-n0des
+cargo add iroh-services
 ```
 
 
@@ -47,7 +47,7 @@ Then, in your code, create a client and connect your endpoint to Iroh Services.
 
 ```rust
 use iroh::Endpoint;
-use iroh_n0des::Client;
+use iroh_services::Client;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
