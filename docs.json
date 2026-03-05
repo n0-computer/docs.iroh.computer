@@ -107,6 +107,15 @@
           {
             "group": "Net Diagnostics",
             "pages": ["iroh-services/net-diagnostics/quickstart", "iroh-services/net-diagnostics/usage", "iroh-services/net-diagnostics/reports"]
+          },
+          {
+            "group": "Billing",
+            "pages": [
+              "iroh-services/billing/index",
+              "iroh-services/billing/manage-subscription",
+              "iroh-services/billing/control-costs",
+              "iroh-services/billing/faq"
+            ]
           }
         ]
       }

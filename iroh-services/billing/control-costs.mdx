@@ -1,0 +1,38 @@
+---
+title: "Control Your Costs"
+description: "Set spend caps and monitor usage to keep your Iroh Services costs predictable"
+---
+
+Iroh Services provides tools to help you stay in control of your spending.
+
+## Spend caps
+
+Spend caps let you set a maximum monthly budget for your project. When your usage reaches the cap, services that incur additional charges will be paused until the next billing cycle.
+
+### Setting a spend cap
+
+1. Go to your project dashboard.
+2. Navigate to **Settings**
+3. Under **Spend cap**, enter your maximum monthly budget.
+4. Click **Save**.
+
+<Note>
+Your spend cap applies to your total invoice, including the base plan cost, any applicable taxes, and usage-based charges that exceed what's included in your plan.
+</Note>
+
+### What happens when you hit your cap
+
+When your usage-based charges reach your spend cap:
+
+- **Metrics ingestion** will be paused. Endpoints will stop sending new metrics until the next billing cycle.
+- **Your existing data** is preserved. Dashboards and historical metrics remain accessible.
+- **Endpoint connections** — the number of active connections sending metrics to your project will be throttled.
+- **Active relay connections** are not affected. Your endpoints will continue to connect through relays.
+
+Usage resets at the start of each billing cycle.
+
+## Tips for managing costs
+
+- **Start with the Free plan** to understand your usage patterns before upgrading.
+- **Set a spend cap** early to avoid unexpected charges.
+- **Review usage regularly** from the dashboard to spot trends before they become costly.
