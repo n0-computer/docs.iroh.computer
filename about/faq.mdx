@@ -60,11 +60,7 @@ By changing iroh's relay mode or relay map you can control the home relay the en
 
 ## How can I monitor endpoint connection status to update a UI?
 
-"Online" and "offline" are more nuanced in iroh than they might seem. An endpoint can be unreachable from the wider internet but still fully able to connect to peers on the same LAN — so a simple online/offline indicator can be misleading to users.
-
-It's often more useful to show which specific peers the endpoint is currently connected to, rather than a general connectivity state. For example: "syncing with 2 devices" is more meaningful than "online".
-
-That said, if you want a proxy for general internet connectivity, you can watch whether the endpoint currently has a relay connection:
+If you want a proxy for general internet connectivity, you can watch whether the endpoint currently has a relay connection:
 
 ```rust
 endpoint.watch_addr()
