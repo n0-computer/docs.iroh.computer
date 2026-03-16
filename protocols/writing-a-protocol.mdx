@@ -87,7 +87,7 @@ Now, we can modify our router so it handles incoming connections with our newly 
 
 ```rs
 async fn start_accept_side() -> anyhow::Result<iroh::protocol::Router> {
-    let endpoint = iroh::Endpoint::bind().await?;
+    let endpoint = iroh::Endpoint::bind(iroh::presets::N0).await?;
 
     let router = iroh::protocol::Router::builder(endpoint)
         .accept(ALPN, Echo) // This makes the router handle incoming connections with our ALPN via Echo::accept!
@@ -164,7 +164,7 @@ This follows the [request-response pattern](/protocols/using-quic#request-and-re
 
 ```rs
 async fn connect_side(addr: EndpointAddr) -> Result<()> {
-    let endpoint = Endpoint::bind().await?;
+    let endpoint = Endpoint::bind(presets::N0).await?;
 
     // Open a connection to the accepting endpoint
     let conn = endpoint.connect(addr, ALPN).await?;

@@ -15,11 +15,11 @@ This method initializes a new endpoint and binds it to a local address, allowing
 to listen for incoming connections.
 
 ```rust
-use iroh::Endpoint;
+use iroh::{Endpoint, presets};
 
 #[tokio::main]
 async fn main() {
-    let endpoint = Endpoint::bind().await?;
+    let endpoint = Endpoint::bind(presets::N0).await?;
     // ...
 }
 ```

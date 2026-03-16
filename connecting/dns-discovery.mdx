@@ -25,12 +25,12 @@ options](https://cal.com/team/number-0/n0-protocol-services?overlayCalendar=true
 
 
 ```rust
-use iroh::Endpoint;
+use iroh::{Endpoint, presets};
 use iroh_tickets::endpoint::EndpointTicket;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    let endpoint = Endpoint::bind().await?;
+    let endpoint = Endpoint::bind(presets::N0).await?;
 
     println!("endpoint id: {:?}", endpoint.id());
 
