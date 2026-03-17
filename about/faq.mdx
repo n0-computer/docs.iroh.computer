@@ -36,11 +36,11 @@ Be aware of security caveats to forward secrecy when using the [opt-in 0-RTT fea
 
 ## What if number 0 stops running relay servers?
 
-You're not dependent on us. The relay code is [open-source](https://github.com/n0-computer/iroh/tree/main/iroh-relay), and running your own is straightforward — for production use, we recommend it regardless.
+You're not dependent on us. The relay code is [open-source](https://github.com/n0-computer/iroh/tree/main/iroh-relay), and running your own is possible. 
 
 The easiest path is a [dedicated relay via Iroh Services](/concepts/relays#dedicated-relays), which gives you an isolated, managed relay with uptime guarantees. If you'd rather self-host, you need a server with a public IP and a DNS name pointing to it — automatic TLS via [ACME](https://en.wikipedia.org/wiki/Automatic_Certificate_Management_Environment) is built in. Either way, configure the relay URL for your endpoint (see [Custom Relays](/connecting/custom-relays)) and you're set.
 
-Running your own relay doesn't affect interoperability — your endpoints can still connect to peers using other relay servers.
+Running your own relay doesn't affect interoperability. Your endpoints can still connect to peers using other relay servers, and since relays are stateless and logic lives at the client, can be swapped independently.
 
 
 ## Is establishing a connection without relays or when offline possible?
