@@ -114,7 +114,7 @@ We rely on iroh remaining open source, and are committed to keeping it that way,
 
 Both iroh and WebRTC solve the same core problem — establishing direct P2P connections across NATs — but they make very different tradeoffs.
 
-**WebRTC** was designed for real-time media (audio and video) in browsers. It brings a complex stack: ICE for NAT traversal, STUN/TURN for relay, DTLS for encryption, SCTP for data channels, and a signaling layer that you have to implement yourself (WebRTC deliberately leaves signaling unspecified). This flexibility is powerful but adds significant complexity, and TURN relay servers are stateful and expensive to run at scale.
+**WebRTC** was designed for real-time media (audio and video) in browsers. It brings a complex stack: ICE for NAT traversal, STUN/TURN for relay, DTLS for encryption, SCTP for data channels, and a signaling layer that you have to implement yourself (WebRTC deliberately leaves signaling unspecified). This flexibility is powerful but adds significant complexity and is more expensive to run at scale.
 
 **Iroh** is built around QUIC (TLS 1.3) and focuses on reliable, encrypted data connections. The API is simpler: you connect to an endpoint ID and get a QUIC connection. Relays are stateless and cheap. Hole-punching works roughly 9 out of 10 times. There's no signaling layer to design — discovery mechanisms handle address resolution.
 
@@ -123,7 +123,6 @@ The main practical differences:
 - **Browser support.** WebRTC is native to browsers; iroh is not. If you need in-browser P2P, WebRTC is the default choice.
 - **Media streaming.** WebRTC has first-class support for audio and video. Iroh is a general-purpose data transport, but you can run [MoQ (Media over QUIC)](https://www.iroh.computer/blog/secure-video-everywhere) on top of iroh for low-latency media streaming.
 - **Simplicity.** Iroh's connection model is significantly simpler to reason about and integrate. No SDP, no ICE candidate negotiation, no signaling server to build.
-- **Relay cost.** Iroh's stateless relays are much cheaper to operate than WebRTC TURN servers.
 
 If you're building a native app, iroh will generally be easier to work with and perform better. If you need browser support, WebRTC remains the default choice — iroh doesn't run in the browser.
 
@@ -139,7 +138,7 @@ MQTT and iroh solve different problems, though they can overlap in IoT and devic
 The main practical differences:
 
 - **Pub/sub.** MQTT has native topic-based pub/sub built in. Iroh doesn't, though [iroh-gossip](https://github.com/n0-computer/iroh-gossip) provides gossip-based fan-out on top of iroh connections.
-- **Privacy.** MQTT brokers can read all messages unless you add application-level encryption. Iroh connections are always end-to-end encrypted.
+- **Privacy.** MQTT brokers require you to encrypt messages at the application level. Iroh connections are always end-to-end encrypted out of the box.
 - **Central infrastructure.** MQTT requires a broker that all clients can reach. Iroh works across NATs without any central server, using relays only as a fallback.
 - **Constrained devices.** MQTT was designed for low-power, low-bandwidth hardware. Iroh's QUIC-based stack has higher resource requirements, but we do have solutions for constrained IoT environments — [get in touch](https://iroh.computer/contact) if this is relevant to your use case.
 
