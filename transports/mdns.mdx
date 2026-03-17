@@ -19,7 +19,7 @@ iroh = { version = "0.nn", features = ["address-lookup-mdns"] }
 
 ## Usage
 
-Configure your endpoint to use mDNS alongside the default DNS discovery:
+Configure your endpoint to use mDNS alongside the default DNS address lookup:
 
 ```rust
 use iroh::{Endpoint, presets};
@@ -31,10 +31,9 @@ let endpoint = Endpoint::builder()
     .await?;
 ```
 
-The mDNS mechanism automatically broadcasts your endpoint's presence on the local network and listens for other endpoints doing the same. When another endpoint is discovered, dialing information is exchanged and a connection can be established directly over the local network — no relay needed.
+The mDNS mechanism automatically broadcasts your endpoint's presence on the
+local network and listens for other endpoints doing the same. When another
+endpoint is discovered, dialing information is exchanged and a connection can be
+established directly over the local network: no relay needed.
 
 For more information see the [mDNS API docs](https://docs.rs/iroh/latest/iroh/address_lookup/mdns/index.html).
-
-## Bluetooth
-
-Bluetooth Low Energy (BLE) local discovery is currently under development. See the [Bluetooth](/transports/bluetooth) page for more details.

@@ -34,7 +34,7 @@
             ]
           },
           {
-            "group": "Forming a Network",
+            "group": "Creating Connections",
             "pages": [
               "connecting/creating-endpoint",
               "connecting/custom-relays",
@@ -55,7 +55,7 @@
             ]
           },
           {
-            "group": "Building your App",
+            "group": "Protocols",
             "pages": [
               "protocols/kv-crdts",
               "protocols/blobs",
@@ -63,8 +63,7 @@
               "protocols/automerge",
               "protocols/streaming",
               "examples/chat",
-              "protocols/writing-a-protocol",
-              "protocols/using-quic"
+              "protocols/writing-a-protocol"
             ]
           },
           {
