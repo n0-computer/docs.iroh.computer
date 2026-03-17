@@ -7,7 +7,7 @@ There are situations where a direct connection can’t be established, and in th
 
 Relays serve two roles in iroh:
 
-1. **Holepunching assistance.**  When two endpoints first connect, they exchange network information through the relay to attempt a direct P2P connection.
+1. **NAT Traversal.**  When two endpoints first connect, they exchange network information through the relay to attempt a direct P2P connection.
 2. **Encrypted traffic fallback.** If a direct connection can't be established (due to strict NATs, firewalls, or other network conditions), traffic flows through the relay instead.
 
 Once a direct path is established, the relay steps back and data flows peer-to-peer. Relay servers **cannot read** any of the traffic they handle — it's encrypted end-to-end.

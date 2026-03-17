@@ -27,7 +27,7 @@
                   "concepts/tickets",
                   "concepts/discovery",
                   "concepts/relays",
-                  "concepts/holepunching",
+                  "concepts/nat-traversal",
                   "concepts/protocols"
                 ]
               }
@@ -153,5 +153,11 @@
   },
   "integrations": {
     "plausible": { "domain": "docs.iroh.computer" }
-  }
+  },
+  "redirects": [
+    {
+      "source": "/concepts/holepunching",
+      "destination": "/concepts/nat-traversal"
+    }
+  ]
 }
