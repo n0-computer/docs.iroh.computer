@@ -88,12 +88,11 @@ We think it's particularly helpful to write application-specific discovery mecha
 
 ## What ports does iroh use?
 
-Iroh uses at least three ports:
-
-- **TCP 443** — relay connection (HTTP/1.1 over TLS)
-- **Two UDP ports** — one for IPv4 and one for IPv6, used for direct P2P connections; configurable via [`endpoint::Builder`](https://docs.rs/iroh/latest/iroh/endpoint/struct.Builder.html)
+Iroh listens on **Two UDP ports** — one for IPv4 and one for IPv6, used for direct P2P connections; configurable via [`endpoint::Builder`](https://docs.rs/iroh/latest/iroh/endpoint/struct.Builder.html)
 
 Iroh will work behind firewalls that only allow TCP outbound, but direct connections won't be possible in that case — all traffic will fall back to the relay.
+
+It's totally possible that you maintain connections to multiple relays at a time, if you're connected to iroh endpoints that have another home relay than yours. Each of these connections will use another TCP socket.
 
 
 ## How would onion-routing work with iroh?
