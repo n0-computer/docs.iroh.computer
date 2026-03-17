@@ -45,16 +45,6 @@
             ]
           },
           {
-            "group": "Transports",
-            "pages": [
-              "transports/quic",
-              "transports/mdns",
-              "transports/tor",
-              "transports/nym",
-              "transports/bluetooth"
-            ]
-          },
-          {
             "group": "Protocols",
             "pages": [
               "protocols/kv-crdts",
@@ -64,6 +54,16 @@
               "protocols/streaming",
               "examples/chat",
               "protocols/writing-a-protocol"
+            ]
+          },
+          {
+            "group": "Transports",
+            "pages": [
+              "transports/quic",
+              "transports/mdns",
+              "transports/tor",
+              "transports/nym",
+              "transports/bluetooth"
             ]
           },
           {
