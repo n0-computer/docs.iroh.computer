@@ -1,0 +1,36 @@
+---
+title: "Bluetooth (BLE)"
+---
+
+<Note>
+Bluetooth Low Energy (BLE) transport support is not yet available. We plan to work with the community to implement it. If you're interested in contributing, reach out on [Discord](https://www.iroh.computer/discord).
+</Note>
+
+A BLE transport would allow iroh endpoints to connect directly over Bluetooth Low Energy — useful for local device-to-device scenarios where WiFi or cellular is unavailable, such as offline mesh networking or proximity-based applications.
+
+## How custom transports work
+
+When a BLE transport is available, you would add it the same way as any other custom transport:
+
+```rust
+use iroh::presets;
+
+let endpoint = Endpoint::builder()
+    .add_custom_transport(ble_transport)
+    .bind(presets::N0)
+    .await?;
+```
+
+You can also combine transports. For example, prefer BLE when nearby peers are available and fall back to QUIC over IP otherwise — iroh will pick the best available path.
+
+You can only connect to other endpoints that also have the BLE transport enabled.
+
+## Custom transport API
+
+The custom transport API lets anyone implement new transports by implementing a set of traits for low-level packet sending and receiving. Each transport defines its own address type and serialization format.
+
+See [Tor](/transports/tor) and [Nym](/transports/nym) for examples of custom transport implementations today.
+
+<Warning>
+Custom transport support requires the `unstable-custom-transports` feature flag. The API is unstable and subject to change. See [PR #3845](https://github.com/n0-computer/iroh/pull/3845) for background.
+</Warning>

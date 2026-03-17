@@ -40,9 +40,18 @@
               "connecting/custom-relays",
               "connecting/dns-discovery",
               "connecting/dht-discovery",
-              "connecting/local-discovery",
               "connecting/gossip",
               "connecting/endpoint-hooks"
+            ]
+          },
+          {
+            "group": "Transports",
+            "pages": [
+              "transports/quic",
+              "transports/mdns",
+              "transports/tor",
+              "transports/nym",
+              "transports/bluetooth"
             ]
           },
           {

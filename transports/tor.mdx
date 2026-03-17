@@ -1,0 +1,67 @@
+---
+title: "Tor"
+---
+
+The [iroh-tor-transport](https://github.com/n0-computer/iroh-tor-transport) crate routes iroh connections through [Tor hidden services](https://www.torproject.org/), hiding both peers' IP addresses from each other and from the network.
+
+This is useful when IP address privacy is a hard requirement for your application.
+
+For background, see the [blog post](https://www.iroh.computer/blog/tor-custom-transport).
+
+<Warning>
+Both iroh's custom transport API and this crate are experimental. Expect breaking changes.
+</Warning>
+
+## Installation
+
+Add the dependency:
+
+```bash
+cargo add iroh-tor-transport
+```
+
+You also need a running Tor daemon with the control port enabled:
+
+```bash
+tor --ControlPort 9051 --CookieAuthentication 0
+```
+
+## Usage
+
+```rust
+use iroh::{Endpoint, SecretKey, presets};
+use iroh_tor_transport::TorCustomTransport;
+
+let secret_key = SecretKey::generate(&mut rand::rng());
+let transport = TorCustomTransport::builder()
+    .build(secret_key.clone())
+    .await?;
+
+let endpoint = Endpoint::builder()
+    .secret_key(secret_key)
+    .preset(transport.preset())
+    .bind(presets::N0)
+    .await?;
+```
+
+You can only connect to other endpoints that also have the Tor transport enabled.
+
+## How it works
+
+Connections are routed through Tor onion services. Each endpoint creates a hidden service address, which other endpoints dial over the Tor network. Neither side learns the other's real IP address.
+
+## Current limitations
+
+- Requires a separately installed and running Tor daemon
+- Cookie authentication must be disabled (`--CookieAuthentication 0`)
+- No automatic recovery if the Tor daemon crashes
+- Limited to TCP streams over Tor
+
+## Feature flag
+
+Custom transport support must be enabled:
+
+```toml
+[dependencies]
+iroh = { version = "*", features = ["unstable-custom-transports"] }
+```
