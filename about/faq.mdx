@@ -117,9 +117,7 @@ Both iroh and WebRTC solve the same core problem — establishing direct P2P con
 
 **Iroh** is built around QUIC (TLS 1.3) and focuses on reliable, encrypted data connections. The API is simpler: you connect to an endpoint ID and get a QUIC connection. Relays are stateless and cheap. Hole-punching works roughly 9 out of 10 times. There's no signaling layer to design — discovery mechanisms handle address resolution.
 
-The main practical differences:
-
-- **Browser support.** WebRTC is native to browsers; iroh is not. If you need in-browser P2P, WebRTC is the default choice.
+- **Browser support.** Both WebRTC and iroh work in browsers. [Get started with iroh in the browser](https://docs.iroh.computer/deployment/other-languages#webassembly-and-browsers). Howevr, WebRTC remains the only choice for hole-punched connections due to the current state of Web APIs.
 - **Media streaming.** WebRTC has first-class support for audio and video. Iroh is a general-purpose data transport, but you can run [MoQ (Media over QUIC)](https://www.iroh.computer/blog/secure-video-everywhere) on top of iroh for low-latency media streaming.
 - **Simplicity.** Iroh's connection model is significantly simpler to reason about and integrate. No SDP, no ICE candidate negotiation, no signaling server to build.
 
