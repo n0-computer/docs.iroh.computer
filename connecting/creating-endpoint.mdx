@@ -16,11 +16,13 @@ to listen for incoming connections.
 
 ```rust
 use iroh::{Endpoint, presets};
+use anyhow::Result;
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<()> {
     let endpoint = Endpoint::bind(presets::N0).await?;
     // ...
+    Ok(())
 }
 ```
 
