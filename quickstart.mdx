@@ -37,6 +37,8 @@ connection to the closest relay, and finds ways to address devices by
 `EndpointId`.
 
 ```rust
+use iroh::{Endpoint, presets};
+
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Create an endpoint, it allows creating and accepting
