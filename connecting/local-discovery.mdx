@@ -1,0 +1,39 @@
+---
+title: "mDNS"
+---
+
+The mDNS discovery mechanism will automatically broadcast your endpoint's
+presence on the local network, and listen for other endpoints doing the same. When
+another endpoint is discovered, the dialing information is exchanged, and a
+connection can be established directly over the local network without needing a relay.
+
+Devices need to be connected to the same local network for mDNS discovery to
+work. This can be a Wi-Fi network, an Ethernet network, or even a mobile
+hotspot. mDNS is not designed to work over the internet or across different
+networks.
+
+## Usage
+
+Local Discovery is _not_ enabled by default, and must be enabled explicitly.
+You'll need to add the `discovery-local-network` feature flag to your
+`Cargo.toml` to use it.
+
+```toml
+[dependencies]
+# Make sure to use the most recent version here instead of nn. (at the time of writing: 0.32)
+iroh = { version = "0.nn", features = ["address-lookup-mdns"] }
+```
+
+Then configure your endpoint to use local discovery concurrently with the default DNS discovery:
+
+```rust
+use iroh::{Endpoint, presets};
+
+let mdns = iroh::address_lookup::mdns::MdnsAddressLookup::builder();
+let ep = Endpoint::builder()
+    .address_lookup(mdns)
+    .bind(presets::N0)
+    .await?;
+```
+
+For more information on how mDNS discovery works, see the [mDNS documentation](https://docs.rs/iroh/latest/iroh/address_lookup/mdns/index.html).

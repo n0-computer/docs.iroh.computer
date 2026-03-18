@@ -164,7 +164,7 @@ This follows the [request-response pattern](/protocols/using-quic#request-and-re
 
 ```rs
 async fn connect_side(addr: EndpointAddr) -> Result<()> {
-    let endpoint = Endpoint::bind(presets::N0).await?;
+    let endpoint = Endpoint::bind(iroh::presets::N0).await?;
 
     // Open a connection to the accepting endpoint
     let conn = endpoint.connect(addr, ALPN).await?;

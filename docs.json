@@ -40,12 +40,13 @@
               "connecting/custom-relays",
               "connecting/dns-discovery",
               "connecting/dht-discovery",
+              "connecting/local-discovery",
               "connecting/gossip",
               "connecting/endpoint-hooks"
             ]
           },
           {
-            "group": "Protocols",
+            "group": "Sending Data",
             "pages": [
               "protocols/kv-crdts",
               "protocols/blobs",
@@ -53,14 +54,13 @@
               "protocols/automerge",
               "protocols/streaming",
               "examples/chat",
-              "protocols/writing-a-protocol"
+              "protocols/writing-a-protocol",
+              "protocols/using-quic"
             ]
           },
           {
             "group": "Transports",
             "pages": [
-              "transports/quic",
-              "transports/mdns",
               "transports/tor",
               "transports/nym",
               "transports/bluetooth"
