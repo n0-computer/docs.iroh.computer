@@ -8,7 +8,7 @@ iroh's QUIC implementation is built on
 [noq](https://github.com/n0-computer/noq), which includes multipath support and
 QUIC NAT traversal.
 
-All connections are encrypted and authenticated using TLS 1.3. Holepunching,
+All connections are encrypted and authenticated using TLS 1.3. NAT traversal,
 relay fallback, and multipath are all handled at the QUIC layer automatically.
 
 ## Custom transports
@@ -21,7 +21,7 @@ All transports, even custom transports [Tor](/transports/tor), [Nym](/transports
 
 ## Using QUIC
 
-While iroh handles the hard parts of networking—holepunching, relay servers, and discovery—**you still need to design how your application exchanges data once connected**.
+While iroh handles the hard parts of networking, **you still need to design how your application exchanges data once connected**.
 
 Many developers reach for iroh expecting it to completely abstract away the underlying transport. However, iroh intentionally exposes QUIC's powerful stream API because:
 

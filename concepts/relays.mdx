@@ -12,7 +12,7 @@ Relays serve two roles in iroh:
 
 Once a direct path is established, the relay steps back and data flows peer-to-peer. Relay servers **cannot read** any of the traffic they handle — it's encrypted end-to-end.
 
-In practice, roughly 9 out of 10 networking conditions allow a direct connection. iroh's holepunching implementation is deterministic: if it works between two devices once, it will continue to work as long as their networking setup stays stable.
+In practice, roughly 9 out of 10 networking conditions allow a direct connection. iroh's NAT traversal implementation is deterministic: if it works between two devices once, it will continue to work as long as their networking setup stays stable.
 
 ## Deploy your own relay
 

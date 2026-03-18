@@ -50,7 +50,7 @@ cargo run --release -- --connect <peer-addr>
 - If builds fail due to C dependencies (echo cancellation), try building
   without default features: `cargo run --release --no-default-features`.
 - Network reachability: use relays or ensure both peers can establish QUIC
-  connections (NATs may require holepunching or relay services).
+  connections (NATs may require NAT traversal or relay services).
 
 
 ## How the pieces fit

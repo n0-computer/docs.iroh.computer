@@ -4,7 +4,7 @@
 | NAT Type | What it means | Connection quality |
 |---|---|---|
 | **No NAT** | Local address matches public address | Direct connections work with correct firewall config |
-| **Endpoint-Independent** | One outbound UDP packet opens a port for any sender | Holepunching works reliably |
+| **Endpoint-Independent** | One outbound UDP packet opens a port for any sender | NAT traversal works reliably |
 | **Endpoint-Dependent** | Only the specific destination can reply (symmetric NAT) | Connections will primarily use relays |
 | **Unknown** | NAT behavior could not be determined | Check UDP connectivity |
 

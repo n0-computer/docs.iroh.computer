@@ -6,7 +6,7 @@ title: "FAQ"
 
 Yes — and relay servers are a core part of what makes iroh connections reliable. See the [Relays concept page](/concepts/relays) for a full overview.
 
-Relays serve two roles: they assist with [hole-punching](/concepts/holepunching) to help establish direct P2P connections, and they act as an encrypted fallback when a direct connection can't be made. In practice, roughly 9 out of 10 connections go direct — the relay is only a stepping stone.
+Relays serve two roles: they assist with [NAT Traversal](/concepts/nat-traversal) to help establish direct P2P connections, and they act as an encrypted fallback when a direct connection can't be made. In practice, roughly 9 out of 10 connections go direct — the relay is only a stepping stone.
 
 Because relays are **stateless** (they route encrypted packets but store nothing), they're cheap to run and easy to scale. There's no database to sync, no state to migrate, and automatic failover across relay instances is built in.
 
@@ -148,7 +148,7 @@ Iroh is designed to be modular: you get a solid, reliable connection layer and c
 
 Where iroh tends to win:
 
-- **Peer discovery and hole-punching.** Iroh's [hole-punching](/concepts/holepunching) and discovery story is significantly smoother. Getting peers to find each other reliably is one of the hardest parts of libp2p in practice; iroh has largely solved this.
+- **Peer discovery and NAT traversal.** Iroh's [NAT traversal](/concepts/nat-traversal) and discovery story is significantly smoother. Getting peers to find each other reliably is one of the hardest parts of libp2p in practice; iroh has largely solved this.
 - **Direct messaging.** Iroh gives you reliable, encrypted QUIC connections directly to specific peers — straightforward to build routing or direct message delivery on top of.
 - **Gossip.** [iroh-gossip](https://github.com/n0-computer/iroh-gossip/) provides gossipsub-like fan-out on top of iroh connections.
 - **Blob transfer.** Iroh has a built-in [blob transfer protocol](https://docs.rs/iroh-blobs) for exchanging hash-addressed data, similar to what you'd use IPFS for.
