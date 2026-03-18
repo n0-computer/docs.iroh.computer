@@ -134,12 +134,12 @@ Topics are the fundamental unit of communication in the gossip protocol. Here's 
 ```rust
 use anyhow::Result;
 use iroh::protocol::Router;
-use iroh::Endpoint;
+use iroh::{Endpoint, presets};
 use iroh_gossip::{net::Gossip, proto::TopicId};
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let endpoint = Endpoint::bind().await?;
+    let endpoint = Endpoint::bind(presets::N0).await?;
 
     println!("> our endpoint id: {}", endpoint.id());
     let gossip = Gossip::builder().spawn(endpoint.clone());
@@ -324,7 +324,7 @@ use std::collections::HashMap;
 use anyhow::Result;
 use futures_lite::StreamExt;
 use iroh::protocol::Router;
-use iroh::{Endpoint, EndpointId};
+use iroh::{Endpoint, EndpointId, presets};
 use iroh_gossip::{
     api::{GossipReceiver, Event},
     net::Gossip,
@@ -334,7 +334,7 @@ use serde::{Deserialize, Serialize};
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let endpoint = Endpoint::bind().await?;
+    let endpoint = Endpoint::bind(presets::N0).await?;
 
     println!("> our endpoint id: {}", endpoint.id());
     let gossip = Gossip::builder().spawn(endpoint.clone());
@@ -535,7 +535,7 @@ use std::{collections::HashMap, fmt, str::FromStr};
 use anyhow::Result;
 use clap::Parser;
 use futures_lite::StreamExt;
-use iroh::{protocol::Router, Endpoint, EndpointAddr, EndpointId};
+use iroh::{protocol::Router, Endpoint, EndpointAddr, EndpointId, presets};
 use iroh_gossip::{
     api::{GossipReceiver, Event},
     net::Gossip,
@@ -591,7 +591,7 @@ async fn main() -> Result<()> {
         }
     };
 
-    let endpoint = Endpoint::bind().await?;
+    let endpoint = Endpoint::bind(presets::N0).await?;
 
     println!("> our endpoint id: {}", endpoint.id());
     let gossip = Gossip::builder().spawn(endpoint.clone());

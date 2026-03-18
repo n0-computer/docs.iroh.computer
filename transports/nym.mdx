@@ -1,0 +1,59 @@
+---
+title: "Nym"
+---
+
+The [iroh-nym-transport](https://github.com/n0-computer/iroh-nym-transport) crate routes iroh QUIC packets through the [Nym mixnet](https://nymtech.net/), providing traffic analysis resistance by shuffling and delaying packets across a network of mix nodes.
+
+This is useful when you need stronger metadata privacy than Tor provides — the mixnet obscures not just your IP address, but also communication patterns and timing.
+
+<Warning>
+Both iroh's custom transport API and this crate are experimental. Expect breaking changes.
+</Warning>
+
+## Installation
+
+```bash
+cargo add iroh-nym-transport
+```
+
+## Usage
+
+```rust
+use std::sync::Arc;
+use iroh::{Endpoint, presets};
+use iroh_nym_transport::NymUserTransport;
+use nym_sdk::mixnet::MixnetClient;
+
+let nym_client = MixnetClient::connect_new().await?;
+let transport = Arc::new(NymUserTransport::new(nym_client));
+
+let endpoint = Endpoint::builder()
+    .clear_ip_transports()
+    .add_custom_transport(transport)
+    .bind(presets::N0)
+    .await?;
+```
+
+Calling `clear_ip_transports()` disables QUIC over UDP so all traffic routes exclusively through the mixnet.
+
+You can only connect to other endpoints that also have the Nym transport enabled.
+
+## Performance characteristics
+
+The mixnet intentionally introduces latency and limits throughput as part of its privacy guarantees:
+
+| Metric | Direct QUIC | Nym mixnet |
+|--------|-------------|------------|
+| RTT | 50–200 ms | ~1–3 s |
+| Throughput | 10+ Mbps | ~15–20 KiB/s |
+
+Nym is well suited for privacy-sensitive, latency-tolerant applications. It is not suitable for real-time communication or high-throughput file transfer.
+
+## Feature flag
+
+Custom transport support must be enabled:
+
+```toml
+[dependencies]
+iroh = { version = "*", features = ["unstable-custom-transports"] }
+```

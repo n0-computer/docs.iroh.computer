@@ -169,7 +169,7 @@ But we said that we wanted to be able to seamlessly switch between remote or loc
 ```rust
 enum Client {
   Local(mpsc::Sender<FullRequest>),
-  Remote(quinn::Connection),
+  Remote(noq::Connection),
 }
 
 impl Client {
@@ -206,7 +206,7 @@ But what about all this boilerplate?
 
 **The `irpc` crate is meant solely to reduce the tedious boilerplate involved in writing the above manually.**
 
-It does *not* abstract over the connection type - it only supports [iroh-quinn] send and receive streams out of the box, so the only two possible connection types are `iroh` p2p QUIC connections and normal QUIC connections. It also does not abstract over the local channel type - a local channel is always a `tokio::sync::mpsc` channel. Serialization is always using postcard and length prefixes are always postcard varints.
+It does *not* abstract over the connection type - it only supports [noq] QUIC send and receive streams out of the box, so the only two possible connection types are `iroh` p2p QUIC connections and normal QUIC connections. It also does not abstract over the local channel type - a local channel is always a `tokio::sync::mpsc` channel. Serialization is always using postcard and length prefixes are always postcard varints.
 
 So let's see what our kv service looks like using `irpc`:
 
@@ -286,8 +286,8 @@ converting the result into a futures `Stream` or the updates into a futures
 services that can be used in-process or across processes, not to provide an
 opinionated high level API.
 
-For stream based rpc calls, there is an issue you should be aware of. The quinn
-`SendStream` will send a finish message when dropped. So if you have a finite
+For stream based rpc calls, there is an issue you should be aware of. The noq
+QUIC `SendStream` will send a finish message when dropped. So if you have a finite
 stream, you might want to have an explicit end marker that you send before
 dropping the sender to allow the remote side to distinguish between successful
 termination and abnormal termination. E.g. the `SetFromStream` request from
@@ -330,9 +330,9 @@ If you are reading from a remote source, and there is a problem with the connect
 
 But what about writing? E.g. you got a task that performs an expensive computation and writes updates to the remote in regular intervals. You will only detect that the remote side is gone once you write, so if you write infrequently you will perform an expensive computation despite the remote side no longer being available or interested.
 
-To solve this, an irpc Sender has a [closed](https://docs.rs/irpc/0.5.0/irpc/channel/mpsc/enum.Sender.html#method.closed) function that you can use to detect the remote closing without having to send a message. This wraps [tokio::sync::mpsc::Sender::closed](https://docs.rs/tokio/latest/tokio/sync/mpsc/struct.Sender.html#method.closed) for local streams and [quinn::SendStream::stopped](https://docs.rs/iroh-quinn/latest/iroh_quinn/struct.SendStream.html#method.stopped) for remote streams.
+To solve this, an irpc Sender has a [closed](https://docs.rs/irpc/0.5.0/irpc/channel/mpsc/enum.Sender.html#method.closed) function that you can use to detect the remote closing without having to send a message. This wraps [tokio::sync::mpsc::Sender::closed](https://docs.rs/tokio/latest/tokio/sync/mpsc/struct.Sender.html#method.closed) for local streams and [noq::SendStream::stopped](https://github.com/n0-computer/noq) for remote QUIC streams.
 
-## Alternatives to iroh-quinn
+## Alternatives to noq
 
 If you integrate iroh protocols into an existing application, it could be that you already have a rpc system that you are happy with, like [grpc](https://grpc.io/) or [json-rpc](https://www.jsonrpc.org/).
 
@@ -361,9 +361,9 @@ and maintained.
 ## References
 
 - [postcard](https://docs.rs/postcard/latest/postcard/)
-- [iroh-quinn](https://docs.rs/iroh-quinn/latest/iroh_quinn/)
-- [RecvStream](https://docs.rs/iroh-quinn/latest/iroh_quinn/struct.RecvStream.html)
-- [SendStream](https://docs.rs/iroh-quinn/latest/iroh_quinn/struct.SendStream.html)
+- [noq](https://github.com/n0-computer/noq)
+- [RecvStream](https://github.com/n0-computer/noq)
+- [SendStream](https://github.com/n0-computer/noq)
 - [Stream](https://docs.rs/futures/latest/futures/prelude/trait.Stream.html)
 - [Sink](https://docs.rs/futures/latest/futures/sink/trait.Sink.html)
 - [snafu](https://docs.rs/snafu/latest/snafu/)

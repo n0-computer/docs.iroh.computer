@@ -2,9 +2,26 @@
 title: "Using QUIC"
 ---
 
-## Why this matters for iroh
+Every endpoint uses QUIC over UDP by default — no configuration required.
 
-iroh is built on top of QUIC, providing connectivity, NAT traversal, and encrypted connections out of the box. While iroh handles the hard parts of networking—holepunching, relay servers, and discovery—**you still need to design how your application exchanges data once connected**.
+iroh's QUIC implementation is built on
+[noq](https://github.com/n0-computer/noq), which includes multipath support and
+QUIC NAT traversal.
+
+All connections are encrypted and authenticated using TLS 1.3. Holepunching,
+relay fallback, and multipath are all handled at the QUIC layer automatically.
+
+## Custom transports
+
+QUIC over UDP is the default, but iroh supports plugging in additional custom
+transports alongside it. 
+
+All transports, even custom transports [Tor](/transports/tor), [Nym](/transports/nym), and
+[Bluetooth](/transports/bluetooth) deliver QUIC datagrams.
+
+## Using QUIC
+
+While iroh handles the hard parts of networking—holepunching, relay servers, and discovery—**you still need to design how your application exchanges data once connected**.
 
 Many developers reach for iroh expecting it to completely abstract away the underlying transport. However, iroh intentionally exposes QUIC's powerful stream API because:
 
@@ -15,7 +32,7 @@ Many developers reach for iroh expecting it to completely abstract away the unde
 Think of iroh as giving you **reliable, secure tunnels between peers**. This guide shows you how to use QUIC's streaming patterns to build efficient protocols inside those tunnels. Whether you're adapting an existing protocol or designing something new, understanding these patterns will help you make the most of iroh's capabilities.
 
 <Note>
-iroh uses a fork of [Quinn](https://docs.rs/iroh-quinn/latest/iroh_quinn/), a pure-Rust implementation of QUIC maintained by [n0.computer](https://n0.computer). Quinn is production-ready, actively maintained, and used by projects beyond iroh. If you need lower-level QUIC access or want to understand the implementation details, check out the [Quinn documentation](https://docs.rs/iroh-quinn/latest/iroh_quinn/).
+iroh uses [noq](https://github.com/n0-computer/noq), a pure-Rust QUIC implementation maintained by [n0.computer](https://n0.computer). noq is production-ready, actively maintained, and used by projects beyond iroh. If you need lower-level QUIC access or want to understand the implementation details, check out the [noq repository](https://github.com/n0-computer/noq).
 </Note>
 
 

@@ -1,0 +1,15 @@
+---
+title: "Bluetooth (BLE)"
+---
+
+Bluetooth Low Energy (BLE) transport support is not yet available. We plan to
+work with the community to implement it. If you're interested in contributing,
+reach out on [Discord](https://www.iroh.computer/discord).
+
+## Custom transport API
+
+The custom transport API lets anyone implement new transports by implementing a set of traits for low-level packet sending and receiving. Each transport defines its own address type and serialization format.
+
+See [Tor](/transports/tor) and [Nym](/transports/nym) for examples of custom transport implementations today.
+
+Custom transport support requires the `unstable-custom-transports` feature flag. The API is unstable and subject to change. See [PR #3845](https://github.com/n0-computer/iroh/pull/3845) for background.

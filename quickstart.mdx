@@ -37,11 +37,13 @@ connection to the closest relay, and finds ways to address devices by
 `EndpointId`.
 
 ```rust
+use iroh::{Endpoint, presets};
+
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Create an endpoint, it allows creating and accepting
     // connections in the iroh p2p world
-    let endpoint = Endpoint::bind().await?;
+    let endpoint = Endpoint::bind(presets::N0).await?;
 
     // ...
 
@@ -81,14 +83,14 @@ round-trip latency, or whatever else you want to build on top of it, without bui
 
 ```rust
 use anyhow::Result;
-use iroh::{protocol::Router, Endpoint, Watcher};
+use iroh::{protocol::Router, Endpoint, Watcher, presets};
 use iroh_ping::Ping;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Create an endpoint, it allows creating and accepting
     // connections in the iroh p2p world
-    let endpoint = Endpoint::bind().await?;
+    let endpoint = Endpoint::bind(presets::N0).await?;
 
     // bring the endpoint online before accepting connections
     endpoint.online().await;
@@ -116,14 +118,14 @@ arguments and match on them:
 
 ```rust
 use anyhow::Result;
-use iroh::{protocol::Router, Endpoint, Watcher};
+use iroh::{protocol::Router, Endpoint, Watcher, presets};
 use iroh_ping::Ping;
 
 #[tokio::main]
 async fn main() -> Result<()> {
     // Create an endpoint, it allows creating and accepting
     // connections in the iroh p2p world
-    let endpoint = Endpoint::bind().await?;
+    let endpoint = Endpoint::bind(presets::N0).await?;
 
     // Then we initialize a struct that can accept ping requests over iroh connections
     let ping = Ping::new();
@@ -137,7 +139,7 @@ async fn main() -> Result<()> {
     let addr = recv_router.endpoint().addr();
 
     // create a send side & send a ping
-    let send_ep = Endpoint::bind().await?;
+    let send_ep = Endpoint::bind(presets::N0).await?;
     let send_pinger = Ping::new();
     let rtt = send_pinger.ping(&send_ep, addr).await?;
 
@@ -207,7 +209,7 @@ a router that accepts incoming ping requests indefinitely:
 ```rust
 // filepath: src/main.rs
 use anyhow::{anyhow, Result};
-use iroh::{Endpoint, protocol::Router};
+use iroh::{Endpoint, protocol::Router, presets};
 use iroh_ping::Ping;
 use iroh_tickets::{Ticket, endpoint::EndpointTicket};
 use std::env;
@@ -215,7 +217,7 @@ use std::env;
 async fn run_receiver() -> Result<()> {
      // Create an endpoint, it allows creating and accepting
     // connections in the iroh p2p world
-    let endpoint = Endpoint::bind().await?;
+    let endpoint = Endpoint::bind(presets::N0).await?;
 
     // Wait for the endpoint to be accessible by others on the internet
     endpoint.online().await;
@@ -245,7 +247,7 @@ The sender parses the ticket, creates its own endpoint, and pings the receiver's
 ```rust
 // filepath: src/main.rs
 async fn run_sender(ticket: EndpointTicket) -> Result<()> {
-    let send_ep = Endpoint::bind().await?;
+    let send_ep = Endpoint::bind(presets::N0).await?;
     let send_pinger = Ping::new();
     let rtt = send_pinger.ping(&send_ep, ticket.endpoint_addr().clone()).await?;
     println!("ping took: {:?} to complete", rtt);

@@ -34,7 +34,7 @@
             ]
           },
           {
-            "group": "Forming a Network",
+            "group": "Creating Connections",
             "pages": [
               "connecting/creating-endpoint",
               "connecting/custom-relays",
@@ -46,7 +46,7 @@
             ]
           },
           {
-            "group": "Building your App",
+            "group": "Sending Data",
             "pages": [
               "protocols/kv-crdts",
               "protocols/blobs",
@@ -56,6 +56,14 @@
               "examples/chat",
               "protocols/writing-a-protocol",
               "protocols/using-quic"
+            ]
+          },
+          {
+            "group": "Transports",
+            "pages": [
+              "transports/tor",
+              "transports/nym",
+              "transports/bluetooth"
             ]
           },
           {
