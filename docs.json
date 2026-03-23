@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
+  "theme": "aspen",
   "name": "iroh",
   "colors": {
     "primary": "#8790ff",
@@ -9,32 +9,28 @@
   },
   "favicon": "/favicon.ico",
   "navigation": {
-    "tabs": [
+    "groups": [
       {
-        "tab": "Rust Library",
-        "groups": [
+        "group": " ",
+        "pages": [
+          "what-is-iroh",
+          "quickstart",
+          "examples/examples",
           {
-            "group": "Getting Started",
+            "group": "How it works",
+            "expanded": false,
             "pages": [
-              "what-is-iroh",
-              "quickstart",
-              "examples/examples",
-              {
-                "group": "How it works",
-                "expanded": true,
-                "pages": [
-                  "concepts/endpoints",
-                  "concepts/tickets",
-                  "concepts/discovery",
-                  "concepts/relays",
-                  "concepts/nat-traversal",
-                  "concepts/protocols"
-                ]
-              }
+              "concepts/endpoints",
+              "concepts/tickets",
+              "concepts/discovery",
+              "concepts/relays",
+              "concepts/nat-traversal",
+              "concepts/protocols"
             ]
           },
           {
             "group": "Creating Connections",
+            "expanded": false,
             "pages": [
               "connecting/creating-endpoint",
               "connecting/custom-relays",
@@ -47,6 +43,7 @@
           },
           {
             "group": "Sending Data",
+            "expanded": false,
             "pages": [
               "protocols/kv-crdts",
               "protocols/blobs",
@@ -60,6 +57,7 @@
           },
           {
             "group": "Transports",
+            "expanded": false,
             "pages": [
               "transports/tor",
               "transports/nym",
@@ -68,63 +66,58 @@
           },
           {
             "group": "Deployment",
+            "expanded": false,
             "pages": [
               "deployment/dedicated-infrastructure",
-              "deployment/metrics",
-              "deployment/security-privacy",
               "deployment/troubleshooting",
-              "deployment/other-languages"
-            ]
-          },
-          {
-            "group": "About",
-            "pages": ["about/changelog", "about/roadmap", "about/faq"]
-          }
-        ]
-      },
-      {
-        "tab": "Iroh Services",
-        "groups": [
-          {
-            "group": "Getting Started",
-            "pages": [
-              "iroh-services/index",
-              "iroh-services/quickstart",
-              "iroh-services/projects",
-              "iroh-services/access",
-              "iroh-services/support"
-            ]
-          },
-          {
-            "group": "Metrics",
-            "pages": [
-              "iroh-services/metrics/index",
-              "iroh-services/metrics/how-it-works",
-              "iroh-services/metrics/endpoint",
-              "iroh-services/metrics/glossary"
-            ]
-          },
-          {
-            "group": "Relays",
-            "pages": [
-              "iroh-services/relays/index",
+              "deployment/other-languages",
               "iroh-services/relays/public",
               "iroh-services/relays/managed"
             ]
           },
           {
-            "group": "Net Diagnostics",
-            "pages": ["iroh-services/net-diagnostics/quickstart", "iroh-services/net-diagnostics/usage", "iroh-services/net-diagnostics/reports"]
+            "group": "Metrics",
+            "expanded": false,
+            "pages": [
+              "iroh-services/metrics/index",
+              "iroh-services/quickstart",
+              "iroh-services/access",
+              "iroh-services/metrics/how-it-works",
+              "iroh-services/metrics/endpoint",
+              "iroh-services/metrics/glossary",
+              "deployment/metrics"
+            ]
           },
           {
-            "group": "Billing",
+            "group": "Network Diagnostics",
+            "expanded": false,
+            "pages": [
+              "iroh-services/net-diagnostics/quickstart",
+              "iroh-services/net-diagnostics/usage",
+              "iroh-services/net-diagnostics/reports"
+            ]
+          },
+          {
+            "group": "Pricing",
+            "expanded": false,
             "pages": [
               "iroh-services/billing/index",
               "iroh-services/billing/manage-subscription",
               "iroh-services/billing/control-costs",
               "iroh-services/billing/faq"
             ]
-          }
+          },
+          {
+            "group": "About",
+            "expanded": false,
+            "pages": [
+              "about/changelog",
+              "about/roadmap",
+              "deployment/security-privacy",
+              "about/faq"
+            ]
+          },
+          "iroh-services/support"
         ]
       }
     ]
@@ -144,7 +137,6 @@
         "href": "https://iroh.computer/blog"
       }
     ],
-
     "primary": {
       "type": "button",
       "label": "Login",
@@ -160,7 +152,9 @@
     }
   },
   "integrations": {
-    "plausible": { "domain": "docs.iroh.computer" }
+    "plausible": {
+      "domain": "docs.iroh.computer"
+    }
   },
   "redirects": [
     {
