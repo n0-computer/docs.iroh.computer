@@ -67,7 +67,7 @@ use iroh::Endpoint;
 
 // enables dialing by EndpointAddrs that only have EndpointIDs by default:
 let ep = Endpoint::builder()
-    .bind()
+    .bind(presets::N0)
     .await?;
 ```
 

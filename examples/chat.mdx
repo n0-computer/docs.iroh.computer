@@ -68,7 +68,7 @@ async fn main() -> Result<()> {
         // for you each time.
         .secret_key(secret_key)
         // Bind the endpoint to the socket.
-        .bind()
+        .bind(presets::N0)
         .await?;
 
     println!("> our endpoint id: {}", endpoint.id());
@@ -101,7 +101,7 @@ async fn main() -> Result<()> {
     // The `Endpoint` will generate a `SecretKey` for
     // you under the hood if you don't supply one.
     let endpoint = Endpoint::builder()
-        .bind()
+        .bind(presets::N0)
         .await?;
 
     println!("> our endpoint id: {}", endpoint.id());

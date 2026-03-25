@@ -38,7 +38,7 @@ use iroh_gossip::{net::Gossip, ALPN as GOSSIP_ALPN};
 async fn main() -> anyhow::Result<()> {
     // create an iroh endpoint that includes the standard discovery mechanisms
     // we've built at number0
-    let endpoint = Endpoint::builder().bind().await?;
+    let endpoint = Endpoint::bind(presets::N0).await?;
 
     // build the gossip protocol
     let gossip = Gossip::builder().spawn(endpoint.clone());

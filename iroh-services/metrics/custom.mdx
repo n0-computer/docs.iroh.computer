@@ -41,7 +41,7 @@ use iroh_services::Client;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    let endpoint = Endpoint::builder().bind().await?;
+    let endpoint = Endpoint::bind(presets::N0).await?;
     endpoint.online().await;
     
     let client = Client::new(&endpoint, "YOUR_API_KEY").await?;
