@@ -1,0 +1,51 @@
+---
+title: "Compatibility"
+---
+
+This page documents iroh's supported operating systems, hardware targets, network transports, and language bindings.
+
+## Operating Systems
+
+iroh supports all major operating systems:
+
+| OS | Supported |
+|----|-----------|
+| Linux | Yes |
+| macOS | Yes |
+| Windows | Yes |
+| Android | Yes |
+| iOS | Yes |
+| WebAssembly (browser) | Yes — see [WebAssembly & Browsers](/deployment/other-languages#webassembly-and-browsers) |
+
+## Hardware
+
+iroh runs on a wide range of hardware, from servers to microcontrollers.
+
+### Tested Platforms
+
+| Hardware | Notes |
+|----------|-------|
+| x86\_64 servers & desktops | Fully supported  |
+| Apple Silicon (M-series) | Fully supported |
+| Raspberry Pi | Fully supported |
+| ESP32 | Supported with caveats |
+
+### ESP32 Resource Requirements
+
+We have built a version of iroh which has been tested on ESP32 with very constrained resources:
+
+- **4 MiB Flash / 4 MiB RAM** — working, though 4 MiB flash is right at the limit
+- **4 MiB Flash / 2 MiB RAM** — also works in testing
+
+To learn more, [contact us for options ](https://cal.com/team/number-0/n0-protocol-services?overlayCalendar=true).
+
+## Network Transports
+
+| Transport | Status |
+|-----------|--------|
+| UDP / IP (internet) | Yes |
+| WiFi / LAN | Yes |
+| Ethernet | Yes |
+| Bluetooth (BLE) | [In progress](/transports/bluetooth) |
+| Tor | [Yes](/transports/tor) |
+| Nym | [Yes](/transports/nym) |
