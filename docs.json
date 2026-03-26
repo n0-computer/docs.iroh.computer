@@ -19,6 +19,8 @@
               "what-is-iroh",
               "quickstart",
               "examples/examples",
+              "compatibility",
+              "deployment/other-languages",
               {
                 "group": "How it works",
                 "expanded": true,
@@ -69,6 +71,7 @@
           {
             "group": "Deployment",
             "pages": [
+              "deployment/compatibility",
               "deployment/dedicated-infrastructure",
               "deployment/metrics",
               "deployment/security-privacy",
