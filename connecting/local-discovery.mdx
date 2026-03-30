@@ -27,7 +27,7 @@ iroh = { version = "0.nn", features = ["address-lookup-mdns"] }
 Then configure your endpoint to use local discovery concurrently with the default DNS discovery:
 
 ```rust
-use iroh::{Endpoint, presets};
+use iroh::{Endpoint, endpoint::presets};
 
 let mdns = iroh::address_lookup::mdns::MdnsAddressLookup::builder();
 let ep = Endpoint::builder()
