@@ -46,7 +46,7 @@ cargo add iroh-services
 Then, in your code, create a client and connect your endpoint to Iroh Services.
 
 ```rust
-use iroh::Endpoint;
+use iroh::{Endpoint, endpoint::presets};
 use iroh_services::Client;
 
 #[tokio::main]

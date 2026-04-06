@@ -37,7 +37,7 @@ connection to the closest relay, and finds ways to address devices by
 `EndpointId`.
 
 ```rust
-use iroh::{Endpoint, presets};
+use iroh::{Endpoint, endpoint::presets};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -83,7 +83,7 @@ round-trip latency, or whatever else you want to build on top of it, without bui
 
 ```rust
 use anyhow::Result;
-use iroh::{protocol::Router, Endpoint, Watcher, presets};
+use iroh::{protocol::Router, Endpoint, Watcher, endpoint::presets};
 use iroh_ping::Ping;
 
 #[tokio::main]
@@ -118,7 +118,7 @@ arguments and match on them:
 
 ```rust
 use anyhow::Result;
-use iroh::{protocol::Router, Endpoint, Watcher, presets};
+use iroh::{protocol::Router, Endpoint, Watcher, endpoint::presets};
 use iroh_ping::Ping;
 
 #[tokio::main]
@@ -209,7 +209,7 @@ a router that accepts incoming ping requests indefinitely:
 ```rust
 // filepath: src/main.rs
 use anyhow::{anyhow, Result};
-use iroh::{Endpoint, protocol::Router, presets};
+use iroh::{Endpoint, protocol::Router, endpoint::presets};
 use iroh_ping::Ping;
 use iroh_tickets::{Ticket, endpoint::EndpointTicket};
 use std::env;
