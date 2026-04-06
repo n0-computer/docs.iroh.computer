@@ -25,26 +25,25 @@ us](https://cal.com/team/number-0/n0-protocol-services?overlayCalendar=true) to
 discuss your requirements. 
 
 
-### Write a Wrapper
+### Build Your Own Wrapper
 
-If you're comfortable with a little bit of Rust, write your own small  
-wrapper around iroh that covers just what you need and exposes your application
-specific functionality over a local http server or daemon. This approach: 
+If you're comfortable with a little bit of Rust, you can write your own wrapper
+around iroh. This can be a small application-specific binary that exposes
+functionality over a local HTTP server or daemon, or a full FFI wrapper from
+Rust to your target language (Python, Go, etc.). Either way, this gives you:
 
-- Gives you full control over the functionality you expose
-- Requires minimal Rust knowledge beyond basic CLI patterns
-- Can be called from any language 
-- Check out [sendme](https://github.com/n0-computer/sendme), [callme](https://github.com/n0-computer/callme), and [dumbpipe](https://github.com/n0-computer/dumbpipe) as examples
-
-### Build Your Own FFI Wrapper
-
-Write your own FFI wrapper from Rust to your target language (Python, Go, etc.)
-that covers just what you need from the iroh API and protocols. This gives you:
-
-- Complete control over the API surface
+- Full control over the API surface you expose
 - The ability to tailor it to your specific use case
-- Type-safe bindings for your language
-- Reference [iroh-ffi](https://github.com/n0-computer/iroh-ffi) for patterns and examples
+- Type-safe bindings for your language (with FFI)
+- Can be called from any language (with an HTTP wrapper)
+- Check out [sendme](https://github.com/n0-computer/sendme), [callme](https://github.com/n0-computer/callme), and [dumbpipe](https://github.com/n0-computer/dumbpipe) as examples, and reference [iroh-ffi](https://github.com/n0-computer/iroh-ffi) for FFI patterns
+
+While it's easy to get a first version working, **ongoing maintenance and
+testing is the hard part**. Iroh is under active development, and keeping
+wrappers up to date with new releases, testing across platforms, and handling
+edge cases takes sustained effort. The number0 team runs a testing lab for
+this purpose. If you need production-grade bindings, [contact
+us](https://cal.com/team/number-0/iroh-services) to discuss your requirements.
 
 ### Community Bindings
 
