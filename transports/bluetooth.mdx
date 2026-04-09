@@ -2,9 +2,15 @@
 title: "Bluetooth (BLE)"
 ---
 
-Bluetooth support is open source under the [AGPL
-license](https://www.gnu.org/licenses/agpl-3.0.en.html). If you'd like to obtain
-an enterprise dual license, please [contact us](https://cal.com/team/number-0/iroh-services?overlayCalendar=true). Learn more about [iroh's licensing options](https://iroh.computer/enterprise).
+Bluetooth support is powered by [blew](https://github.com/mcginty/blew), an open source BLE (Bluetooth Low Energy) Rust library focused on enabling peer-to-peer applications.
+
+<Warning>
+blew is in alpha state and is subject to change without backwards-compatibility until otherwise noted.
+</Warning>
+
+blew implements both Central and Peripheral modes, with support for macOS, iOS, Android, and Linux. It is async-only and requires a Tokio runtime.
+
+blew is open source under the [AGPL license](https://www.gnu.org/licenses/agpl-3.0.en.html). Commercial licenses are available for use cases where the AGPL is not suitable. Contact the [number0 team](https://cal.com/team/number-0/iroh-services?overlayCalendar=true) or [me@jakebot.org](mailto:me@jakebot.org) for details.
 
 ## Custom transport API
 
