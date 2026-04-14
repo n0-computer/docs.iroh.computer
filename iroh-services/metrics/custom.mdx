@@ -44,7 +44,10 @@ async fn main() -> anyhow::Result<()> {
     let endpoint = Endpoint::bind(presets::N0).await?;
     endpoint.online().await;
     
-    let client = Client::new(&endpoint, "YOUR_API_KEY").await?;
+    let client = Client::builder(&endpoint)
+        .api_secret_from_str("YOUR_API_KEY")?
+        .build()
+        .await?;
     
     // Report a custom metric
     client.metric("document_written", 1).await?;

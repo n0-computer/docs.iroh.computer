@@ -42,10 +42,13 @@ use iroh_services::Client;
 async fn main() -> anyhow::Result<()> {
     let endpoint = Endpoint::bind(presets::N0).await?;
     endpoint.online().await;
-    
+
     // Use your API key to authenticate
-    let client = Client::new(&endpoint, "YOUR_API_KEY").await?;
-    
+    let client = Client::builder(&endpoint)
+        .api_secret_from_str("YOUR_API_KEY")?
+        .build()
+        .await?;
+
     Ok(())
 }
 ```
