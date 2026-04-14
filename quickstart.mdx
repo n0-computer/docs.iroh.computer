@@ -3,6 +3,8 @@ title: "Quickstart"
 description: "Start building with iroh in minutes"
 ---
 
+import IrohServicesSetup from '/snippets/iroh-services-setup.mdx';
+
 In this tutorial, we will build a ping program that connects two endpoints using
 a ticket over DNS. The full example of this code can be [viewed on
 github](https://github.com/n0-computer/iroh-ping). 
@@ -303,6 +305,15 @@ You should see the round-trip time printed by the sender.
 <Note>
 **Connection issues?** If the sender can't reach the receiver or you're seeing errors, visit our [troubleshooting guide](/deployment/troubleshooting) to enable detailed logging and use `iroh-doctor` to diagnose network problems.
 </Note>
+
+## Part 3: Setup Project Metrics
+
+So far your endpoints are running entirely on their own. [Iroh
+Services](https://services.iroh.computer?utm_source=docs&utm_content=quickstart)
+gives you a dashboard for metrics, access control, dedicated relays, and remote
+diagnostics across all your endpoints.
+
+<IrohServicesSetup />
 
 ## More Tutorials
 
