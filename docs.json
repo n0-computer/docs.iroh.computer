@@ -71,7 +71,6 @@
           {
             "group": "Deployment",
             "pages": [
-              "deployment/compatibility",
               "deployment/dedicated-infrastructure",
               "deployment/metrics",
               "deployment/security-privacy",
