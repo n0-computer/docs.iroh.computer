@@ -3,6 +3,8 @@ title: "Quickstart"
 description: "Start building with iroh in minutes"
 ---
 
+import IrohServicesSetup from '/snippets/iroh-services-setup.mdx';
+
 In this tutorial, we will build a ping program that connects two endpoints using
 a ticket over DNS. The full example of this code can be [viewed on
 github](https://github.com/n0-computer/iroh-ping). 
@@ -37,7 +39,7 @@ connection to the closest relay, and finds ways to address devices by
 `EndpointId`.
 
 ```rust
-use iroh::{Endpoint, presets};
+use iroh::{Endpoint, endpoint::presets};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -83,7 +85,7 @@ round-trip latency, or whatever else you want to build on top of it, without bui
 
 ```rust
 use anyhow::Result;
-use iroh::{protocol::Router, Endpoint, Watcher, presets};
+use iroh::{protocol::Router, Endpoint, Watcher, endpoint::presets};
 use iroh_ping::Ping;
 
 #[tokio::main]
@@ -118,7 +120,7 @@ arguments and match on them:
 
 ```rust
 use anyhow::Result;
-use iroh::{protocol::Router, Endpoint, Watcher, presets};
+use iroh::{protocol::Router, Endpoint, Watcher, endpoint::presets};
 use iroh_ping::Ping;
 
 #[tokio::main]
@@ -209,7 +211,7 @@ a router that accepts incoming ping requests indefinitely:
 ```rust
 // filepath: src/main.rs
 use anyhow::{anyhow, Result};
-use iroh::{Endpoint, protocol::Router, presets};
+use iroh::{Endpoint, protocol::Router, endpoint::presets};
 use iroh_ping::Ping;
 use iroh_tickets::{Ticket, endpoint::EndpointTicket};
 use std::env;
@@ -303,6 +305,15 @@ You should see the round-trip time printed by the sender.
 <Note>
 **Connection issues?** If the sender can't reach the receiver or you're seeing errors, visit our [troubleshooting guide](/deployment/troubleshooting) to enable detailed logging and use `iroh-doctor` to diagnose network problems.
 </Note>
+
+## Part 3: Setup Project Metrics
+
+So far your endpoints are running entirely on their own. [Iroh
+Services](https://services.iroh.computer?utm_source=docs&utm_content=quickstart)
+gives you a dashboard for metrics, access control, dedicated relays, and remote
+diagnostics across all your endpoints.
+
+<IrohServicesSetup />
 
 ## More Tutorials
 

@@ -6,16 +6,16 @@ description: "Diagnose user connectivity issues with remote diagnostic reporting
 When you click **Run Diagnostics** in the dashboard, the platform dials back into your
 endpoint using the capability token your app granted. Your `ClientHost` receives
 the request, runs the diagnostics locally (probing UDP connectivity, NAT
-behavior, relay latency, and port mapping), and returns the report to n0des for
+behavior, relay latency, and port mapping), and returns the report to iroh services for
 display.
 
 ## Integrating Net Diagnostics Into Your App
 
 To add net diagnostics support to your own iroh application, you need to:
 
-1. Connect to the n0des platform with an `iroh_services::Client`
-2. Grant the `NetDiagnosticsCap::GetAny` capability to n0des so it can request diagnostics from your endpoint
-3. Run a `ClientHost` so n0des can dial back into your endpoint
+1. Connect to iroh services with an `iroh_services::Client`
+2. Grant the `NetDiagnosticsCap::GetAny` capability to iroh services so it can request diagnostics from your endpoint
+3. Run a `ClientHost` so iroh services can dial back into your endpoint
 
 [See the `net_diagnostics` example in the `iroh-services` repository for a complete working example of this integration.](https://github.com/n0-computer/iroh-services/tree/main/examples/net_diagnostics.rs)
 
@@ -35,10 +35,10 @@ terminal, export it as an environment variable or config file, or hardcode it in
 recommended for production):
 
 ```bash
-export N0DES_API_SECRET=<your-api-secret>
+export IROH_SERVICES_API_SECRET=<your-api-secret>
 ```
 
-### 3. Connect to n0des and Grant Capability
+### 3. Connect to iroh services and Grant Capability
 
 Here's a minimal integration:
 

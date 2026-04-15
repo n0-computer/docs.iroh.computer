@@ -16,6 +16,8 @@
           "what-is-iroh",
           "quickstart",
           "examples/examples",
+          "compatibility",
+          "deployment/other-languages",
           {
             "group": "How it works",
             "expanded": false,
@@ -26,6 +28,21 @@
               "concepts/relays",
               "concepts/nat-traversal",
               "concepts/protocols"
+              "what-is-iroh",
+              "quickstart",
+              "examples/examples",
+              {
+                "group": "How it works",
+                "expanded": true,
+                "pages": [
+                  "concepts/endpoints",
+                  "concepts/tickets",
+                  "concepts/discovery",
+                  "concepts/relays",
+                  "concepts/nat-traversal",
+                  "concepts/protocols"
+                ]
+              }
             ]
           },
           {

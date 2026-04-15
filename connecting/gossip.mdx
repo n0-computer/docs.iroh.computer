@@ -35,7 +35,7 @@ application. Similar to a router in webserver library, it runs a loop accepting
 incoming connections and routes them to the specific protocol handler, based on
 ALPN.
 
-### Structuing your application
+### Structuring your application
 
 Every gossip network should have a `TopicID`. This `TopicId` should be a string
 shared between all endpoints that want to take part in the broadcast group.
@@ -47,7 +47,7 @@ There are different ways to structure your application around topics, depending 
 ### Example
 
 ```rust
-use iroh::{protocol::Router, Endpoint, EndpointId, presets};
+use iroh::{protocol::Router, Endpoint, EndpointId, endpoint::presets};
 use iroh_gossip::{api::Event, Gossip, TopicId};
 use n0_error::{Result, StdResultExt};
 use n0_future::StreamExt;
@@ -154,7 +154,7 @@ let topic_id = TopicId::from_bytes(topic_id_bytes.into());
 
 ### Waiting for peers
 
-Before sending messages, yoou might want to wait until you have connected to at
+Before sending messages, you might want to wait until you have connected to at
 least one other peer. This is because the gossip protocol works by forwarding
 messages between connected peers, so if you are not connected to anyone, your
 messages won't go anywhere.

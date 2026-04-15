@@ -29,7 +29,7 @@ tor --ControlPort 9051 --CookieAuthentication 0
 ## Usage
 
 ```rust
-use iroh::{Endpoint, SecretKey, presets};
+use iroh::{Endpoint, SecretKey, endpoint::presets};
 use iroh_tor_transport::TorCustomTransport;
 
 let secret_key = SecretKey::generate(&mut rand::rng());

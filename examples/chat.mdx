@@ -47,7 +47,7 @@ The first step is creating a basic endpoint configuration. Replace the following
 
 ```rust
 use anyhow::Result;
-use iroh::{Endpoint, SecretKey};
+use iroh::{Endpoint, SecretKey, endpoint::presets};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -68,7 +68,7 @@ async fn main() -> Result<()> {
         // for you each time.
         .secret_key(secret_key)
         // Bind the endpoint to the socket.
-        .bind()
+        .bind(presets::N0)
         .await?;
 
     println!("> our endpoint id: {}", endpoint.id());
@@ -92,7 +92,7 @@ Then update the code to implement basic gossip functionality:
 ```rust
 use anyhow::Result;
 use iroh::protocol::Router;
-use iroh::Endpoint;
+use iroh::{Endpoint, endpoint::presets};
 use iroh_gossip::net::Gossip;
 
 #[tokio::main]
@@ -101,7 +101,7 @@ async fn main() -> Result<()> {
     // The `Endpoint` will generate a `SecretKey` for
     // you under the hood if you don't supply one.
     let endpoint = Endpoint::builder()
-        .bind()
+        .bind(presets::N0)
         .await?;
 
     println!("> our endpoint id: {}", endpoint.id());
@@ -134,7 +134,7 @@ Topics are the fundamental unit of communication in the gossip protocol. Here's 
 ```rust
 use anyhow::Result;
 use iroh::protocol::Router;
-use iroh::{Endpoint, presets};
+use iroh::{Endpoint, endpoint::presets};
 use iroh_gossip::{net::Gossip, proto::TopicId};
 
 #[tokio::main]
@@ -324,7 +324,7 @@ use std::collections::HashMap;
 use anyhow::Result;
 use futures_lite::StreamExt;
 use iroh::protocol::Router;
-use iroh::{Endpoint, EndpointId, presets};
+use iroh::{Endpoint, EndpointId, endpoint::presets};
 use iroh_gossip::{
     api::{GossipReceiver, Event},
     net::Gossip,
@@ -535,7 +535,7 @@ use std::{collections::HashMap, fmt, str::FromStr};
 use anyhow::Result;
 use clap::Parser;
 use futures_lite::StreamExt;
-use iroh::{protocol::Router, Endpoint, EndpointAddr, EndpointId, presets};
+use iroh::{protocol::Router, Endpoint, EndpointAddr, EndpointId, endpoint::presets};
 use iroh_gossip::{
     api::{GossipReceiver, Event},
     net::Gossip,

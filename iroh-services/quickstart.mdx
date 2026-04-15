@@ -3,6 +3,8 @@ title: "Quickstart"
 description: "Get started with Iroh Services in minutes"
 ---
 
+import IrohServicesSetup from '/snippets/iroh-services-setup.mdx';
+
 This guide will walk you through hooking up your first endpoint to Iroh Services.
 
 ## Prerequisites
@@ -14,64 +16,11 @@ This guide will walk you through hooking up your first endpoint to Iroh Services
 Please refer to our [Using Iroh Services with Other
 Languages](deployment/other-languages) guide for more information.*
 
-## Step 1: Create a Project
+## Setup
 
-After signing in, [create a new project](https://services.iroh.computer/projects/projects/new?utm_source=docs&utm_content=quickstart). This will be your
-sandbox for all endpoints. This is the control center where you can manage and
-monitor your infrastructure, including relays, metrics, and networks.
+<IrohServicesSetup />
 
-[![Create Project](/images/new-project.png)](https://services.iroh.computer/projects/projects/new?utm_source=docs&utm_content=quickstart)
-
-
-## Step 2: Get Your API Key
-
-Navigate to your project's API Keys tab and create a new API key. You'll need
-this to authenticate your endpoints.
-
-![Create API Key](/images/create-api-key.png)
-
-![See API Key](/images/see-api-key.png)
-
-## Step 3: Add the Iroh Services Client
-
-Add the `iroh-services` crate to your `Cargo.toml`:
-
-```
-cargo add iroh-services
-```
-
-
-## Step 4: Connect Your Endpoint
-
-Then, in your code, create a client and connect your endpoint to Iroh Services.
-
-```rust
-use iroh::Endpoint;
-use iroh_services::Client;
-
-#[tokio::main]
-async fn main() -> anyhow::Result<()> {
-    // Create an iroh endpoint
-    let endpoint = Endpoint::builder().bind().await?;
-    
-    // Wait for the endpoint to be online
-    endpoint.online().await;
-    
-    // Create the Iroh Services client with your API key
-    let client = Client::new(&endpoint, "YOUR_API_KEY").await?;
-    
-    // Your endpoint is now reporting metrics to Iroh Services!
-    
-    Ok(())
-}
-```
-
-## Step 5: View Your Endpoint on the Dashboard
-
-Go to your project's **Endpoints** page. You should see your endpoint listed as
-online. Click on it to view details.
-
-## Step 6: View Metrics
+## View Metrics
 
 Navigate to the **Metrics** tab to see real-time and historical metrics about your endpoint's connectivity, direct data rate, and more.
 

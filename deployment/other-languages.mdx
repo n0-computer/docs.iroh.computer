@@ -1,44 +1,54 @@
 ---
-title: "Using Iroh in Other Languages"
+title: "Language Bindings"
 ---
+
 
 While iroh is written in Rust, it can be used in many other languages and
 environments. 
 
 There are several practical approaches to using iroh in your language of choice:
 
-### Write a Wrapper
 
-If you're comfortable with a little bit of Rust, write your own small  
-wrapper around iroh that covers just what you need and exposes your application
-specific functionality over a local http server or daemon. This approach: 
+## Language Bindings
 
-- Gives you full control over the functionality you expose
-- Requires minimal Rust knowledge beyond basic CLI patterns
-- Can be called from any language 
-- Check out [sendme](https://github.com/n0-computer/sendme), [callme](https://github.com/n0-computer/callme), and [dumbpipe](https://github.com/n0-computer/dumbpipe) as examples
+| Language |  Status |
+|----------|--------|
+| [Rust](https://github.com/n0-computer/iroh) | Official |
+| Kotlin | [Contact us](https://cal.com/team/number-0/iroh-services) |
+| Swift | [Contact us](https://cal.com/team/number-0/iroh-services) |
+| Python | [Contact us](https://cal.com/team/number-0/iroh-services) |
+| [TypeScript](https://github.com/rayhanadev/iroh-ts) | Community |
 
-### Build Your Own FFI Wrapper
+The [n0.computer](https://n0.computer) engineering team can help build and maintain production-grade
+bindings for your language. [Contact
+us](https://cal.com/team/number-0/n0-protocol-services?overlayCalendar=true) to
+discuss your requirements. 
 
-Write your own FFI wrapper from Rust to your target language (Python, Go, etc.)
-that covers just what you need from the iroh API and protocols. This gives you:
 
-- Complete control over the API surface
+### Build Your Own Wrapper
+
+If you're comfortable with a little bit of Rust, you can write your own wrapper
+around iroh. This can be a small application-specific binary that exposes
+functionality over a local HTTP server or daemon, or a full FFI wrapper from
+Rust to your target language (Python, Go, etc.). Either way, this gives you:
+
+- Full control over the API surface you expose
 - The ability to tailor it to your specific use case
-- Type-safe bindings for your language
-- Reference [iroh-ffi](https://github.com/n0-computer/iroh-ffi) for patterns and examples
+- Type-safe bindings for your language (with FFI)
+- Can be called from any language (with an HTTP wrapper)
+
+While it's easy to get a first version working, **ongoing maintenance and
+testing is the hard part**. Iroh is under active development, and keeping
+wrappers up to date with new releases, testing across platforms, and handling
+edge cases takes sustained effort. The number0 team runs a testing lab for
+this purpose. If you need production-grade bindings, [contact
+us](https://cal.com/team/number-0/iroh-services) to discuss your requirements.
 
 ### Community Bindings
 
 The community has built language bindings that are open source and available for use:
 
 **TypeScript/JavaScript**: [iroh-ts](https://github.com/rayhanadev/iroh-ts) - Community-maintained TypeScript bindings for iroh, enabling JavaScript and TypeScript developers to use iroh in their applications.
-
-### Professional Bindings Support
-
-The number0 engineering team can help you build and maintain production-grade
-language-specific bindings. [Contact us](https://n0.computer) to discuss your
-requirements.
 
 
 ## WebAssembly and Browsers
