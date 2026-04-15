@@ -27,10 +27,7 @@
               "concepts/discovery",
               "concepts/relays",
               "concepts/nat-traversal",
-              "concepts/protocols"
-              "what-is-iroh",
-              "quickstart",
-              "examples/examples",
+              "concepts/protocols",
               {
                 "group": "How it works",
                 "expanded": true,
