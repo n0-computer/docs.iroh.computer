@@ -28,18 +28,6 @@
               "concepts/relays",
               "concepts/nat-traversal",
               "concepts/protocols",
-              {
-                "group": "How it works",
-                "expanded": true,
-                "pages": [
-                  "concepts/endpoints",
-                  "concepts/tickets",
-                  "concepts/discovery",
-                  "concepts/relays",
-                  "concepts/nat-traversal",
-                  "concepts/protocols"
-                ]
-              }
             ]
           },
           {
