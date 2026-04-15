@@ -2,7 +2,7 @@
 title: "Using QUIC"
 ---
 
-Every endpoint uses QUIC over UDP by default — no configuration required.
+Every endpoint uses QUIC over UDP by default. No configuration required.
 
 iroh's QUIC implementation is built on
 [noq](https://github.com/n0-computer/noq), which includes multipath support and

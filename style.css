@@ -1,0 +1,9 @@
+#sidebar-content a[class*="text-gray-700"],
+#sidebar-content button[class*="text-gray-700"] {
+  color: rgb(17, 24, 39);
+}
+
+.dark #sidebar-content a[class*="dark:text-gray-400"],
+.dark #sidebar-content button[class*="dark:text-gray-400"] {
+  color: #ddd;
+}

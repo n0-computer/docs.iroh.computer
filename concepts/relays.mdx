@@ -10,7 +10,7 @@ Relays serve two roles in iroh:
 1. **NAT Traversal.**  When two endpoints first connect, they exchange network information through the relay to attempt a direct P2P connection.
 2. **Encrypted traffic fallback.** If a direct connection can't be established (due to strict NATs, firewalls, or other network conditions), traffic flows through the relay instead.
 
-Once a direct path is established, the relay steps back and data flows peer-to-peer. Relay servers **cannot read** any of the traffic they handle — it's encrypted end-to-end.
+Once a direct path is established, the relay steps back and data flows peer-to-peer. Relay servers **cannot read** any of the traffic they handle; it's encrypted end-to-end.
 
 In practice, roughly 9 out of 10 networking conditions allow a direct connection. iroh's NAT traversal implementation is deterministic: if it works between two devices once, it will continue to work as long as their networking setup stays stable.
 
@@ -27,7 +27,7 @@ In practice, roughly 9 out of 10 networking conditions allow a direct connection
 
 ## Why relays are better
 
-Unlike traditional servers, relay servers are **stateless**. They don't store your application data — they just facilitate connections. 
+Unlike traditional servers, relay servers are **stateless**. They don't store your application data; they just facilitate connections. 
 
 - **No database synchronization.** Nothing to replicate across relay instances.
 - **No state migration.** When a relay goes down, clients reconnect to another with no data loss.
@@ -51,14 +51,14 @@ Public relays:
 
 ## Dedicated relays
 
-Dedicated relays are relay servers provisioned exclusively for your project — either managed through Iroh Services or self-hosted. 
+Dedicated relays are relay servers provisioned exclusively for your project, either managed through Iroh Services or self-hosted.
 
 They offer:
 
-- **Isolation** — no noisy neighbors; your traffic is yours alone
-- **Uptime guarantees** — SLAs available via [Iroh Services](/iroh-services/relays)
-- **Version locking** — stay on a specific iroh version or run blue/green deployments
-- **Multi-region & multi-cloud** — deploy relays across regions and providers for resilience
+- **Isolation**: no noisy neighbors; your traffic is yours alone
+- **Uptime guarantees**: SLAs available via [Iroh Services](/iroh-services/relays)
+- **Version locking**: stay on a specific iroh version or run blue/green deployments
+- **Multi-region & multi-cloud**: deploy relays across regions and providers for resilience
 
 ## Deploy your own relay
 

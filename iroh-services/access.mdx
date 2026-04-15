@@ -1,63 +1,53 @@
 ---
-title: "Access Control"
-description: "Manage authorization and API keys for your Iroh Services project"
+title: "API Keys"
+description: "Authenticate your endpoint to Iroh Services to push metrics and connectivity reports"
 ---
 
-Some features on your Iroh Services project require authorization.
+API keys authenticate your endpoint to Iroh Services. Iroh itself is permissionless (connections between endpoints don't need authorization), so API keys only come into play when an endpoint pushes data into your project.
 
-Examples of what **doesn't** require authorization:
-- Synchronizing data across relays 
-- [NAT traversal](/concepts/nat-traversal) connections to other iroh endpoints
+## What API keys authorize
 
-Examples of what **does** require authorization:
+API keys are required for:
+
 - Uploading metrics from endpoints to your project
 - Sending network diagnostics reports from endpoints to your project
 
-# API Keys
+API keys are **not** required for:
 
-The Iroh Services platform adds access control on top of iroh's permissionless system to control who
-can & cannot make use of resources backed by cloud infrastructure.
+- Synchronizing data across relays
+- [NAT traversal](/concepts/nat-traversal) connections to other iroh endpoints
 
-Access control in Iroh Services aims to be as minimal as possible, leaving room for your
-app to have its own opinion of how access control should work within your app.
+## Get an API key
 
-Connections over iroh are end-to-end encrypted, using ED25519 keypairs on either
-end of the connection. Iroh Services re-uses ED keys for SSH-style access.
+After signing in, [create a new project](https://services.iroh.computer/projects/projects/new?utm_source=docs&utm_content=quickstart). This is your sandbox for all endpoints, the control center where you manage relays, metrics, and networks.
 
-To authorize endpoints to push metrics to your project, Iroh Services uses API Keys.
+[![Create Project](/images/new-project.png)](https://services.iroh.computer/projects/projects/new?utm_source=docs&utm_content=quickstart)
 
-## Creating an API Key
+Then navigate to your project's **Settings → API Keys** tab and click **Create API Key**. The key is shown once on creation, so copy it somewhere safe.
 
-1. Go to your project dashboard
-2. Click on the "API Keys" tab
-3. Click "Create API Key"
-4. Give your API Key a name
-5. Click "Create"
+![Create API Key](/images/create-api-key.png)
+
+![See API Key](/images/see-api-key.png)
+
+The environment variable used by the Rust client is `IROH_SERVICES_API_SECRET` (named for legacy reasons; same thing as your API key).
+
+## Use it in your app
+
+Pass the key when building your `iroh_services::Client`:
 
 ```rust
-use iroh::{Endpoint, endpoint::presets};
 use iroh_services::Client;
 
-#[tokio::main]
-async fn main() -> anyhow::Result<()> {
-    let endpoint = Endpoint::bind(presets::N0).await?;
-    endpoint.online().await;
-
-    // Use your API key to authenticate
-    let client = Client::builder(&endpoint)
-        .api_secret_from_str("YOUR_API_KEY")?
-        .build()
-        .await?;
-
-    Ok(())
-}
+let client = Client::builder(&endpoint)
+    .api_secret_from_str("YOUR_API_KEY")?
+    .build()
+    .await?;
 ```
 
-See the [quickstart](/iroh-services/quickstart) for a full example of using the Iroh Services client.
+In production, load the key from a config file or environment variable instead of hardcoding it.
 
-## Permissions
+For a full walkthrough (creating an endpoint, naming it, and verifying it on the dashboard) see the [Iroh Services quickstart](/iroh-services/quickstart).
 
-Right now, API Keys only control access to pushing metrics to your project.
-In the future, API Keys may be used to control access to other resources
-within your project. If you are interested in permissions or time-based access
-control, please [contact us](https://n0.computer/contact).
+## What's next
+
+Today, API keys gate access to metrics and net diagnostics uploads. Future versions may support per-resource permissions and time-based access control. If your use case needs that today, [contact us](https://n0.computer/contact).

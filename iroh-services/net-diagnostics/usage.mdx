@@ -1,6 +1,6 @@
 ---
-title: "Usage"
-description: "Diagnose user connectivity issues with remote diagnostic reporting"
+title: "Network Diagnostics"
+description: "Integrate on-demand connectivity reports into your iroh application"
 ---
 
 When you click **Run Diagnostics** in the dashboard, the platform dials back into your
@@ -25,17 +25,15 @@ Add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-iroh-services = { version = "...", features = ["net_diagnostics", "client_host"] }
+iroh-services = "0.13"
 ```
 
-### 2. Get Your API Secret
+### 2. Get Your API Key
 
-Go to your project's **Settings** page and copy the API secret. In your
-terminal, export it as an environment variable or config file, or hardcode it in your app (not
-recommended for production):
+Create one from your project's **Settings → API Keys** tab. See [API Keys](/iroh-services/access) for the full walkthrough. Then export it as an environment variable:
 
 ```bash
-export IROH_SERVICES_API_SECRET=<your-api-secret>
+export IROH_SERVICES_API_SECRET=<your-api-key>
 ```
 
 ### 3. Connect to iroh services and Grant Capability
@@ -84,6 +82,24 @@ async fn setup_net_diagnostics(endpoint: &Endpoint) -> Result<Router> {
 }
 ```
 
+## Understanding Reports
+
+### NAT Types
+
+| NAT Type | What it means | Connection quality |
+|---|---|---|
+| **No NAT** | Local address matches public address | Direct connections work with correct firewall config |
+| **Endpoint-Independent** | One outbound UDP packet opens a port for any sender | NAT traversal works reliably |
+| **Endpoint-Dependent** | Only the specific destination can reply (symmetric NAT) | Connections will primarily use relays |
+| **Unknown** | NAT behavior could not be determined | Check UDP connectivity |
+
+### Connectivity Summary
+
+The report includes a color-coded connectivity summary:
+
+- **Green**: UDP works and NAT is favorable. Direct connections should work.
+- **Orange**: Endpoint-Dependent NAT. Direct connections may be difficult; traffic will often be relayed.
+- **Red**: No UDP connectivity. Traffic will be relayed.
 
 ## Troubleshooting
 
