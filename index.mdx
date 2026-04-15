@@ -1,14 +1,12 @@
 ---
 title: "Introduction"
-description: "iroh establishes direct connections whenever possible, falling back to relay servers if necessary. Get fast, cheap, reliable connections that are authenticated and encrypted end-to-end using QUIC."
+description: "iroh establishes direct connections whenever possible, falling back to relay servers if necessary. Get fast, efficient, reliable connections that are authenticated and encrypted end-to-end using QUIC."
 ---
 
-## Setting up
-
-
+## Get started
 
 <Card
-  title="Start here"
+  title="Connect two endpoints"
   icon="rocket"
   href="/quickstart"
   horizontal
@@ -16,14 +14,50 @@ description: "iroh establishes direct connections whenever possible, falling bac
   Follow our quickstart guide.
 </Card>
 
-## Make it yours
+  <Card
+    title="What is iroh?"
+    icon="circle-info"
+    href="/what-is-iroh"
+    horizontal
+  >
+  Get started with the basics.
+  </Card>
+
+## Dive deeper
+
+<Columns cols={2}>
+  <Card
+    title="Gossip"
+    icon="share-nodes"
+    href="/transports/gossip"
+  >
+    Connect peers over a shared secret with gossip.
+  </Card>
+  <Card
+    title="Compatibility"
+    icon="mobile"
+    href="/compatibility"
+  >
+    Connect users across platforms and languages with our cross-platform libraries.
+  </Card>
+  <Card
+    title="Troubleshooting"
+    icon="wrench"
+    href="/troubleshooting"
+  >
+    Debug connectivity issues with logging, the iroh-doctor CLI, or remote Network Diagnostics.
+  </Card>
+
+</Columns>
+
+## Sending Data
 
 Add the protocols and topologies to fit your needs. Iroh is modular and
 composable, so you can pick and choose what you need.
 
 <Columns cols={2}>
   <Card
-    title="Blobs protocol"
+    title="Blobs"
     icon="image"
     href="/protocols/blobs"
   >
@@ -44,11 +78,11 @@ composable, so you can pick and choose what you need.
     Build low-latency audio and video streaming applications.
   </Card>
   <Card
-    title="API documentation"
+    title="RPC"
     icon="terminal"
-    href="https://docs.rs/iroh"
+    href="/protocols/rpc"
   >
-  Explore the full iroh Rust API documentation.
+    Build remote procedure call applications.
   </Card>
 </Columns>
 
@@ -57,7 +91,8 @@ composable, so you can pick and choose what you need.
 <Card
   title="See complete examples"
   icon="stars"
-  href="/examples"
+  href="/examples/examples"
 >
   Browse our showcase of open source example applications.
 </Card>
+

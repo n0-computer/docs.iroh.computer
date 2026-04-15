@@ -137,3 +137,9 @@ Report {
 ```
 
 The above output shows that the endpoint is using the `use1-1.relay.iroh.network` relay, and that it has a latency of 10ms. This is the relay that the endpoint will use to establish connections with other endpoints.
+
+## Network Diagnostics
+
+To diagnose connectivity issues on your users' endpoints in production, use [Network Diagnostics](/iroh-services/net-diagnostics/usage). It runs the same kinds of probes as `iroh-doctor` — UDP connectivity, NAT type, relay latency, port mapping — but you trigger them from the Iroh Services dashboard against any of your project's online endpoints. The report comes back to the dashboard, so you can see what your user is experiencing without asking them to run a CLI tool.
+
+To enable diagnostics on an endpoint, grant the `NetDiagnosticsCap::GetAny` capability and run a `ClientHost`. See the [Network Diagnostics integration guide](/iroh-services/net-diagnostics/usage) for the full setup.

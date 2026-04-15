@@ -15,9 +15,20 @@
         "pages": [
           "what-is-iroh",
           "quickstart",
-          "examples/examples",
           "compatibility",
           "deployment/other-languages",
+          {
+            "group": "Tutorials",
+            "expanded": true,
+            "pages": [
+              "connect-two-endpoints",
+              "iroh-services/quickstart",
+              "iroh-services/net-diagnostics/quickstart",
+              "protocols/using-quic",
+              "examples/chat",
+              "add-a-relay"
+            ]
+          },
           {
             "group": "How it works",
             "expanded": false,
@@ -35,7 +46,6 @@
             "expanded": false,
             "pages": [
               "connecting/creating-endpoint",
-              "connecting/custom-relays",
               "connecting/dns-discovery",
               "connecting/dht-discovery",
               "connecting/local-discovery",
@@ -52,9 +62,7 @@
               "protocols/rpc",
               "protocols/automerge",
               "protocols/streaming",
-              "examples/chat",
-              "protocols/writing-a-protocol",
-              "protocols/using-quic"
+              "protocols/writing-a-protocol"
             ]
           },
           {
@@ -67,36 +75,25 @@
             ]
           },
           {
-            "group": "Deployment",
+            "group": "Relays",
             "expanded": false,
             "pages": [
               "deployment/dedicated-infrastructure",
-              "deployment/troubleshooting",
-              "deployment/other-languages",
               "iroh-services/relays/public",
               "iroh-services/relays/managed"
             ]
           },
           {
-            "group": "Metrics",
+            "group": "Observability",
             "expanded": false,
             "pages": [
               "iroh-services/metrics/index",
-              "iroh-services/quickstart",
               "iroh-services/access",
+              "iroh-services/net-diagnostics/usage",
               "iroh-services/metrics/how-it-works",
               "iroh-services/metrics/endpoint",
               "iroh-services/metrics/glossary",
               "deployment/metrics"
-            ]
-          },
-          {
-            "group": "Network Diagnostics",
-            "expanded": false,
-            "pages": [
-              "iroh-services/net-diagnostics/quickstart",
-              "iroh-services/net-diagnostics/usage",
-              "iroh-services/net-diagnostics/reports"
             ]
           },
           {
@@ -119,6 +116,8 @@
               "about/faq"
             ]
           },
+          "troubleshooting",
+          "examples/examples",
           "iroh-services/support"
         ]
       }
@@ -162,6 +161,18 @@
     {
       "source": "/concepts/holepunching",
       "destination": "/concepts/nat-traversal"
+    },
+    {
+      "source": "/iroh-services/net-diagnostics/reports",
+      "destination": "/iroh-services/net-diagnostics/usage"
+    },
+    {
+      "source": "/connecting/custom-relays",
+      "destination": "/add-a-relay"
+    },
+    {
+      "source": "/deployment/troubleshooting",
+      "destination": "/troubleshooting"
     }
   ]
 }

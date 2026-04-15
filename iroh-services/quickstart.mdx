@@ -1,34 +1,88 @@
 ---
-title: "Quickstart"
+title: "See your direct data rate"
 description: "Get started with Iroh Services in minutes"
 ---
 
 import IrohServicesSetup from '/snippets/iroh-services-setup.mdx';
 
-This guide will walk you through hooking up your first endpoint to Iroh Services.
+## What is direct data rate?
 
-## Prerequisites
+When two iroh endpoints connect, traffic either flows **directly** between them
+(peer-to-peer) or gets routed through a relay server. Direct connections are
+faster and cheaper. Relayed traffic adds latency and burns relay bandwidth.
 
-- [An Iroh Services Account](https://services.iroh.computer?utm_source=docs&utm_content=quickstart)
-- [Rust Language](https://rust-lang.org/tools/install/) 
+**Direct data rate** is the percentage of your network's traffic flowing
+directly. A **high rate** means NAT traversal is working and your users are getting
+the best possible connection. A **low rate** means too much traffic is falling back
+to relays, which is worth investigating.
 
-*While iroh is currently only available in Rust, it can be deployed in many other languages and environments.
-Please refer to our [Using Iroh Services with Other
-Languages](deployment/other-languages) guide for more information.*
+This guide walks you through hooking up your first endpoint to Iroh Services so you can see direct data rate and other connectivity metrics for your own network. You'll need an [Iroh Services account](https://services.iroh.computer?utm_source=docs&utm_content=quickstart) with an [API key](/iroh-services/access).
 
-## Setup
+## Quickstart
 
-<IrohServicesSetup />
+### 1. Install Rust
 
-## View Metrics
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
 
-Navigate to the **Metrics** tab to see real-time and historical metrics about your endpoint's connectivity, direct data rate, and more.
+### 2. Get your API key
+
+Create one from your project's **Settings → API Keys** tab. See [API Keys](/iroh-services/access) for the full walkthrough. Then export it as an environment variable:
+
+```bash
+export IROH_SERVICES_API_SECRET=<your-api-key>
+```
+
+### 3. Run the example
+
+Clone the repository and run the `quickstart` example:
+
+```bash
+git clone https://github.com/n0-computer/iroh-services
+cd iroh-services
+cargo run --example quickstart
+```
+
+Open your project's **Endpoints** page in the dashboard. Your endpoint should appear online within a few seconds. Navigate to the **Metrics** tab to see real-time direct data rate and other connectivity metrics.
 
 ![Metrics Dashboard](/images/metrics-dashboard.png)
 
-## Next Steps
+The **Direct Data Rate** chart shows what percentage of your traffic flowed directly between endpoints versus through a relay over time.
 
-- [Access Control](/iroh-services/access): Learn how to manage API keys and permissions
-- [Metrics](/iroh-services/metrics): Understand the metrics collected by Iroh Services
-- [Relays](/iroh-services/relays): Set up dedicated relay servers for your network
-- [Net Diagnostics](/iroh-services/net-diagnostics): Run remote diagnostics on your endpoints to understand connectivity issues
+![Direct data rate metric](/images/metrics-direct-data-rate.png)
+
+## Build it into your own app
+
+To wire Iroh Services into your own iroh application instead of running the example, follow the full setup below.
+
+<IrohServicesSetup />
+
+## Next steps
+
+<Card
+  title="Diagnose a connectivity issue"
+  icon="stethoscope"
+  href="/iroh-services/net-diagnostics/quickstart"
+  horizontal
+>
+  Run remote diagnostic reports on your users' endpoints to find out why connections fail.
+</Card>
+
+<Card
+  title="Add a relay"
+  icon="server"
+  href="/add-a-relay"
+  horizontal
+>
+  Configure dedicated relays for your endpoints and learn why they matter for production.
+</Card>
+
+<Card
+  title="Build a chat app"
+  icon="comments"
+  href="/examples/chat"
+  horizontal
+>
+  Build a peer-to-peer chat application from scratch using the iroh gossip protocol.
+</Card>

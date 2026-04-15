@@ -2,7 +2,7 @@
 title: "Blobs"
 ---
 
-the blobs protocol works with sequences of opaque data ("blobs"), which are often the bytes of a file.
+The blobs protocol works with sequences of opaque data ("blobs"), which are often the bytes of a file.
 It's a protocol for data storage and transfer. `iroh-blobs` is _content-addressed_, which means data is always referenced to by it's cryptographic hash. Blobs implements request/response and 
 streaming transfers blobs or ranges of blobs, using hashes to verify streams remain intact.
 
@@ -47,7 +47,7 @@ cargo add iroh-blobs
 - [Primary docs and API reference](https://docs.rs/iroh-blobs/latest/iroh_blobs/)
 - [Code samples on GitHub](https://github.com/n0-computer/iroh-blobs/tree/main/examples)
 
-## Tutorial
+## Usage
 
 Let's dive into iroh by building a simple file transfer tool in rust! 
 
@@ -320,5 +320,5 @@ The full example with the very latest version of iroh and iroh-blobs can be [vie
 If you're hungry for more, check out
 - the [iroh rust documentation](https://docs.rs/iroh),
 - Video streaming with [iroh-roq](/protocols/streaming),
-- Writing your [own protocols](/protocols/writing-a-protocol.mdx),
-- [other examples](/examples), or
+- Writing your [own protocols](/protocols/writing-a-protocol),
+- [other examples](/examples/examples), or

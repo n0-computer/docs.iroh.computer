@@ -1,5 +1,5 @@
 ---
-title: "Quickstart"
+title: "Diagnose a connectivity issue"
 description: "Diagnose user connectivity issues with remote diagnostic reporting"
 ---
 
@@ -24,9 +24,9 @@ your project on iroh services to assess how to help your user get the best
 connection they can.
 
 
-#### 1. Get your API secret
+### 1. Get your API key
 
-Go to your project's **Settings** page and copy the API secret. In your terminal, export it as an environment variable:
+Create one from your project's **Settings → API Keys** tab — see [API Keys](/iroh-services/access) for the full walkthrough. Then export it as an environment variable:
 
 ```bash
 export IROH_SERVICES_API_SECRET=<your-api-key>
@@ -39,7 +39,7 @@ Clone the repository and run the `net_diagnostics` example:
 ```bash
 git clone https://github.com/n0-computer/iroh-services.git
 cd iroh-services
-cargo run --example net_diagnostics --features net_diagnostics,client_host --features="example"
+cargo run --example net_diagnostics
 ```
 
 Leave this terminal open. The example connects to iroh services, grants the diagnostics capability to your project, and waits for incoming diagnostics requests.
@@ -58,7 +58,47 @@ The report appears on the **Net Diagnostics** page and includes:
 - **Relay Latencies** — per-relay IPv4, IPv6, and HTTPS round-trip times
 - **Captive Portal** — detection of captive portal interference
 
-## Next Steps
+## Integrate Net Diagnostics into your app
 
-- [Integrate diagnostics into your own app with the usage guide](./usage) to get on-demand reports from your users' endpoints.
-- [Learn more about report details](./reports) to understand what each metric means and how it impacts connectivity.
+The example above uses a ready-made client. To get on-demand reports from your users' endpoints, wire the same integration into your own iroh app:
+
+1. Add `iroh-services` to your `Cargo.toml`
+2. Build an `iroh_services::Client` and grant the `NetDiagnosticsCap::GetAny` capability to your project
+3. Run a `ClientHost` so the platform can dial back into the endpoint when you click **Run Diagnostics**
+
+<Card
+  title="Full integration guide"
+  icon="code"
+  href="./usage"
+>
+  Complete walkthrough with Cargo config, a minimal Rust integration, and a reference for reading reports (NAT type, connectivity summary).
+</Card>
+
+## Next steps
+
+<Card
+  title="Add a relay"
+  icon="server"
+  href="/add-a-relay"
+  horizontal
+>
+  Configure dedicated relays for your endpoints. Often the fix for the connectivity issues you just diagnosed.
+</Card>
+
+<Card
+  title="See your direct data rate"
+  icon="chart-line"
+  href="/iroh-services/quickstart"
+  horizontal
+>
+  Watch direct data rate and other connectivity metrics over time so you can see whether your fixes are working.
+</Card>
+
+<Card
+  title="Troubleshooting"
+  icon="wrench"
+  href="/troubleshooting"
+  horizontal
+>
+  Broader debug toolkit covering logging and the iroh-doctor CLI for local diagnostics.
+</Card>
