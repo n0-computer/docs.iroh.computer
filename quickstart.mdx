@@ -5,15 +5,15 @@ description: "Connect two iroh endpoints in five minutes"
 
 In five minutes you'll have two iroh endpoints connecting over the [iroh-ping](https://github.com/n0-computer/iroh-ping) protocol. Clone the repo, run the included quickstart example as a receiver in one terminal and a sender in another, and watch the round-trip time print.
 
-### 1. (Optional) Set your API key
+### 1. Set your API key
 
-If you want to see your endpoint's metrics in the [Iroh Services dashboard](https://services.iroh.computer), get an API key from your project's **Settings → API Keys** tab and export it as an environment variable. See [API Keys](/iroh-services/access) for the full walkthrough.
+If you want to see your metrics and verify connectivity, get an API key from your project's **Settings → API Keys** tab and export it as an environment variable. See [API Keys](/iroh-services/access) for the full walkthrough.
 
 ```bash
 export IROH_SERVICES_API_SECRET=<your-api-key>
 ```
 
-The example will pick up the key automatically. Skip this step if you just want to see iroh-ping work.
+The example will pick up the key automatically. This step is optional, skip this step if you just want to see iroh-ping work.
 
 ### 2. Install Rust
 
