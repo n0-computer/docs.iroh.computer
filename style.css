@@ -1,13 +1,9 @@
-#sidebar a,
-#sidebar button,
-#sidebar [class*="text-gray"],
-#sidebar [class*="text-slate"] {
-  color: rgb(55, 65, 81);
+#sidebar-content a[class*="text-gray-700"],
+#sidebar-content button[class*="text-gray-700"] {
+  color: rgb(17, 24, 39);
 }
 
-.dark #sidebar a,
-.dark #sidebar button,
-.dark #sidebar [class*="text-gray"],
-.dark #sidebar [class*="text-slate"] {
-  color: rgb(229, 231, 235);
+.dark #sidebar-content a[class*="dark:text-gray-400"],
+.dark #sidebar-content button[class*="dark:text-gray-400"] {
+  color: #ddd;
 }

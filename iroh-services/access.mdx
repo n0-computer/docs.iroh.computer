@@ -3,7 +3,7 @@ title: "API Keys"
 description: "Authenticate your endpoint to Iroh Services to push metrics and connectivity reports"
 ---
 
-API keys authenticate your endpoint to Iroh Services. Iroh itself is permissionless — connections between endpoints don't need authorization — so API keys only come into play when an endpoint pushes data into your project.
+API keys authenticate your endpoint to Iroh Services. Iroh itself is permissionless (connections between endpoints don't need authorization), so API keys only come into play when an endpoint pushes data into your project.
 
 ## What API keys authorize
 
@@ -19,17 +19,17 @@ API keys are **not** required for:
 
 ## Get an API key
 
-After signing in, [create a new project](https://services.iroh.computer/projects/projects/new?utm_source=docs&utm_content=quickstart). This is your sandbox for all endpoints — the control center where you manage relays, metrics, and networks.
+After signing in, [create a new project](https://services.iroh.computer/projects/projects/new?utm_source=docs&utm_content=quickstart). This is your sandbox for all endpoints, the control center where you manage relays, metrics, and networks.
 
 [![Create Project](/images/new-project.png)](https://services.iroh.computer/projects/projects/new?utm_source=docs&utm_content=quickstart)
 
-Then navigate to your project's **Settings → API Keys** tab and click **Create API Key**. The key is shown once on creation — copy it somewhere safe.
+Then navigate to your project's **Settings → API Keys** tab and click **Create API Key**. The key is shown once on creation, so copy it somewhere safe.
 
 ![Create API Key](/images/create-api-key.png)
 
 ![See API Key](/images/see-api-key.png)
 
-The environment variable used by the Rust client is `IROH_SERVICES_API_SECRET` (named for legacy reasons — same thing as your API key).
+The environment variable used by the Rust client is `IROH_SERVICES_API_SECRET` (named for legacy reasons; same thing as your API key).
 
 ## Use it in your app
 
@@ -46,7 +46,7 @@ let client = Client::builder(&endpoint)
 
 In production, load the key from a config file or environment variable instead of hardcoding it.
 
-For a full walkthrough — creating an endpoint, naming it, and verifying it on the dashboard — see the [Iroh Services quickstart](/iroh-services/quickstart).
+For a full walkthrough (creating an endpoint, naming it, and verifying it on the dashboard) see the [Iroh Services quickstart](/iroh-services/quickstart).
 
 ## What's next
 

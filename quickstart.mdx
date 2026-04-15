@@ -1,35 +1,50 @@
 ---
 title: "Quickstart"
-description: "Get an iroh endpoint running and reporting to Iroh Services in three steps"
+description: "Connect two iroh endpoints in five minutes"
 ---
 
-Get an endpoint up and running in five minutes by cloning the `iroh-services` repo and running the included quickstart example. You'll need an [Iroh Services account](https://services.iroh.computer?utm_source=docs&utm_content=quickstart) with an [API key](/iroh-services/access).
+In five minutes you'll have two iroh endpoints connecting over the [iroh-ping](https://github.com/n0-computer/iroh-ping) protocol. Clone the repo, run the included quickstart example as a receiver in one terminal and a sender in another, and watch the round-trip time print.
 
-### 1. Install Rust
+### 1. (Optional) Set your API key
 
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
-
-### 2. Get your API key
-
-Create one from your project's **Settings → API Keys** tab. See [API Keys](/iroh-services/access) for the full walkthrough. Then export it as an environment variable:
+If you want to see your endpoint's metrics in the [Iroh Services dashboard](https://services.iroh.computer), get an API key from your project's **Settings → API Keys** tab and export it as an environment variable. See [API Keys](/iroh-services/access) for the full walkthrough.
 
 ```bash
 export IROH_SERVICES_API_SECRET=<your-api-key>
 ```
 
-### 3. Run the example
+The example will pick up the key automatically. Skip this step if you just want to see iroh-ping work.
 
-Clone the repository and run the `quickstart` example:
+### 2. Install Rust
 
 ```bash
-git clone https://github.com/n0-computer/iroh-services
-cd iroh-services
-cargo run --example quickstart
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
-Open your project's **Endpoints** page in the dashboard. Your endpoint should appear online within a few seconds.
+### 3. Clone iroh-ping
+
+```bash
+git clone https://github.com/n0-computer/iroh-ping
+cd iroh-ping
+```
+
+### 4. Run the receiver
+
+```bash
+cargo run --example quickstart receiver
+```
+
+The receiver prints a ticket. Copy it.
+
+### 5. Run the sender
+
+In another terminal:
+
+```bash
+cargo run --example quickstart sender <TICKET>
+```
+
+Replace `<TICKET>` with the ticket from the receiver. The sender will print the round-trip time once the connection succeeds.
 
 ## Next steps
 
@@ -41,7 +56,7 @@ Integrate iroh into your own app by following one of the tutorials below.
   href="/connect-two-endpoints"
   horizontal
 >
-  Build a peer-to-peer ping app from scratch using the iroh-ping protocol and tickets.
+  Build the receiver/sender ping app from scratch and learn how iroh-ping, tickets, and routers fit together.
 </Card>
 
 <Card

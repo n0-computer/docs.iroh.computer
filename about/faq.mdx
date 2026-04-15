@@ -4,13 +4,13 @@ title: "FAQ"
 
 ## Does iroh use relay servers?
 
-Yes — and relay servers are a core part of what makes iroh connections reliable. See the [Relays concept page](/concepts/relays) for a full overview.
+Yes, and relay servers are a core part of what makes iroh connections reliable. See the [Relays concept page](/concepts/relays) for a full overview.
 
-Relays serve two roles: they assist with [NAT Traversal](/concepts/nat-traversal) to help establish direct P2P connections, and they act as an encrypted fallback when a direct connection can't be made. In practice, roughly 9 out of 10 connections go direct — the relay is only a stepping stone.
+Relays serve two roles: they assist with [NAT Traversal](/concepts/nat-traversal) to help establish direct P2P connections, and they act as an encrypted fallback when a direct connection can't be made. In practice, roughly 9 out of 10 connections go direct; the relay is only a stepping stone.
 
 Because relays are **stateless** (they route encrypted packets but store nothing), they're cheap to run and easy to scale. There's no database to sync, no state to migrate, and automatic failover across relay instances is built in.
 
-By default iroh is configured with four public relay servers run by number 0 — two in the US, one in Europe, and one in Asia — free to use for development and testing. To prevent abuse, throughput through public relays is rate-limited. For production workloads, you can run a [dedicated relay](/concepts/relays#dedicated-relays) or [self-host your own](/concepts/relays#deploy-your-own-relay).
+By default iroh is configured with four public relay servers run by number 0 (two in the US, one in Europe, and one in Asia), free to use for development and testing. To prevent abuse, throughput through public relays is rate-limited. For production workloads, you can run a [dedicated relay](/concepts/relays#dedicated-relays) or [self-host your own](/concepts/relays#deploy-your-own-relay).
 
 
 ## Can relays read the traffic they route?
@@ -38,7 +38,7 @@ Be aware of security caveats to forward secrecy when using the [opt-in 0-RTT fea
 
 You're not dependent on us. The relay code is [open-source](https://github.com/n0-computer/iroh/tree/main/iroh-relay), and running your own is possible. 
 
-The easiest path is a [dedicated relay via Iroh Services](/concepts/relays#dedicated-relays), which gives you an isolated, managed relay with uptime guarantees. If you'd rather self-host, you need a server with a public IP and a DNS name pointing to it — automatic TLS via [ACME](https://en.wikipedia.org/wiki/Automatic_Certificate_Management_Environment) is built in. Either way, configure the relay URL for your endpoint (see [Use your own relay](/add-a-relay)) and you're set.
+The easiest path is a [dedicated relay via Iroh Services](/concepts/relays#dedicated-relays), which gives you an isolated, managed relay with uptime guarantees. If you'd rather self-host, you need a server with a public IP and a DNS name pointing to it. Automatic TLS via [ACME](https://en.wikipedia.org/wiki/Automatic_Certificate_Management_Environment) is built in. Either way, configure the relay URL for your endpoint (see [Use your own relay](/add-a-relay)) and you're set.
 
 Running your own relay doesn't affect interoperability. Your endpoints can still connect to peers using other relay servers, and since relays are stateless and logic lives at the client, can be swapped independently.
 
@@ -67,7 +67,7 @@ endpoint.watch_addr()
     .map(|addr| addr.relay_urls().next().is_some())
 ```
 
-This returns an `impl Watchable<Value = bool>` that reflects whether the endpoint believes it's connected to a relay — a reasonable signal for "has outside connectivity".
+This returns an `impl Watchable<Value = bool>` that reflects whether the endpoint believes it's connected to a relay, a reasonable signal for "has outside connectivity".
 
 
 ## How do you limit which nodes can join?
@@ -88,9 +88,9 @@ We think it's particularly helpful to write application-specific discovery mecha
 
 ## What ports does iroh use?
 
-Iroh listens on **Two UDP ports** — one for IPv4 and one for IPv6, used for direct P2P connections; configurable via [`endpoint::Builder`](https://docs.rs/iroh/latest/iroh/endpoint/struct.Builder.html)
+Iroh listens on **Two UDP ports**: one for IPv4 and one for IPv6, used for direct P2P connections; configurable via [`endpoint::Builder`](https://docs.rs/iroh/latest/iroh/endpoint/struct.Builder.html)
 
-Iroh will work behind firewalls that only allow TCP outbound, but direct connections won't be possible in that case — all traffic will fall back to the relay.
+Iroh will work behind firewalls that only allow TCP outbound, but direct connections won't be possible in that case; all traffic will fall back to the relay.
 
 It's totally possible that you maintain connections to multiple relays at a time, if you're connected to iroh endpoints that have another home relay than yours. Each of these connections will use another TCP socket.
 
@@ -105,51 +105,51 @@ Iroh supports custom transports, which means you can route connections over Tor.
 The company behind iroh is number 0.
 It is partly venture capital and partly founder backed (as in: founders have invested their own money).
 Number 0 is healthy and has investors we actually think are a value-add.
-We earn revenue through [Iroh Services](https://services.iroh.computer), which provides managed relay and DNS discovery infrastructure to keep your endpoints connected — from free public infrastructure for development and testing, to dedicated cloud deployments for production.
+We earn revenue through [Iroh Services](https://services.iroh.computer), which provides managed relay and DNS discovery infrastructure to keep your endpoints connected, from free public infrastructure for development and testing to dedicated cloud deployments for production.
 We rely on iroh remaining open source, and are committed to keeping it that way, including server-side code for relays and DNS discovery.
 
 
 ## How does iroh compare to WebRTC?
 
-Both iroh and WebRTC solve the same core problem — establishing direct P2P connections across NATs — but they make very different tradeoffs.
+Both iroh and WebRTC solve the same core problem (establishing direct P2P connections across NATs) but they make very different tradeoffs.
 
 **WebRTC** was designed for real-time media (audio and video) in browsers. It brings a complex stack: ICE for NAT traversal, STUN/TURN for relay, DTLS for encryption, SCTP for data channels, and a signaling layer that you have to implement yourself (WebRTC deliberately leaves signaling unspecified). This flexibility is powerful but adds significant complexity and is more expensive to run at scale.
 
-**Iroh** is built around QUIC (TLS 1.3) and focuses on reliable, encrypted data connections. The API is simpler: you connect to an endpoint ID and get a QUIC connection. Relays are stateless and cheap. Hole-punching works roughly 9 out of 10 times. There's no signaling layer to design — discovery mechanisms handle address resolution.
+**Iroh** is built around QUIC (TLS 1.3) and focuses on reliable, encrypted data connections. The API is simpler: you connect to an endpoint ID and get a QUIC connection. Relays are stateless and cheap. Hole-punching works roughly 9 out of 10 times. There's no signaling layer to design; discovery mechanisms handle address resolution.
 
 - **Browser support.** Both WebRTC and iroh work in browsers. [Get started with iroh in the browser](https://docs.iroh.computer/deployment/other-languages#webassembly-and-browsers). However, WebRTC remains the only choice for hole-punched connections due to the current state of Web APIs.
 - **Media streaming.** WebRTC has first-class support for audio and video. Iroh is a general-purpose data transport, but you can run [MoQ (Media over QUIC)](https://www.iroh.computer/blog/secure-video-everywhere) on top of iroh for low-latency media streaming.
 - **Simplicity.** Iroh's connection model is significantly simpler to reason about and integrate. No SDP, no ICE candidate negotiation, no signaling server to build.
 
-If you're building a native app, iroh will generally be easier to work with and perform better. If you need browser support, WebRTC remains the default choice — iroh doesn't run in the browser.
+If you're building a native app, iroh will generally be easier to work with and perform better. If you need browser support, WebRTC remains the default choice; iroh doesn't run in the browser.
 
 
 ## How does iroh compare to MQTT?
 
 MQTT and iroh solve different problems, though they can overlap in IoT and device communication scenarios.
 
-**MQTT** is a publish/subscribe messaging protocol built around a central broker. Devices connect to the broker, publish messages to topics, and subscribe to topics they care about. It's lightweight, well-suited to constrained hardware, and great for fan-out messaging (one message to many subscribers). The tradeoff is that the broker sits in the middle of all communication — it sees everything, and it's a single point of failure and scaling pressure.
+**MQTT** is a publish/subscribe messaging protocol built around a central broker. Devices connect to the broker, publish messages to topics, and subscribe to topics they care about. It's lightweight, well-suited to constrained hardware, and great for fan-out messaging (one message to many subscribers). The tradeoff is that the broker sits in the middle of all communication; it sees everything, and it's a single point of failure and scaling pressure.
 
-**Iroh** is a P2P transport. There's no broker — endpoints connect directly to each other, and all traffic is end-to-end encrypted. This means no central party can observe your data, and there's no broker to scale or maintain.
+**Iroh** is a P2P transport. There's no broker; endpoints connect directly to each other, and all traffic is end-to-end encrypted. This means no central party can observe your data, and there's no broker to scale or maintain.
 
 The main practical differences:
 
 - **Pub/sub.** MQTT has native topic-based pub/sub built in. Iroh doesn't, though [iroh-gossip](https://github.com/n0-computer/iroh-gossip) provides gossip-based fan-out on top of iroh connections.
 - **Privacy.** MQTT brokers require you to encrypt messages at the application level. Iroh connections are always end-to-end encrypted out of the box.
 - **Central infrastructure.** MQTT requires a broker that all clients can reach. Iroh works across NATs without any central server, using relays only as a fallback.
-- **Constrained devices.** MQTT was designed for low-power, low-bandwidth hardware. Iroh's QUIC-based stack has higher resource requirements, but we do have solutions for constrained IoT environments — [get in touch](https://iroh.computer/contact) if this is relevant to your use case.
+- **Constrained devices.** MQTT was designed for low-power, low-bandwidth hardware. Iroh's QUIC-based stack has higher resource requirements, but we do have solutions for constrained IoT environments. [Get in touch](https://iroh.computer/contact) if this is relevant to your use case.
 
-If you need fan-out messaging to many subscribers, MQTT is a proven fit. If you need direct, private, encrypted connections between devices — especially across NATs — iroh is the stronger choice.
+If you need fan-out messaging to many subscribers, MQTT is a proven fit. If you need direct, private, encrypted connections between devices (especially across NATs) iroh is the stronger choice.
 
 
 ## How do iroh and libp2p compare?
 
-Iroh is designed to be modular: you get a solid, reliable connection layer and compose protocols on top of it. Libp2p bundles more functionality — DHT, pubsub, transport negotiation — but those components are more tightly coupled, which makes the system harder to configure and reason about. The iroh project was founded by developers deeply involved with libp2p who wanted a library where you spend time on your protocol, not on networking configuration.
+Iroh is designed to be modular: you get a solid, reliable connection layer and compose protocols on top of it. Libp2p bundles more functionality (DHT, pubsub, transport negotiation) but those components are more tightly coupled, which makes the system harder to configure and reason about. The iroh project was founded by developers deeply involved with libp2p who wanted a library where you spend time on your protocol, not on networking configuration.
 
 Where iroh tends to win:
 
 - **Peer discovery and NAT traversal.** Iroh's [NAT traversal](/concepts/nat-traversal) and discovery story is significantly smoother. Getting peers to find each other reliably is one of the hardest parts of libp2p in practice; iroh has largely solved this.
-- **Direct messaging.** Iroh gives you reliable, encrypted QUIC connections directly to specific peers — straightforward to build routing or direct message delivery on top of.
+- **Direct messaging.** Iroh gives you reliable, encrypted QUIC connections directly to specific peers. Straightforward to build routing or direct message delivery on top of.
 - **Gossip.** [iroh-gossip](https://github.com/n0-computer/iroh-gossip/) provides gossipsub-like fan-out on top of iroh connections.
 - **Blob transfer.** Iroh has a built-in [blob transfer protocol](https://docs.rs/iroh-blobs) for exchanging hash-addressed data, similar to what you'd use IPFS for.
 

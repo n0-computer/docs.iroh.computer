@@ -11,13 +11,13 @@ By default, iroh endpoints use the public relays maintained by [n0.computer](htt
 
 Running dedicated relays gives you:
 
-- **Isolation** — your traffic isn't mixed with other developers on the shared public network
-- **Performance** — relays close to your users reduce latency and improve NAT traversal success
-- **Capacity** — the public relays are rate-limited; your own relays have no rate limits and capacity you control
-- **Redundancy** — distribute relays across regions or cloud providers for failover
-- **Compliance** — keep relayed traffic inside your own network or jurisdiction
+- **Isolation**: your traffic isn't mixed with other developers on the shared public network
+- **Performance**: relays close to your users reduce latency and improve NAT traversal success
+- **Capacity**: the public relays are rate-limited; your own relays have no rate limits and capacity you control
+- **Redundancy**: distribute relays across regions or cloud providers for failover
+- **Compliance**: keep relayed traffic inside your own network or jurisdiction
 
-Iroh's relay architecture is uniquely suited to multi-relay deployments because relays are stateless — clients automatically fail over between relays in your list, so adding capacity or surviving an outage is just a matter of running more relay processes. See [Dedicated Infrastructure](/deployment/dedicated-infrastructure) for the deeper architecture story.
+Iroh's relay architecture is uniquely suited to multi-relay deployments because relays are stateless. Clients automatically fail over between relays in your list, so adding capacity or surviving an outage is just a matter of running more relay processes. See [Dedicated Infrastructure](/deployment/dedicated-infrastructure) for the deeper architecture story.
 
 ## Get a relay
 
@@ -47,10 +47,10 @@ Once you have one or more relay URLs, configure your endpoint to use them:
 
 ## Recommended setup
 
-For production, run at least two relays in different geographic regions — for example, one in North America and one in Europe. iroh clients try multiple relays automatically, so if one becomes unreachable they'll seamlessly fall back to another.
+For production, run at least two relays in different geographic regions, for example one in North America and one in Europe. iroh clients try multiple relays automatically, so if one becomes unreachable they'll seamlessly fall back to another.
 
 Each relay handles up to 60,000 concurrent connections. For larger deployments, run multiple relays per region or [contact us](https://cal.com/team/number-0/n0-protocol-services) to size up.
 
 ## Learn more
 
-For the full architecture story — why stateless relays make uptime management easier, how multi-cloud resilience works, and managed relay deployment steps — see [Dedicated Infrastructure](/deployment/dedicated-infrastructure).
+For the full architecture story (why stateless relays make uptime management easier, how multi-cloud resilience works, and managed relay deployment steps) see [Dedicated Infrastructure](/deployment/dedicated-infrastructure).

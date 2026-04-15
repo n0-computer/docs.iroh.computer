@@ -23,7 +23,7 @@ async fn main() -> anyhow::Result<()> {
     endpoint.online().await;
 
     // Create the Iroh Services client with your API key. Giving the endpoint
-    // a name makes it easy to identify on the dashboard — unnamed endpoints
+    // a name makes it easy to identify on the dashboard. Unnamed endpoints
     // are harder to distinguish from each other.
     let client = Client::builder(&endpoint)
         .api_secret_from_str("YOUR_API_KEY")?

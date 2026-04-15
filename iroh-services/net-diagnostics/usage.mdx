@@ -30,7 +30,7 @@ iroh-services = "0.13"
 
 ### 2. Get Your API Key
 
-Create one from your project's **Settings → API Keys** tab — see [API Keys](/iroh-services/access) for the full walkthrough. Then export it as an environment variable:
+Create one from your project's **Settings → API Keys** tab. See [API Keys](/iroh-services/access) for the full walkthrough. Then export it as an environment variable:
 
 ```bash
 export IROH_SERVICES_API_SECRET=<your-api-key>
@@ -97,9 +97,9 @@ async fn setup_net_diagnostics(endpoint: &Endpoint) -> Result<Router> {
 
 The report includes a color-coded connectivity summary:
 
-- **Green** — UDP works and NAT is favorable. Direct connections should work.
-- **Orange** — Endpoint-Dependent NAT. Direct connections may be difficult; traffic will often be relayed.
-- **Red** — No UDP connectivity. Traffic will be relayed.
+- **Green**: UDP works and NAT is favorable. Direct connections should work.
+- **Orange**: Endpoint-Dependent NAT. Direct connections may be difficult; traffic will often be relayed.
+- **Red**: No UDP connectivity. Traffic will be relayed.
 
 ## Troubleshooting
 

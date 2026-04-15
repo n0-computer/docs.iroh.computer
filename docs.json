@@ -116,8 +116,9 @@
               "about/faq"
             ]
           },
+          "rust-api",
+          "examples",
           "troubleshooting",
-          "examples/examples",
           "iroh-services/support"
         ]
       }
@@ -173,6 +174,10 @@
     {
       "source": "/deployment/troubleshooting",
       "destination": "/troubleshooting"
+    },
+    {
+      "source": "/examples/examples",
+      "destination": "/examples"
     }
   ]
 }

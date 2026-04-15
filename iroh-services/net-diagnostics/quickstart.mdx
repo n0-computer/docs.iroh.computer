@@ -14,7 +14,7 @@ description: "Diagnose user connectivity issues with remote diagnostic reporting
 Net Diagnostics lets you run network connectivity reports on your endpoints.
 
 Reports cover NAT type, UDP connectivity, relay latency, port
-mapping protocol availability, and direct addresses — everything you need to
+mapping protocol availability, and direct addresses. Everything you need to
 debug connection issues. 
 
 You can initiate reports from iroh-services, which will reach out to configured
@@ -26,7 +26,7 @@ connection they can.
 
 ### 1. Get your API key
 
-Create one from your project's **Settings → API Keys** tab — see [API Keys](/iroh-services/access) for the full walkthrough. Then export it as an environment variable:
+Create one from your project's **Settings → API Keys** tab. See [API Keys](/iroh-services/access) for the full walkthrough. Then export it as an environment variable:
 
 ```bash
 export IROH_SERVICES_API_SECRET=<your-api-key>
@@ -50,13 +50,13 @@ Go to your project's **Endpoints** page. You should see the example client liste
 
 The report appears on the **Net Diagnostics** page and includes:
 
-- **NAT Type** — No NAT, Endpoint-Independent, Endpoint-Dependent, or Unknown
-- **UDP Connectivity** — IPv4 and IPv6 status with public addresses
-- **NAT Mapping** — whether mapping varies by destination (symmetric NAT detection)
-- **Direct Addresses** — local addresses the endpoint is listening on
-- **Port Mapping** — UPnP, PCP, and NAT-PMP availability
-- **Relay Latencies** — per-relay IPv4, IPv6, and HTTPS round-trip times
-- **Captive Portal** — detection of captive portal interference
+- **NAT Type**: No NAT, Endpoint-Independent, Endpoint-Dependent, or Unknown
+- **UDP Connectivity**: IPv4 and IPv6 status with public addresses
+- **NAT Mapping**: whether mapping varies by destination (symmetric NAT detection)
+- **Direct Addresses**: local addresses the endpoint is listening on
+- **Port Mapping**: UPnP, PCP, and NAT-PMP availability
+- **Relay Latencies**: per-relay IPv4, IPv6, and HTTPS round-trip times
+- **Captive Portal**: detection of captive portal interference
 
 ## Integrate Net Diagnostics into your app
 
