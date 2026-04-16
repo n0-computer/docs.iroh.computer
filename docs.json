@@ -3,9 +3,9 @@
   "theme": "aspen",
   "name": "iroh",
   "colors": {
-    "primary": "#000000",
-    "light": "#ffffff",
-    "dark": "#ffffff"
+    "primary": "#8790ff",
+    "light": "#8790ff",
+    "dark": "#8790ff"
   },
   "favicon": "/favicon.ico",
   "navigation": {
