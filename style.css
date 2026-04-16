@@ -15,7 +15,18 @@ html:not(.dark) body {
 
 .dark,
 .dark body {
-  background-color: #1a1a1a;
+  background-color: #18181B;
+}
+
+.dark .card,
+.dark [class*="bg-background-dark"] {
+  background-color: #27272A !important;
+}
+
+.dark header,
+.dark #header,
+.dark [class*="navbar"] {
+  background-color: #18181B !important;
 }
 
 a[href*="services.iroh.computer"],
