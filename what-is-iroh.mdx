@@ -36,20 +36,20 @@ iroh's communication protocols.
 
 An iroh application is a stack of small layers, each with one job:
 
-```
-┌─────────────────────────────────────────────────┐
-│  Your application                               │
-├─────────────────────────────────────────────────┤
-│  Protocols   blobs · docs · gossip · yours      │
-├─────────────────────────────────────────────────┤
-│  Router      dispatches connections by ALPN     │
-├─────────────────────────────────────────────────┤
-│  Endpoint    identity · discovery · NAT · relay │
-├─────────────────────────────────────────────────┤
-│  QUIC + TLS 1.3                                 │
-├─────────────────────────────────────────────────┤
-│  Transport   UDP (default) · Tor · Nym · BLE    │
-└─────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    app["Your application"]
+    protocols["Protocols<br/>blobs, docs, gossip, yours"]
+    router["Router<br/>dispatches connections by ALPN"]
+    endpoint["Endpoint<br/>identity, discovery, NAT, relay"]
+    quic["QUIC + TLS 1.3"]
+    transport["Transport<br/>UDP default, Tor, Nym, BLE"]
+
+    app --- protocols
+    protocols --- router
+    router --- endpoint
+    endpoint --- quic
+    quic --- transport
 ```
 
 - **Transport** carries encrypted bytes between machines. UDP is the default;
