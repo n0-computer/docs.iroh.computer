@@ -1,0 +1,207 @@
+---
+title: "Documents"
+---
+
+
+A key-value store for multi-dimensional documents, built on CRDTs, with an
+efficient synchronization protocol. `iroh-docs` provides a protocol handler for
+the iroh networking stack, enabling storage and synchronization of documents over
+peer-to-peer connections.
+
+## When would I use this?
+
+You would use `iroh-docs` when you need a distributed key-value store that can
+handle concurrent updates from multiple peers, ensuring eventual consistency
+without conflicts. This is particularly useful for collaborative applications,
+distributed configuration management, and any scenario where data needs to be
+shared and synchronized across multiple devices or users.
+
+## Vocabulary
+
+`iroh-docs` is built on a few terms that show up in the API:
+
+- **Document** (also called a **Replica**) — a named, shared key-value store.
+  Its identity is a **NamespaceId**, the public key of a keypair that gates
+  write access.
+- **Entry** — a single row in a document, identified by `(namespace, author, key)`.
+  The entry's value is the BLAKE3 hash of its content, plus a size and timestamp —
+  the actual bytes live in the attached blobs store (see below).
+- **Author** — a keypair that signs entries. An application can create any
+  number of authors, and their meaning is up to you.
+- **Ticket** (`DocTicket`) — a shareable string that lets a peer import a
+  document and start syncing it.
+
+## A stack of three protocols
+
+`iroh-docs` is a "meta protocol": it depends on
+[`iroh-blobs`](/protocols/blobs) and [`iroh-gossip`](/connecting/gossip).
+
+- **docs** stores entry metadata (keys, authors, content hashes) and runs
+  range-based set reconciliation between peers to converge on the same set of
+  entries.
+- **blobs** stores the actual content bytes that those hashes point to.
+- **gossip** carries live sync notifications, so peers learn about new entries
+  as they appear rather than only on reconnect.
+
+That's why the setup below spawns all three and registers them on the router.
+
+## Installation
+
+```
+cargo add iroh-docs
+```
+
+- [API documentation](https://docs.rs/iroh-docs/latest/iroh_docs/)
+- [Setup example on GitHub](https://github.com/n0-computer/iroh-docs/tree/main/examples)
+
+## Setup
+
+This is the minimal setup: an endpoint, the three protocols, and a router.
+
+```rust
+use iroh::{endpoint::presets, protocol::Router, Endpoint};
+use iroh_blobs::{store::mem::MemStore, BlobsProtocol, ALPN as BLOBS_ALPN};
+use iroh_docs::{protocol::Docs, ALPN as DOCS_ALPN};
+use iroh_gossip::{net::Gossip, ALPN as GOSSIP_ALPN};
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    // create an iroh endpoint that includes the standard address lookup
+    // mechanisms we've built at number0
+    let endpoint = Endpoint::bind(presets::N0).await?;
+
+    // build the blobs store (in-memory here; use FsStore::load for persistence)
+    let blobs = MemStore::default();
+
+    // build the gossip protocol
+    let gossip = Gossip::builder().spawn(endpoint.clone());
+
+    // build the docs protocol
+    // use Docs::persistent(path) for on-disk storage instead
+    let docs = Docs::memory()
+        .spawn(endpoint.clone(), (*blobs).clone(), gossip.clone())
+        .await?;
+
+    // register all three protocols on the router
+    let _router = Router::builder(endpoint.clone())
+        .accept(BLOBS_ALPN, BlobsProtocol::new(&blobs, None))
+        .accept(GOSSIP_ALPN, gossip)
+        .accept(DOCS_ALPN, docs.clone())
+        .spawn();
+
+    // docs is ready — see the next sections for how to use it
+    Ok(())
+}
+```
+
+<Note>
+`Docs::memory()` keeps everything in RAM and is perfect for experimenting.
+For real use, pair `Docs::persistent(path)` with `FsStore::load(path)` from
+`iroh-blobs` so both metadata and content survive restarts.
+</Note>
+
+## Creating and sharing a document
+
+Once `docs` is spawned, you need two things before you can write: an **author**
+to sign your entries, and a **document** to write into.
+
+```rust
+// create an author (or load one you saved previously)
+let author = docs.author_create().await?;
+
+// create a new, empty document
+let doc = docs.create().await?;
+
+// generate a ticket that grants write access to peers
+use iroh_docs::api::protocol::ShareMode;
+let ticket = doc.share(ShareMode::Write, Default::default()).await?;
+println!("share this ticket with a peer: {ticket}");
+```
+
+On the other side, a peer imports the ticket to join the same document:
+
+```rust
+use std::str::FromStr;
+use iroh_docs::DocTicket;
+
+let ticket = DocTicket::from_str(&ticket_str)?;
+let doc = docs.import(ticket).await?;
+```
+
+## Writing and reading entries
+
+Entries are `(key, value)` pairs signed by an author. The value is stored as a
+blob, so writing an entry hashes your bytes into the blobs store and records
+the hash in the document.
+
+```rust
+// write an entry
+doc.set_bytes(author, b"greeting".to_vec(), "hello, world".into()).await?;
+
+// read one entry back
+use iroh_docs::store::Query;
+
+if let Some(entry) = doc.get_one(Query::single_latest_per_key().key_exact("greeting")).await? {
+    // the entry holds the hash; fetch the actual bytes from the blobs store
+    let bytes = blobs.blobs().get_bytes(entry.content_hash()).await?;
+    println!("{}", std::str::from_utf8(&bytes)?);
+}
+
+// iterate all entries, latest write per key
+use n0_future::StreamExt;
+
+let mut entries = doc.get_many(Query::single_latest_per_key()).await?;
+while let Some(entry) = entries.next().await {
+    let entry = entry?;
+    let bytes = blobs.blobs().get_bytes(entry.content_hash()).await?;
+    println!("{:?} = {:?}", entry.key(), bytes);
+}
+```
+
+<Note>
+The document only stores the hash of each value. If you want the content,
+fetch it from the blobs store. When two peers sync, docs exchanges the entry
+metadata and blobs transfers any content the other side is missing.
+</Note>
+
+## Reacting to sync
+
+`doc.subscribe()` returns a stream of live events — new entries from peers,
+sync progress, content download completions — which is usually how UIs stay
+up to date:
+
+```rust
+use iroh_docs::engine::LiveEvent;
+
+let mut events = doc.subscribe().await?;
+while let Some(event) = events.next().await {
+    match event? {
+        LiveEvent::InsertRemote { entry, .. } => {
+            println!("peer inserted {:?}", entry.key());
+        }
+        LiveEvent::ContentReady { hash } => {
+            println!("content {hash} is now available locally");
+        }
+        _ => {}
+    }
+}
+```
+
+## How sync works
+
+Peers converge by exchanging a small number of messages using **range-based
+set reconciliation** — recursively partitioning their entry sets and comparing
+fingerprints of the partitions to detect where they disagree. The algorithm is
+described in [Meyer 2022](https://arxiv.org/abs/2212.13567); the key property
+is that fully-in-sync peers only need to exchange a single fingerprint to
+confirm it.
+
+The crate exposes a generic storage interface with in-memory and persistent
+file-based implementations. The persistent one uses
+[redb](https://github.com/cberner/redb), an embedded key-value store, and
+persists the whole store with all replicas to a single file.
+
+## Full examples
+
+- [iroh-docs setup example](https://github.com/n0-computer/iroh-docs/tree/main/examples) — the minimal setup shown above as a runnable file.
+- [tauri-todos](https://github.com/n0-computer/iroh-examples/tree/main/tauri-todos) — a desktop todo app that uses `iroh-docs` end-to-end: persistent storage, ticket-based sharing, live sync, and an application model layered over entries.

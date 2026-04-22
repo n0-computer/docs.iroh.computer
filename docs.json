@@ -57,7 +57,7 @@
             "group": "Sending Data",
             "expanded": false,
             "pages": [
-              "protocols/kv-crdts",
+              "protocols/documents",
               "protocols/blobs",
               "protocols/rpc",
               "protocols/automerge",
@@ -178,6 +178,10 @@
     {
       "source": "/examples/examples",
       "destination": "/examples"
+    },
+    {
+      "source": "/protocols/kv-crdts",
+      "destination": "/protocols/documents"
     }
   ]
 }
