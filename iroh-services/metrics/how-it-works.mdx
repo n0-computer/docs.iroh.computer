@@ -8,7 +8,7 @@ description: "Understanding how Iroh Services collects and processes metrics"
 To enable metrics collection, simply add endpoints to your network through the
 Iroh Services dashboard. Metrics will be automatically collected and reported once:
 
-1. The endpoint is built using the API Secret Key
+1. The endpoint is built using the API Key
 2. The endpoint sends metrics data to a Cloud endpoint hosted in the Iroh Services platform.
 3. The Iroh Services platform aggregates the data and makes it available in the project dashboard.
 4. Iroh services deletes data on a rolling bases outside the retention window, based on your [plan](https://iroh.computer/pricing). 
@@ -20,8 +20,8 @@ Once an iroh endpoint is integrated in rust program, you can add an
 `iroh_services::Client` to begin sending metrics to the Iroh Services platform. 
 
 1. The `iroh_services::Client` will automatically detect any running iroh instance in your
-endpoint and begin sending metrics as long as the secret and the ssh
-key match what has been set up in your project on the Iroh Services platform.
+endpoint and begin sending metrics as long as the API key matches what
+has been set up in your project on the Iroh Services platform.
 2. Call `endpoint.online().await` before creating the Client. The endpoint must be online before the client is instantiated in order to
 authenticate to the platform. 
 3. Once authenticated, endpoints will start sending granular-level data about their behavior and connection status. 
