@@ -235,9 +235,9 @@ Copied over 13 byte(s)
 You can find all of the code in the [`echo.rs` example] in the iroh repo.
 
 
-# Appendix
+## Appendix
 
-## No router no problem
+### No router no problem
 
 The router can make writing code with iroh easier, but it's not required.
 If the [`Router` API][router API] is too limited or perhaps too complex for your use case, it's fairly simple to replace with your own accept loop based on only `iroh::Endpoint` APIs.
@@ -294,7 +294,7 @@ We could even inline the whole function call instead.
 You can see a version of the echo example completely without using a router or protocol handler trait in the [`echo-no-router.rs` example].
 
 
-## General Guidance
+### General Guidance
 
 The echo example is a very simple protocol.
 There's many ways in which a protocol in practice is going to be more complex.
