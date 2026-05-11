@@ -112,6 +112,7 @@
             "pages": [
               "about/changelog",
               "about/roadmap",
+              "about/release-policy",
               "deployment/security-privacy",
               "about/faq"
             ]

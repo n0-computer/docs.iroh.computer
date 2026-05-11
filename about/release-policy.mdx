@@ -1,0 +1,66 @@
+---
+title: "Release & Support Policies"
+description: "How iroh versions are released, how long they're supported, and what wire-protocol compatibility you can rely on."
+---
+
+This page describes how iroh is versioned, what compatibility guarantees we make between versions, and how long each release is supported.
+
+## Release Types
+
+| Type | Description | Cycle | Example |
+|------|-------------|-------|---------|
+| Major | New features, breaking changes | ≥6 months | `1.0.0` |
+| Minor | Incremental features, improvements | ≥4 weeks | `1.2.0` |
+| Patch | Bug fixes, security updates | As needed | `1.2.3` |
+| Release candidate | An early preview of an upcoming release, with higher confidence that the API is approaching stability | As needed | `1.0-rc` |
+| Canary | An early preview of an upcoming release with an unstable API | As needed | `0.97` |
+| Experimental | Fork or branch for a particular use case or prototype | As needed | `branch-name` |
+
+## Wire Protocol Compatibility
+
+The wire protocol must remain backward-compatible with the *non-deprecated* parts of the *previous* major version series. It may break compatibility with versions older than the last.
+
+- `2.x`'s wire protocol must be backward-compatible with `1.x`
+- `3.x`'s wire protocol must be backward-compatible with `2.x`
+- `3.x`'s wire protocol *may* be backward-incompatible with `1.x`
+
+The wire protocol must also remain compatible across minor versions within the same major series. For example, `2.x` must connect with any `2.1` through `2.x`.
+
+| Version | Compatible with |
+|---------|-----------------|
+| 1.x | 1.0 ≤ 2.0.x |
+| 2.x | 2.0 ≤ 3.0.x |
+
+### Recommendations
+
+- Before deploying the next major version (e.g. `v2.0`), ensure all devices have been updated to the latest previous major (e.g. `v1.x`).
+- Before deploying the next minor version (e.g. `v2.1`), ensure all devices have been updated to the latest major (e.g. `v2.0`).
+
+## Support Policy
+
+**Full Support**: The version is fully supported. Number 0 provides timely bug fixes, security patches, and ongoing maintenance. Expect active development and prompt response to issues.
+
+**Extended Support**: A paid support tier for versions that have exited Full Support. Under Extended Support, Number 0 provides critical bug fixes and security patches for a defined period. It includes service level agreements (SLAs) covering response and resolution times for critical issues, including security vulnerabilities and high-severity defects.
+
+**Maintenance Mode**: The version is stable and no longer under active development. Only critical bug fixes or security patches may be provided, solely at Number 0's discretion. No new features or enhancements will be introduced.
+
+**End of Life (EOL)**: The version is no longer supported. No bug fixes, security updates, or maintenance will be provided. Continued use is at the customer's own risk, and upgrading is strongly recommended.
+
+| Release | Full Support | Maintenance Mode | Extended Support |
+|---------|--------------|------------------|-------------------|
+| Major | 1 year | 1–3 years after release | [Contact us](mailto:support@iroh.computer) |
+| Minor | 3 months | 3 months – 1 year after release | [Contact us](mailto:support@iroh.computer) |
+| Canary | N/A | N/A | [Contact us](mailto:support@iroh.computer) |
+| Experimental | N/A | N/A | N/A |
+| Release Candidate | N/A | N/A | N/A |
+
+### Examples
+
+1. If you are using `0.35` in production, `0.35` is a minor version of iroh that is older than 1 year. To get bug fixes, feature backports, or security patches, you need to purchase an Extended Support package.
+2. If you find a bug in a version which is older than 3 months, the team may choose to patch the issue in the latest minor release. If you do not want to update to the latest minor and would prefer a backport to your current minor version, you must purchase an Extended Support package to fund the labor of backporting and maintaining a minor version older than 3 months.
+
+For more on support tiers and SLAs, see the [Support page](/iroh-services/support) or [contact us](https://iroh.computer/services/support).
+
+## Public Relay Version Support
+
+Number 0 runs public relays for the **latest major version** of iroh. For relay support for older versions, please [deploy a dedicated relay](https://services.iroh.computer).
