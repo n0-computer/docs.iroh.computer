@@ -1,19 +1,24 @@
 ---
-title: "Languages"
+title: "Overview"
 description: "Use iroh from Rust, Python, Swift, or Kotlin."
 ---
 
 iroh is written in Rust, but the project ships first-party bindings to several other languages through [iroh-ffi](https://github.com/n0-computer/iroh-ffi). Pick the language that fits your app and follow its guide to get a working endpoint in minutes.
 
-| Language | Install | Status |
+| Language | Status | Platform notes |
 | --- | --- | --- |
-| [Rust](/languages/rust) | `cargo add iroh` | Official, primary language |
-| [Python](/languages/python) | `pip install iroh` | Official, prebuilt wheels |
-| [Swift](/languages/swift) | Swift Package (local) | Official, iOS + macOS |
-| [Kotlin](/languages/kotlin) | Build locally | Official, JVM + Android |
-| [TypeScript](https://github.com/rayhanadev/iroh-ts) | `npm install iroh` | Community-maintained |
+| [Rust](/languages/rust) | Official | Primary implementation |
+| [Python](/languages/python) | Official | Prebuilt wheels |
+| [Swift](/languages/swift) | Official | iOS + macOS |
+| [Kotlin](/languages/kotlin) | Official | JVM + Android |
+| [TypeScript](https://github.com/rayhanadev/iroh-ts) | Community-maintained | Third-party package |
 
-All four official bindings share the same API surface — the same `Endpoint`, `Connection`, `BiStream`, and discovery primitives — so concepts you learn in one language transfer directly to the others.
+All four official bindings share the same basic API surface for sending streams or datagrams over QUIC. 
+
+However, the Rust language bindings are the most complete and up-to-date, and
+contain custom configuration and protocol features.  If you need access to
+built-in protocol features or want to contribute to the project, Rust is the best
+place to start.
 
 ## Build your own wrapper
 
