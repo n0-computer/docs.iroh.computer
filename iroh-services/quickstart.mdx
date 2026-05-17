@@ -5,7 +5,7 @@ description: "Get started with Iroh Services in minutes"
 
 import IrohServicesSetup from '/snippets/iroh-services-setup.mdx';
 
-## What is direct data rate?
+### What is direct data rate?
 
 When two iroh endpoints connect, traffic either flows **directly** between them
 (peer-to-peer) or gets routed through a relay server. Direct connections are
@@ -16,45 +16,13 @@ directly. A **high rate** means NAT traversal is working and your users are gett
 the best possible connection. A **low rate** means too much traffic is falling back
 to relays, which is worth investigating.
 
-This guide walks you through hooking up your first endpoint to Iroh Services so you can see direct data rate and other connectivity metrics for your own network. You'll need an [Iroh Services account](https://services.iroh.computer?utm_source=docs&utm_content=quickstart) with an [API key](/iroh-services/access).
-
-## Quickstart
-
-### 1. Install Rust
-
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
-
-### 2. Get your API key
-
-Create one from your project's **Settings → API Keys** tab. See [API Keys](/iroh-services/access) for the full walkthrough. Then export it as an environment variable:
-
-```bash
-export IROH_SERVICES_API_SECRET=<your-api-key>
-```
-
-### 3. Run the example
-
-Clone the repository and run the `quickstart` example:
-
-```bash
-git clone https://github.com/n0-computer/iroh-services
-cd iroh-services
-cargo run --example quickstart
-```
-
-Open your project's **Endpoints** page in the dashboard. Your endpoint should appear online within a few seconds. Navigate to the **Metrics** tab to see real-time direct data rate and other connectivity metrics.
-
-![Metrics Dashboard](/images/metrics-dashboard.png)
-
-The **Direct Data Rate** chart shows what percentage of your traffic flowed directly between endpoints versus through a relay over time.
-
 ![Direct data rate metric](/images/metrics-direct-data-rate.png)
 
-## Build it into your own app
-
-To wire Iroh Services into your own iroh application instead of running the example, follow the full setup below.
+This guide walks you through hooking up your first endpoint to Iroh Services so
+you can see direct data rate and other connectivity metrics for your own
+network. You'll need an [Iroh Services
+account](https://services.iroh.computer?utm_source=docs&utm_content=quickstart)
+with an [API key](/iroh-services/access).
 
 <IrohServicesSetup />
 

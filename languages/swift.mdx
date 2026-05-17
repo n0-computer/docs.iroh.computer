@@ -28,10 +28,6 @@ https://github.com/n0-computer/iroh-ffi
 
 Pick the latest released version and click **Add Package**.
 
-<Frame>
-  <img src="/images/swift/add-remote-package.png" alt="Xcode Add Package Dependencies dialog with the iroh-ffi GitHub URL entered." style={{ borderRadius: '0.5rem' }} />
-</Frame>
-
 When Xcode prompts you to pick a product, check **IrohLib** and add it to your app target.
 
 <Frame>
@@ -74,10 +70,6 @@ Your `.entitlements` file should now contain:
 Xcode 16's preview pipeline tries to link `SwiftUICore.framework` directly when a Swift Package is in the graph, which fails with *"product being built is not an allowed client of it"*. Until Apple ships a fix, turn previews off for the app target:
 
 Build Settings → search **Enable Previews** → set both **Debug** and **Release** to **No**.
-
-<Frame>
-  <img src="/images/swift/disable-previews.png" alt="Build Settings showing Enable Previews set to No for Debug and Release." style={{ borderRadius: '0.5rem' }} />
-</Frame>
 
 You'll lose Xcode's preview canvas, but the app builds and runs normally.
 
@@ -122,7 +114,7 @@ struct ContentView: View {
 }
 ```
 
-This binds an endpoint using the `n0` preset (public discovery + default relays), advertises a single ALPN, and surfaces the 64-character hex id once binding completes. Binding usually takes well under a second.
+This binds an endpoint using the `n0` preset (public discovery + default relays), advertises a single ALPN, and surfaces the 64-character hex id once binding completes. 
 
 ## 7. Build and run
 
@@ -131,10 +123,6 @@ Pick a destination and hit Run.
 - **macOS**: choose **My Mac**. The app window opens and shows the endpoint id within a beat.
 - **iOS Simulator**: choose any iPhone simulator destination.
 - **iOS device**: select your device. You'll need to trust your developer certificate in **Settings → General → VPN & Device Management** the first time.
-
-<Frame>
-  <img src="/images/swift/running-app.png" alt="The Hello iroh app running, displaying a 64-character endpoint id." style={{ borderRadius: '0.5rem' }} />
-</Frame>
 
 Two different installs print two different endpoint ids — that's expected, since each launch generates a fresh `SecretKey`. If you want a stable identity across launches, persist `endpoint.secretKey().toBytes()` (e.g. in `UserDefaults` for a demo, Keychain for production) and pass it back via `EndpointOptions(secretKey: ...)` on subsequent launches.
 
@@ -150,7 +138,7 @@ cargo install cargo-make
 cargo make swift-xcframework
 ```
 
-Then in Xcode, **File → Add Package Dependencies… → Add Local…** and pick the `iroh-ffi/IrohLib` subdirectory. The rest of the steps above still apply.
+Then in Xcode, **File → Add Package Dependencies… → Add Local…** and pick the `iroh-ffi` directory. The rest of the steps above still apply.
 
 ## Next steps
 
