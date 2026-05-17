@@ -16,7 +16,17 @@
           "what-is-iroh",
           "quickstart",
           "compatibility",
-          "deployment/other-languages",
+          {
+            "group": "Languages",
+            "expanded": false,
+            "pages": [
+              "languages/index",
+              "languages/rust",
+              "languages/python",
+              "languages/swift",
+              "languages/kotlin"
+            ]
+          },
           {
             "group": "Tutorials",
             "expanded": true,
@@ -179,6 +189,10 @@
     {
       "source": "/examples/examples",
       "destination": "/examples"
+    },
+    {
+      "source": "/deployment/other-languages",
+      "destination": "/languages"
     },
     {
       "source": "/protocols/kv-crdts",

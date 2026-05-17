@@ -1,0 +1,36 @@
+---
+title: "Overview"
+description: "Use iroh from Rust, Python, Swift, or Kotlin."
+---
+
+iroh is written in Rust, but the project ships first-party bindings to several other languages through [iroh-ffi](https://github.com/n0-computer/iroh-ffi). Pick the language that fits your app and follow its guide to get a working endpoint in minutes.
+
+| Language | Status | Platform notes |
+| --- | --- | --- |
+| [Rust](/languages/rust) | Official | Primary implementation |
+| [Python](/languages/python) | Official | Prebuilt wheels |
+| [Swift](/languages/swift) | Official | iOS + macOS |
+| [Kotlin](/languages/kotlin) | Official | JVM + Android |
+| [TypeScript](https://github.com/rayhanadev/iroh-ts) | Community-maintained | Third-party package |
+
+All four official bindings share the same basic API surface for sending streams or datagrams over QUIC. 
+
+However, the Rust language bindings are the most complete and up-to-date, and
+contain custom configuration and protocol features.  If you need access to
+built-in protocol features or want to contribute to the project, Rust is the best
+place to start.
+
+## Build your own wrapper
+
+If you're comfortable with a little bit of Rust, you can write your own wrapper around iroh — a small application-specific binary that exposes functionality over a local HTTP server or daemon, or a full FFI wrapper from Rust to your target language. Either way, this gives you:
+
+- Full control over the API surface you expose
+- The ability to tailor it to your specific use case
+- Type-safe bindings for your language (with FFI)
+- Calls from any language (with an HTTP wrapper)
+
+While it's easy to get a first version working, **ongoing maintenance and testing is the hard part**. iroh is under active development, and keeping wrappers up to date with new releases, testing across platforms, and handling edge cases takes sustained effort. The [number0](https://n0.computer) team runs a testing lab for this purpose. If you need production-grade bindings, [contact us](https://cal.com/team/number-0/iroh-services).
+
+## WebAssembly and browsers
+
+iroh compiles to WebAssembly for use in browsers. See [WebAssembly browser support](/deployment/wasm-browser-support) for the constraints and a working browser-echo example.
