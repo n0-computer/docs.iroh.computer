@@ -10,8 +10,6 @@ The Kotlin bindings live in [iroh-ffi](https://github.com/n0-computer/iroh-ffi),
 - A JDK (21 or newer) and `java` on your `PATH`
 - [Gradle](https://gradle.org/)
 
-For Android: install the [Android NDK](https://developer.android.com/ndk) via Android Studio.
-
 ## Install
 
 In your `build.gradle.kts`:
@@ -26,11 +24,13 @@ dependencies {
 }
 ```
 
-The artifact ships the generated Kotlin sources plus prebuilt native libraries for Linux, macOS, and Windows hosts. Android consumers get the four standard ABI variants (`arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64`).
+<Note>
+The published artifact is single-platform — it does not yet ship a multiplatform build, so it won't cover Android or arbitrary host triples out of the box. If you need a target the artifact doesn't cover, build the bindings from source (below).
+</Note>
 
 ## Building the binding from source
 
-If you need to hack on the bindings themselves or want a build for an unsupported host, clone iroh-ffi and generate the sources locally:
+For Android, an unsupported host, or to hack on the bindings themselves, clone iroh-ffi and generate the sources locally:
 
 ```bash
 git clone https://github.com/n0-computer/iroh-ffi
@@ -41,6 +41,8 @@ cargo make test-kotlin        # bindgen + ./gradlew test (optional)
 ```
 
 The Kotlin sources land in `kotlin/lib/src/main/kotlin/` and the native library is staged into `kotlin/lib/src/main/resources/`. Point your project at that lib module via `settings.gradle.kts` to consume it instead of the Maven artifact.
+
+For Android, install the [Android NDK](https://developer.android.com/ndk) via Android Studio and point Cargo at it via `.cargo/config.toml`. The relevant ABI targets are `aarch64-linux-android`, `armv7-linux-androideabi`, `i686-linux-android`, and `x86_64-linux-android`. The full NDK config template is in the [iroh-ffi Kotlin README](https://github.com/n0-computer/iroh-ffi/blob/main/README.kotlin.md#android-development).
 
 ## Hello, iroh
 
