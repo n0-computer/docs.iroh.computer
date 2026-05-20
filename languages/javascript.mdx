@@ -11,11 +11,12 @@ The JavaScript bindings to iroh are published on npm as [`@number0/iroh`](https:
 npm install @number0/iroh
 ```
 
-Requires Node.js 20.3.0 or newer. Prebuilt binaries are published for:
+Requires Node.js 20.3.0 or newer. Prebuilt N-API binaries are published for:
 
-- macOS: `arm64`
-- Linux: `x86_64` and `aarch64` (gnu + musl), `armv7` (gnueabihf + musleabihf), Android (`aarch64`, `armv7`)
+- macOS: `arm64` (no Intel build)
+- Linux: `x86_64` and `aarch64` (glibc + musl), `armv7` (gnueabihf + musleabihf)
 - Windows: `x86_64` and `aarch64`
+- Android: `aarch64` and `armv7`
 
 ## Hello, iroh
 
