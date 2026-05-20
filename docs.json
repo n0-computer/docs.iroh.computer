@@ -24,7 +24,8 @@
               "languages/rust",
               "languages/python",
               "languages/swift",
-              "languages/kotlin"
+              "languages/kotlin",
+              "languages/javascript"
             ]
           },
           {
