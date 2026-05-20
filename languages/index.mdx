@@ -1,6 +1,6 @@
 ---
 title: "Overview"
-description: "Use iroh from Rust, Python, Swift, or Kotlin."
+description: "Use iroh from Rust, Python, Swift, Kotlin, or JavaScript."
 ---
 
 iroh is written in Rust, but the project ships first-party bindings to several other languages through [iroh-ffi](https://github.com/n0-computer/iroh-ffi). Pick the language that fits your app and follow its guide to get a working endpoint in minutes.
@@ -11,18 +11,22 @@ iroh is written in Rust, but the project ships first-party bindings to several o
 | [Python](/languages/python) | Official | Prebuilt wheels |
 | [Swift](/languages/swift) | Official | iOS + macOS |
 | [Kotlin](/languages/kotlin) | Official | JVM + Android |
-| [TypeScript](https://github.com/rayhanadev/iroh-ts) | Community-maintained | Third-party package |
+| [JavaScript](https://n0-computer.github.io/iroh-ffi/js/) | Official | Node.js via iroh-ffi |
 
-All four official bindings share the same basic API surface for sending streams or datagrams over QUIC. 
+All five official bindings share the same basic API surface for sending streams or datagrams over QUIC. 
 
 However, the Rust language bindings are the most complete and up-to-date, and
 contain custom configuration and protocol features.  If you need access to
 built-in protocol features or want to contribute to the project, Rust is the best
 place to start.
 
+<Card title="Need a language we don't support?" icon="envelope" href="https://cal.com/team/number-0/iroh-services" horizontal>
+  Get in touch and tell us what you're building. We can prioritize new bindings or help you maintain your own.
+</Card>
+
 ## Build your own wrapper
 
-If you're comfortable with a little bit of Rust, you can write your own wrapper around iroh — a small application-specific binary that exposes functionality over a local HTTP server or daemon, or a full FFI wrapper from Rust to your target language. Either way, this gives you:
+If you're comfortable with a little bit of Rust, you can write your own wrapper around iroh, a small application-specific binary that exposes functionality over a local HTTP server or daemon, or a full FFI wrapper from Rust to your target language. Either way, this gives you:
 
 - Full control over the API surface you expose
 - The ability to tailor it to your specific use case

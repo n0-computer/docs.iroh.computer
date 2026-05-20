@@ -127,7 +127,17 @@
               "about/faq"
             ]
           },
-          "rust-api",
+          {
+            "group": "API References",
+            "expanded": false,
+            "pages": [
+              "rust-api",
+              "python-api",
+              "swift-api",
+              "kotlin-api",
+              "js-api"
+            ]
+          },
           "examples",
           "troubleshooting",
           "iroh-services/support"
