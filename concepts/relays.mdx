@@ -73,9 +73,9 @@ Here's how it works:
 
 A few things worth knowing:
 
-- **Revocation is live.** Delete an API key and its access is withdrawn from your relays right away, including connections that are already open.
+- **Revocation is live.** Delete an API key and its access is withdrawn from your relays right away, including connections that are already open. The relay will kick off clients using that key, and they won't be able to reconnect until they have a valid token again.
 - **Authentication is a toggle, not a different relay.** Turning authentication off from the dashboard tells the relay to admit any endpoint without a token. Turn it back on and the token check resumes for new connections. See [Turn authentication off](/iroh-services/relays/managed#turn-authentication-off).
-- **Turning authentication off doesn't make a relay discoverable.** Your relay is never listed or advertised anywhere. With authentication off, any endpoint that already knows the relay's URL can use it — but it still has to know the URL.
+- **Turning authentication off doesn't make a relay discoverable.** Your relay is never listed or advertised anywhere. With authentication off, any endpoint that already knows the relay's URL can use it, but it still has to know the URL.
 - **Authentication is about access, not privacy.** All relay traffic is end-to-end encrypted regardless. Authentication controls *who may use* your relay; it doesn't change what the relay can see (it still can't read your traffic).
 
 Self-hosted relays you run outside of Iroh Services manage their own access, so this is handled for you only on managed relays. See [API Keys](/iroh-services/access) for where your key comes from.
