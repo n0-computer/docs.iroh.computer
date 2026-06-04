@@ -3,13 +3,14 @@ title: "Managed Hosting"
 description: "Deploy and configure dedicated relay infrastructure through Iroh Services"
 ---
 
-import RelayEndpointConfig from '/snippets/relay-endpoint-config.mdx';
+import RelayPresetConfig from '/snippets/relay-preset-config.mdx';
 
-Managed relays are dedicated relay servers provisioned through the Iroh Services platform and operated by n0.computer. Unlike the [public relays](/iroh-services/relays/public), managed relays are exclusively yours: no shared traffic, no rate limits, and with uptime SLAs.
+Managed relays are dedicated relay servers provisioned through the Iroh Services platform and operated by n0.computer. Unlike the [public relays](/iroh-services/relays/public), managed relays are exclusively yours: authenticated by default, no shared traffic, no rate limits, and with uptime SLAs.
 
 ## What you get
 
 - **Fully managed**: n0.computer handles operations, maintenance, and upgrades
+- **Authenticated by default**: only your project's endpoints can connect, authenticated automatically with your API key
 - **Isolation**: your traffic only; no noisy neighbors
 - **Version locking**: pin to a specific iroh version or run blue/green deployments
 - **Multi-region & multi-cloud**: deploy across regions and providers for resilience
@@ -41,13 +42,43 @@ Once deployed, your relay URL will appear in the dashboard. Copy it; you'll need
 
 Set your endpoint to use your dedicated relay URLs instead of the public relays:
 
-<RelayEndpointConfig />
+<RelayPresetConfig />
 
 ### 5. Verify connectivity
 
 Go to your project's **Relays** page to confirm your endpoints are connecting through your dedicated relay. You should see connected endpoint counts and traffic metrics.
 
 ![Relay metrics](/images/metrics-relay.png)
+
+## Authentication
+
+Managed relays **require authentication by default** — only your project's endpoints can connect. There's nothing extra to set up: when you build your endpoint with the [`preset()`](#4-configure-your-endpoint) and your API key, it authenticates automatically. For how this works under the hood, see [relay authentication](/concepts/relays#authentication).
+
+## Turn authentication off
+
+If you want any endpoint that has your relay's URL to be able to use it — not
+just your project's endpoints — you can turn authentication off in your relay's
+**Settings → Network Settings → Access Control**. Use the **Who may connect**
+dropdown, then **Save**.
+
+In the dashboard this control is labeled **Private** (authentication on — only
+your project's API keys may connect) and **Public** (authentication off).
+"Public" here means no API key is required to connect; it does not make your
+relay discoverable.
+
+![Relay access control settings](/images/relay-auth-toggle.png)
+
+Turning authentication off doesn't list or advertise your relay anywhere; an
+endpoint still has to know the URL to use it. The relay also keeps reporting its
+traffic and metrics to your dashboard either way.
+
+Be careful turning authentication off: any iroh endpoint that learns the URL can
+then use the relay, so it may be subject to abuse. We recommend keeping
+authentication on for production deployments and only turning it off for testing
+or development.
+
+Public relays still report their traffic and metrics to your dashboard; they
+just don't require your API key to connect.
 
 ## Recommended setup
 
