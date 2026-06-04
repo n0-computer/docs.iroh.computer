@@ -1,0 +1,33 @@
+Your dedicated relays require authentication by default. Your endpoint
+authenticates to them with your project's API key. The `iroh_services::preset()` builder handles
+this for you: it mints a short-lived access token scoped to your endpoint's key
+and configures the endpoint to use your relays.
+
+```rust
+use iroh::Endpoint;
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    // Build a preset pointing at your dedicated relays, authenticated with
+    // your project's API key. In production, load the key from a config file
+    // or environment variable instead of hardcoding it.
+    let preset = iroh_services::preset()
+        .relays([
+            "YOUR_RELAY_URL_US",
+            "YOUR_RELAY_URL_EU",
+        ])?
+        .api_secret_from_str("YOUR_API_KEY")?
+        .build()?;
+
+    // Bind the endpoint with the preset, then wait until it's online to
+    // confirm it has an authorized connection to a relay.
+    let endpoint = Endpoint::bind(preset).await?;
+    endpoint.online().await;
+
+    Ok(())
+}
+```
+
+<Note>
+  Custom relay URLs are available on Pro and Enterprise projects. On a free project, pass your API key to the preset without `relays(...)` to authenticate against the public relays and surface your relay traffic on the dashboard.
+</Note>

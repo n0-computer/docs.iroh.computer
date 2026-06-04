@@ -55,10 +55,30 @@ Dedicated relays are relay servers provisioned exclusively for your project, eit
 
 They offer:
 
+- **Authenticated by default**: only your project's endpoints can connect, authenticated automatically with your API key. You can turn authentication off from the dashboard if you want any endpoint that has the URL to be able to use it.
 - **Isolation**: no noisy neighbors; your traffic is yours alone
 - **Uptime guarantees**: SLAs available via [Iroh Services](/iroh-services/relays)
 - **Version locking**: stay on a specific iroh version or run blue/green deployments
 - **Multi-region & multi-cloud**: deploy relays across regions and providers for resilience
+
+## Authentication
+
+Dedicated relays require authentication by default, so a relay only carries traffic for endpoints that belong to your project. Authentication is built in — there's nothing extra to wire up beyond your [API key](/iroh-services/access).
+
+Here's how it works:
+
+1. **Your relay knows your project.** When Iroh Services provisions a relay, it tells the relay which of your project's API keys are allowed to use it. This allow-set is kept in sync as you create or revoke keys.
+2. **Your endpoint presents a token, not the key itself.** When you build an endpoint with the `iroh_services::preset()` builder and your API key, the SDK mints a short-lived, signed access token scoped to that endpoint's identity. The endpoint presents this token when it connects to the relay. Your API key never leaves your application.
+3. **The relay verifies and admits.** The relay checks that the token was signed by one of your project's allowed keys and hasn't expired, then admits the connection. An endpoint with no token, an expired token, or a token from a revoked key is refused at the handshake.
+
+A few things worth knowing:
+
+- **Revocation is live.** Delete an API key and its access is withdrawn from your relays right away, including connections that are already open.
+- **Authentication is a toggle, not a different relay.** Turning authentication off from the dashboard tells the relay to admit any endpoint without a token. Turn it back on and the token check resumes for new connections. See [Turn authentication off](/iroh-services/relays/managed#turn-authentication-off).
+- **Turning authentication off doesn't make a relay discoverable.** Your relay is never listed or advertised anywhere. With authentication off, any endpoint that already knows the relay's URL can use it — but it still has to know the URL.
+- **Authentication is about access, not privacy.** All relay traffic is end-to-end encrypted regardless. Authentication controls *who may use* your relay; it doesn't change what the relay can see (it still can't read your traffic).
+
+Self-hosted relays you run outside of Iroh Services manage their own access, so this is handled for you only on managed relays. See [API Keys](/iroh-services/access) for where your key comes from.
 
 ## Deploy your own relay
 
