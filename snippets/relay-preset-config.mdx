@@ -3,6 +3,14 @@ authenticates to them with your project's API key. The `iroh_services::preset()`
 this for you: it mints a short-lived access token scoped to your endpoint's key
 and configures the endpoint to use your relays.
 
+Add the `iroh-services` crate to your project:
+
+```bash
+cargo add iroh-services
+```
+
+Then build a preset and bind your endpoint with it:
+
 ```rust
 use iroh::Endpoint;
 
