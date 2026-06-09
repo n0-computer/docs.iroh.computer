@@ -32,6 +32,61 @@ incoming connections
 2. `await` keyword is used to wait for the endpoint
 to be created in an asynchronous context.
 
+<Note>
+Each time you `bind` without supplying a secret key, iroh generates a **brand
+new random identity**. That means a different `EndpointId` — and therefore
+different tickets and addresses — every time your program starts. If you want a
+stable identity that survives restarts, see [Persistent
+identity](#persistent-identity) below.
+</Note>
+
+## Persistent identity
+
+An endpoint's identity is an Ed25519 keypair. The public half is its
+`EndpointId` (the stable address other endpoints dial); the private half is its
+`SecretKey`. By default the builder generates a fresh `SecretKey` on every
+launch, so your `EndpointId` changes each run.
+
+For most applications — anything where peers reconnect to you over time, or
+where you hand out a ticket that should keep working — you want a **persistent
+identity**. To get one, generate a `SecretKey` once, store it, and load the same
+key on every subsequent launch:
+
+```rust
+use iroh::{Endpoint, SecretKey, endpoint::presets};
+use anyhow::Result;
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    // Load a previously stored key, or generate and persist a new one.
+    let secret_key = match std::fs::read("endpoint.key") {
+        Ok(bytes) => SecretKey::from_bytes(&bytes.as_slice().try_into()?),
+        Err(_) => {
+            let key = SecretKey::generate(&mut rand::rng());
+            // Treat this file like a password: anyone with it can
+            // impersonate your endpoint. Store it securely.
+            std::fs::write("endpoint.key", key.to_bytes())?;
+            key
+        }
+    };
+
+    let endpoint = Endpoint::builder()
+        .secret_key(secret_key)
+        .bind(presets::N0)
+        .await?;
+
+    // This prints the same EndpointId on every run.
+    println!("our endpoint id: {}", endpoint.id());
+    Ok(())
+}
+```
+
+<Note>
+Your `SecretKey` is sensitive: anyone who has it can impersonate your endpoint.
+Store it the way you'd store a private key or password — file permissions, a
+keychain, or an OS secret store — not in source control.
+</Note>
+
 ## Next Steps
 
 With an endpoint created, you can now start discovering and connecting to other endpoints.
