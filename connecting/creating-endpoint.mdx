@@ -62,7 +62,7 @@ async fn main() -> Result<()> {
     let secret_key = match std::fs::read("endpoint.key") {
         Ok(bytes) => SecretKey::from_bytes(&bytes.as_slice().try_into()?),
         Err(_) => {
-            let key = SecretKey::generate(&mut rand::rng());
+            let key = SecretKey::generate();
             // Treat this file like a password: anyone with it can
             // impersonate your endpoint. Store it securely.
             std::fs::write("endpoint.key", key.to_bytes())?;
