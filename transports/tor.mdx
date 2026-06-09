@@ -32,7 +32,7 @@ tor --ControlPort 9051 --CookieAuthentication 0
 use iroh::{Endpoint, SecretKey, endpoint::presets};
 use iroh_tor_transport::TorCustomTransport;
 
-let secret_key = SecretKey::generate(&mut rand::rng());
+let secret_key = SecretKey::generate();
 let transport = TorCustomTransport::builder()
     .build(secret_key.clone())
     .await?;

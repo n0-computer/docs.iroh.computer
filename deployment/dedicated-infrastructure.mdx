@@ -38,11 +38,14 @@ using dedicated relays instead.
 
 ## Using dedicated relays
 
-To use dedicated relays with your iroh endpoint, configure it with your relay URLs:
+To use a specific set of relays with your iroh endpoint, configure your relay URLs as part of an iroh-services preset:
 
 <RelayEndpointConfig />
 
-For full deployment steps, see the [managed relay guide](/iroh-services/relays/managed).
+Managed relays from Iroh Services **supply authentication by default**, and
+your endpoints authenticate to them with your project's API key. For that flow,
+and full deployment steps, see the [managed relay
+guide](/iroh-services/relays/managed).
 
 ## Why use dedicated relays in production?
 

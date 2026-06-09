@@ -3,7 +3,7 @@ title: "Use your own relay"
 description: "Configure dedicated relays so your endpoints don't share infrastructure with the public network"
 ---
 
-import RelayEndpointConfig from '/snippets/relay-endpoint-config.mdx';
+import RelayPresetConfig from '/snippets/relay-preset-config.mdx';
 
 By default, iroh endpoints use the public relays maintained by [n0.computer](https://n0.computer) to facilitate connections when direct peer-to-peer links aren't possible. The public relays are great for development and testing, but production deployments should run their own.
 
@@ -11,23 +11,31 @@ By default, iroh endpoints use the public relays maintained by [n0.computer](htt
 
 Once you have one or more relay URLs, configure your endpoint to use them:
 
-<RelayEndpointConfig />
+<RelayPresetConfig />
+
+Relays you self-host outside of Iroh Services are configured directly with `RelayMode::Custom`; see [Dedicated Infrastructure](/deployment/dedicated-infrastructure).
 
 ## Why use your own relay?
 
 Running dedicated relays gives you:
 
-- **Isolation**: your traffic isn't mixed with other developers on the shared public network
+- **Isolation**: your traffic isn't mixed with other applications 
 - **Performance**: relays close to your users reduce latency and improve NAT traversal success
-- **Capacity**: the public relays are rate-limited; your own relays have no rate limits and capacity you control
+- **Capacity**: the shared public infrastructure is rate-limited
 - **Redundancy**: distribute relays across regions or cloud providers for failover
 - **Compliance**: keep relayed traffic inside your own network or jurisdiction
 
-Iroh's relay architecture is uniquely suited to multi-relay deployments because relays are stateless. Clients automatically fail over between relays in your list, so adding capacity or surviving an outage is just a matter of running more relay processes. See [Dedicated Infrastructure](/deployment/dedicated-infrastructure) for the deeper architecture story.
+Iroh's relay architecture is uniquely suited to multi-relay deployments because
+relays are stateless. Clients automatically fail over between relays in your
+list, so adding capacity or surviving an outage is just a matter of running more
+relay processes. See [Dedicated
+Infrastructure](/deployment/dedicated-infrastructure) for the deeper
+architecture story.
 
 ## Get a relay
 
-You have two paths. Pick **managed** if you want a relay running today without ops work; pick **self-host** if you have infrastructure available and want full control over the deployment.
+You have two paths. Pick **managed** if you want a relay running today. But
+you're never locked in! You can always self-host later if you want. 
 
 <Card
   title="Deploy a managed relay"
@@ -44,7 +52,6 @@ You have two paths. Pick **managed** if you want a relay running today without o
 >
   Run the `iroh-relay` binary on a server with a public IP and DNS name. Automatic TLS via ACME is built in.
 </Card>
-
 
 ## Recommended setup
 

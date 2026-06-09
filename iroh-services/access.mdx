@@ -3,7 +3,7 @@ title: "API Keys"
 description: "Authenticate your endpoint to Iroh Services to push metrics and connectivity reports"
 ---
 
-API keys authenticate your endpoint to Iroh Services. Iroh itself is permissionless (connections between endpoints don't need authorization), so API keys only come into play when an endpoint pushes data into your project.
+API keys authenticate your endpoint to Iroh Services. Iroh itself is permissionless — connections between two endpoints never need authorization — but the resources in your project belong to you. Your API key is what lets an endpoint push data into your project and connect to your project's dedicated relays.
 
 ## What API keys authorize
 
@@ -11,10 +11,11 @@ API keys are required for:
 
 - Uploading metrics from endpoints to your project
 - Sending network diagnostics reports from endpoints to your project
+- Connecting to your project's [dedicated relays](/iroh-services/relays/managed), which require authentication by default
 
 API keys are **not** required for:
 
-- Synchronizing data across relays
+- Connecting through the public relays
 - [NAT traversal](/concepts/nat-traversal) connections to other iroh endpoints
 
 ## Get an API key
@@ -44,10 +45,15 @@ let client = Client::builder(&endpoint)
     .await?;
 ```
 
-In production, load the key from a config file or environment variable instead of hardcoding it.
+In production, load the key from a config file or environment variable instead
+of hardcoding it.
 
-For a full walkthrough (creating an endpoint, naming it, and verifying it on the dashboard) see the [Iroh Services quickstart](/iroh-services/quickstart).
+For a full walkthrough (creating an endpoint, naming it, and verifying it on the
+dashboard) see the [Iroh Services quickstart](/iroh-services/quickstart).
 
 ## What's next
 
-Today, API keys gate access to metrics and net diagnostics uploads. Future versions may support per-resource permissions and time-based access control. If your use case needs that today, [contact us](https://n0.computer/contact).
+Today, API keys gate metrics and net diagnostics uploads and access to your
+dedicated relays. Future versions may support per-resource permissions and
+time-based access control. If your use case needs that today, [contact
+us](https://n0.computer/contact).
