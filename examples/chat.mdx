@@ -59,7 +59,7 @@ async fn main() -> Result<()> {
     // identity for your endpoint. If you want to have
     // the same identity each time you open the app,
     // you would need to store and load it each time.
-    let secret_key = SecretKey::generate(&mut rand::rng());
+    let secret_key = SecretKey::generate();
 
     // Create an endpoint.
     // By default we turn on our n0 discovery services.

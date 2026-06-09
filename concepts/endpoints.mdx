@@ -37,6 +37,13 @@ cryptographic key. This can be used to globally identify an endpoint. Because
 `EndpointIDs` are cryptographic keys, they are also the mechanism by which all
 traffic is always encrypted for a specific endpoint only.
 
+By default, creating an endpoint generates a **new random identity** each time —
+a fresh keypair, and therefore a new `EndpointID`. If you want the same
+`EndpointID` to persist across restarts (so peers can reconnect and your tickets
+keep working), store the endpoint's `SecretKey` and load it on every launch. See
+[Persistent identity](/connecting/creating-endpoint#persistent-identity) for a
+working example.
+
 See the [EndpointID](https://docs.rs/iroh/latest/iroh/type.EndpointId.html) documentation for more information.
 
 # Endpoint Addresses
