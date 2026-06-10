@@ -71,6 +71,37 @@ On Android, the OS aggressively suspends background processes — sockets get to
 
 For desktop JVM apps these constraints don't apply — keep the endpoint bound for the lifetime of the process and call `shutdown()` on exit.
 
+## Local network discovery on Android
+
+By default, iroh does not browse your local network. Endpoints learn each other's addresses through iroh's discovery service (or a ticket) and then talk over ordinary one-to-one connections, the same kind of traffic as loading a website. On Android that means the only permission you need is `INTERNET`, which every networked app already declares. There is no prompt and no extra manifest entry, and direct device-to-device connections work even when both peers sit on the same Wi-Fi.
+
+iroh can optionally discover peers over mDNS, a broadcast technology that lets endpoints find each other on the same Wi-Fi without any outside help (`presetN0WithMdns()`, not yet in an iroh-ffi release). Android handles this differently from iOS: there is no user-facing permission prompt, but phones silently drop broadcast packets at the Wi-Fi chip to save battery, so mDNS responses never reach your app unless you ask the system to let them through. Enabling it takes three steps:
+
+1. Declare the multicast permission in `AndroidManifest.xml`. It is granted at install time; the user is never prompted:
+
+   ```xml
+   <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+   ```
+
+2. Hold a multicast lock while you want discovery to work. The lock tells the Wi-Fi driver to deliver broadcast packets instead of filtering them, at some battery cost, so release it when you no longer need to find new peers:
+
+   ```kotlin
+   val wifi = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
+   val multicastLock = wifi.createMulticastLock("iroh-mdns").apply { acquire() }
+   // ... bind and use the endpoint ...
+   multicastLock.release()
+   ```
+
+3. Bind your endpoint with the mDNS preset instead of `presetN0()`:
+
+   ```kotlin
+   val ep = Endpoint.bind(
+       EndpointOptions(preset = presetN0WithMdns(), alpns = listOf(ALPN)),
+   )
+   ```
+
+Desktop JVM apps need none of this: mDNS works there without any special permissions or locks.
+
 ## Building from source
 
 For Android, an unsupported host, or to hack on the bindings themselves, clone iroh-ffi and generate the sources locally:
