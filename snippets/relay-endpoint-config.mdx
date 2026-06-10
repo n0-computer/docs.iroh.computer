@@ -1,4 +1,6 @@
-```rust
+<CodeGroup>
+
+```rust Rust
 use iroh::Endpoint;
 use iroh::relay::RelayUrl;
 
@@ -15,3 +17,50 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 ```
+
+```python Python
+import asyncio
+import iroh
+
+async def main():
+    relay_mode = iroh.RelayMode.custom_from_urls([
+        "YOUR_RELAY_URL_US",
+        "YOUR_RELAY_URL_EU",
+    ])
+    ep = await iroh.Endpoint.bind(
+        iroh.EndpointOptions(preset=iroh.preset_n0(), relay_mode=relay_mode)
+    )
+
+asyncio.run(main())
+```
+
+```swift Swift
+import IrohLib
+
+let relayMode = try RelayMode.customFromUrls(urls: [
+    "YOUR_RELAY_URL_US",
+    "YOUR_RELAY_URL_EU",
+])
+let ep = try await Endpoint.bind(options: EndpointOptions(
+    preset: presetN0(),
+    relayMode: relayMode
+))
+```
+
+```kotlin Kotlin
+import computer.iroh.*
+import kotlinx.coroutines.runBlocking
+
+fun main() = runBlocking {
+    val relayMode = RelayMode.customFromUrls(listOf(
+        "YOUR_RELAY_URL_US",
+        "YOUR_RELAY_URL_EU",
+    ))
+    val ep = Endpoint.bind(
+        EndpointOptions(preset = presetN0(), relayMode = relayMode),
+    )
+    ep.shutdown()
+}
+```
+
+</CodeGroup>

@@ -7,6 +7,14 @@ import RelayPresetConfig from '/snippets/relay-preset-config.mdx';
 
 By default, iroh endpoints use the public relays maintained by [n0.computer](https://n0.computer) to facilitate connections when direct peer-to-peer links aren't possible. The public relays are great for development and testing, but production deployments should run their own.
 
+## Configure your endpoint
+
+Once you have one or more relay URLs, configure your endpoint to use them:
+
+<RelayPresetConfig />
+
+Relays you self-host outside of Iroh Services are configured directly with `RelayMode::Custom`; see [Dedicated Infrastructure](/deployment/dedicated-infrastructure).
+
 ## Why use your own relay?
 
 Running dedicated relays gives you:
@@ -44,14 +52,6 @@ you're never locked in! You can always self-host later if you want.
 >
   Run the `iroh-relay` binary on a server with a public IP and DNS name. Automatic TLS via ACME is built in.
 </Card>
-
-## Configure your endpoint
-
-Once you have one or more relay URLs, configure your endpoint to use them:
-
-<RelayPresetConfig />
-
-Relays you self-host outside of Iroh Services are configured directly with `RelayMode::Custom`; see [Dedicated Infrastructure](/deployment/dedicated-infrastructure).
 
 ## Recommended setup
 
