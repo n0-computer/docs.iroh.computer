@@ -62,7 +62,7 @@ async fn main() -> Result<()> {
     let secret_key = SecretKey::generate();
 
     // Create an endpoint.
-    // By default we turn on our n0 discovery services.
+    // By default we turn on our n0 address lookup services.
     //  This allows you to
     // dial by `EndpointId`, and allows you to be
     // dialed by `EndpointId`.
@@ -553,7 +553,7 @@ use serde::{Deserialize, Serialize};
 ///
 /// By default a new endpoint id is created when starting the example.
 ///
-/// By default, we use the default n0 discovery services to dial by `EndpointId`.
+/// By default, we use the default n0 address lookup services to dial by `EndpointId`.
 #[derive(Parser, Debug)]
 struct Args {
     /// Set your nickname.

@@ -14,13 +14,13 @@ Address lookup is an automated system for an [Endpoint](/concepts/endpoints) to 
 
 ## Address Lookup Services
 
-iroh ships several address lookup implementations. **By default, iroh uses DNS/Pkarr address lookup** to resolve EndpointIDs to addresses. DNS/Pkarr adress lookup publishes signed records to a server and resolves them via DNS.
+iroh ships several address lookup implementations. **By default, iroh uses DNS/Pkarr address lookup** to resolve EndpointIDs to addresses. It publishes signed records to a server and resolves them via DNS.
 
 | Name | Description | Default |
 | --- | --- | --- |
-| [DNS/Pkarr](#endpoint-discovery-via-dns) | publishes signed records to a server and resolves them over DNS | ✅ Enabled |
-| [Local](#local-discovery) | uses an mDNS-like system to find endpoints on the local network | ❌ Disabled |
-| [DHT](#dht-discovery) | publishes the same signed records to the BitTorrent Mainline DHT | ❌ Disabled |
+| [DNS/Pkarr](#endpoint-address-lookup-via-dns) | publishes signed records to a server and resolves them over DNS | ✅ Enabled |
+| [Local](/connecting/local-address-lookup) | uses an mDNS-like system to find endpoints on the local network | ❌ Disabled |
+| [DHT](/connecting/dht-address-lookup) | publishes the same signed records to the BitTorrent Mainline DHT | ❌ Disabled |
 
 ### The motivation
 
@@ -46,12 +46,12 @@ address data?
 
 ### The solution
 
-We had two "guiding lights" while doing research on global endpoint discovery:
+We had two "guiding lights" while doing research on global endpoint address lookup:
 
 First, we needed to see a path forward that would allow for a fully distributed
 topology, even if our first solution had a federated structure. If we (or some
 contributor) wanted to create or opt into a fully p2p version of global endpoint
-discovery in the future, that needed to work in tandem with whatever federated
+address lookup in the future, that needed to work in tandem with whatever federated
 solution we came up with.
 
 Second, it was very important for us as an organization that we do not invent
@@ -60,7 +60,7 @@ stood the test of time (and scrutiny) in novel ways to solve our problem? It
 turns out, we can! And we can do it using one of the oldest and most dependable
 technologies we have on the internet: DNS. Using the DNS standard along side
 Pkarr (public-key addressable resource records), **we now have global endpoint
-discovery in iroh**!
+address lookup in iroh**!
 
 ## The approach
 
@@ -88,11 +88,11 @@ on an `iroh-dns` server that is run by [n0.computer](https://n0.computer).
 From there, others can discover your dialing information by resolving your EndpointID using regular DNS. It's worth noting that others must still learn your endpoint
 ID for this to work.
 
-The following sections describe the format of the Pkarr publishing records and endpoint discovery via DNS queries in greater detail.
+The following sections describe the format of the Pkarr publishing records and endpoint address lookup via DNS queries in greater detail.
 
-## Endpoint discovery via DNS
+## Endpoint address lookup via DNS
 
-When connecting to an unknown `EndpointId`, the DNS discovery mechanism in iroh will perform a DNS query to discover relays or addresses for the endpoint. The DNS discovery is configured with a *origin domain* (which defaults to *dns.iroh.link*, a server run by n0). iroh will then perform a DNS query through the configured DNS resolver (which defaults to using the host system's nameservers):
+When connecting to an unknown `EndpointId`, the DNS address lookup mechanism in iroh will perform a DNS query to discover relays or addresses for the endpoint. The DNS address lookup is configured with a *origin domain* (which defaults to *dns.iroh.link*, a server run by n0). iroh will then perform a DNS query through the configured DNS resolver (which defaults to using the host system's nameservers):
 
 `_iroh.<z32-endpoint-id>.<origin-domain> TXT`
 
@@ -109,7 +109,7 @@ This spec defines the following attributes:
 - `addr=<addr> <addr> ..` A space-separated list of socket addresses for this iroh endpoint. Each address is an IPv4 or IPv6 address with a port (e.g. `1.2.3.4:7367` or `[::1]:3521`)
 
 <Note>
-**Ready to use DNS discovery?** Learn how to configure DNS discovery in your application in the [DNS Discovery guide](/connecting/dns-discovery).
+**Ready to use DNS address lookup?** Learn how to configure DNS address lookup in your application in the [DNS Address Lookup guide](/connecting/dns-address-lookup).
 </Note>
 
 ## Endpoint announces via `pkarr`
@@ -125,12 +125,12 @@ handling PUT requests with the signed packets. iroh's Pkarr server is
 [`iroh-dns-server`](https://crates.io/crates/iroh-dns-server), which serves the
 received records over DNS. Pkarr packets can also be published onto the
 BitTorrent Mainline DHT, as specified by Pkarr. iroh supports this through
-[DHT discovery](/connecting/dht-discovery), which is opt-in.
+[DHT address lookup](/connecting/dht-address-lookup), which is opt-in.
 
 DNS servers that support this spec will receive these Pkarr signed packets,
 check their signature and format validity, and then serve each contained record,
 with the DNS server's configured *origin domain* appended to all record names.
 
 <Note>
-**Want to publish via Pkarr?** This is handled automatically when using DNS discovery. See the [DNS Discovery guide](/connecting/dns-discovery) for configuration details.
+**Want to publish via Pkarr?** This is handled automatically when using DNS address lookup. See the [DNS Address Lookup guide](/connecting/dns-address-lookup) for configuration details.
 </Note>

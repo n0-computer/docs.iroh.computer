@@ -54,7 +54,7 @@ use n0_future::StreamExt;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    // create an iroh endpoint that includes the standard discovery mechanisms
+    // create an iroh endpoint that includes the standard address lookup mechanisms
     // we've built at number0
     let endpoint = Endpoint::bind(presets::N0).await?;
 
@@ -112,7 +112,7 @@ already members of the topic. These peers will help you discover other peers in
 the topic. You can obtain bootstrap peers through various means, such as:
 - A predefined list of known peers hardcoded in your application.
 - A configuration file or environment variable.
-- A discovery service that provides a list of active peers for the topic.
+- An address lookup service that provides a list of active peers for the topic.
 
 
 #### Sharing a ticket

@@ -10,7 +10,7 @@ endpoints it wants to dial.
 
 ## How records are published and resolved
 
-Each endpoint creates a set of records with its adressing information, and puts it into a signed [Pkarr](https://pkarr.org) packet. The packet is signed by the endpoint's secret key.
+Each endpoint creates a set of records with its addressing information, and puts it into a signed [Pkarr](https://pkarr.org) packet. The packet is signed by the endpoint's secret key.
 The endpoint publishes this packet to a DNS/Pkarr server via HTTP.
 Other endpoints can then resolve these packets either via DNS queries or via HTTP.
 

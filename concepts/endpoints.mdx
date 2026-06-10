@@ -59,14 +59,14 @@ pub struct EndpointAddr {
 
 You'll interact with `EndpointAddr`s a fair amount when working with iroh. It's also quite normal to construct addresses manually from, say, endpoint identifiers stored in your application database.
 
-When we call [`connect`](https://docs.rs/iroh/latest/iroh/endpoint/struct.Endpoint.html#method.connect) on an [Endpoint](https://www.iroh.computer/docs/concepts/endpoint), we need to pass either a `EndpointAddr`, or something that can turn into a `EndpointAddr`. In iroh `Endpoint`s will have different fields populated depending on where they came from, and the discovery services you've configured your endpoint with.
+When we call [`connect`](https://docs.rs/iroh/latest/iroh/endpoint/struct.Endpoint.html#method.connect) on an [Endpoint](https://www.iroh.computer/docs/concepts/endpoint), we need to pass either a `EndpointAddr`, or something that can turn into a `EndpointAddr`. In iroh `Endpoint`s will have different fields populated depending on where they came from, and the address lookup services you've configured your endpoint with.
 
-### Interaction with discovery
+### Interaction with address lookup
 
 From the above struct, the only _required_ field is the `id`. And because of
 this, there's an implementation of `From` that can turn `EndpointIDs` directly
-into EndpointAddrs. _but this will only work if you have a discovery service
-that can resolve EndpointIDs enabled_. Thankfully, we enable discovery by
+into EndpointAddrs. _but this will only work if you have an address lookup service
+that can resolve EndpointIDs enabled_. Thankfully, we enable address lookup by
 default:
 
 ```rust
@@ -78,24 +78,24 @@ let ep = Endpoint::builder(presets::N0)
     .await?;
 ```
 
-This is why we actively encourage configuring a discovery service, and DNS is the most common one we recommend. Because we're in p2p land dialing details & even home relays for an endpoint can change on very short notice, making this data go stale quickly. Endpoint Identifiers are a practical source of stability that counteracts this.
+This is why we actively encourage configuring an address lookup service, and DNS is the most common one we recommend. Because we're in p2p land dialing details & even home relays for an endpoint can change on very short notice, making this data go stale quickly. Endpoint Identifiers are a practical source of stability that counteracts this.
 
 ### When to provide full details
 
 If you have full dialing details, it's well worth providing them as part of a
 `EndpointAddr` passed to `connect`. Iroh can use this to skip the network
-roundtrip required to either do initial address discovery, or update cached
+roundtrip required to either do initial address lookup, or update cached
 addresses. So if you have a source of up to date home relay & dialing info,
 provide it!
 
 ### What to persist in your application
 
 When storing endpoint information in your application database, what you should
-persist depends on whether you're using discovery:
+persist depends on whether you're using address lookup:
 
-**If you're using discovery (recommended):**
+**If you're using address lookup (recommended):**
 Store just the `EndpointID`. When you need to connect, construct an
-`EndpointAddr` from the ID and let discovery resolve the current dialing
+`EndpointAddr` from the ID and let address lookup resolve the current dialing
 details. This is the most robust approach since relay URLs and direct addresses
 can change frequently in P2P networks.
 
@@ -108,9 +108,9 @@ let addr = EndpointAddr::from(endpoint_id);
 endpoint.connect(addr, ALPN).await?;
 ```
 
-**If you're not using discovery:**
+**If you're not using address lookup:**
 You'll need to store full `EndpointAddr` information (including the `addrs`
-field with relay and direct address information). Without discovery, iroh has no
+field with relay and direct address information). Without address lookup, iroh has no
 way to resolve an `EndpointID` to dialing details.
 
 Keep in mind that stored dialing details can become stale quickly. Providing

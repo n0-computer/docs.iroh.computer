@@ -41,7 +41,7 @@ flowchart TB
     app["Your application"]
     protocols["Protocols<br/>blobs, docs, gossip, yours"]
     router["Router<br/>dispatches connections by ALPN"]
-    endpoint["Endpoint<br/>identity, discovery, NAT, relay"]
+    endpoint["Endpoint<br/>identity, address lookup, NAT, relay"]
     quic["QUIC + TLS 1.3"]
     transport["Transport<br/>UDP default, Tor, Nym, BLE"]
 
@@ -59,7 +59,7 @@ flowchart TB
   stream multiplexing over that transport.
 - **[Endpoint](/concepts/endpoints)** is the connection-level API. It gives
   each node a stable `EndpointID`, finds peers through
-  [discovery](/concepts/discovery), traverses NATs, and falls back to
+  [address lookup](/concepts/address-lookup), traverses NATs, and falls back to
   [relays](/concepts/relays) when a direct path isn't available.
 - **Router** listens on an endpoint and dispatches each incoming connection to
   the right protocol handler based on its
