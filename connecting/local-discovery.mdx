@@ -14,26 +14,31 @@ networks.
 
 ## Usage
 
-Local Discovery is _not_ enabled by default, and must be enabled explicitly.
-You'll need to add the `discovery-local-network` feature flag to your
-`Cargo.toml` to use it.
+mDNS discovery is not enabled by default. It lives in the separate
+[`iroh-mdns-address-lookup`](https://crates.io/crates/iroh-mdns-address-lookup)
+crate, which you add alongside `iroh`.
 
 ```toml
 [dependencies]
-# Make sure to use the most recent version here instead of nn. (at the time of writing: 0.32)
-iroh = { version = "0.nn", features = ["address-lookup-mdns"] }
+iroh = "1.0.0-rc.1"
+iroh-mdns-address-lookup = "0.3"
 ```
 
-Then configure your endpoint to use local discovery concurrently with the default DNS discovery:
+Add the `MdnsAddressLookup` to the endpoint with `Endpoint::builder`. We run it next to the default DNS discovery, so connections still work when the two endpoints are not on the same local network.
 
 ```rust
 use iroh::{Endpoint, endpoint::presets};
+use iroh_mdns_address_lookup::MdnsAddressLookup;
 
-let mdns = iroh::address_lookup::mdns::MdnsAddressLookup::builder();
-let ep = Endpoint::builder()
-    .address_lookup(mdns)
-    .bind(presets::N0)
-    .await?;
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let endpoint = Endpoint::builder(presets::N0)
+        .address_lookup(MdnsAddressLookup::builder())
+        .bind()
+        .await?;
+    // your code here
+    Ok(())
+}
 ```
 
-For more information on how mDNS discovery works, see the [mDNS documentation](https://docs.rs/iroh/latest/iroh/address_lookup/mdns/index.html).
+For more on how mDNS discovery works, see the [`iroh-mdns-address-lookup` documentation](https://docs.rs/iroh-mdns-address-lookup).

@@ -26,7 +26,7 @@ The easiest way to start listening for incoming connections is by using iroh's [
 
 ```rs
 async fn start_accept_side() -> anyhow::Result<iroh::protocol::Router> {
-    let endpoint = iroh::Endpoint::.bind().await?;
+    let endpoint = iroh::Endpoint::bind(iroh::endpoint::presets::N0).await?;
 
     let router = iroh::protocol::Router::builder(endpoint)
         .spawn();
@@ -64,30 +64,22 @@ impl iroh::protocol::ProtocolHandler for Echo {
     ///
     /// The returned future runs on a newly spawned tokio task, so it can run as long as
     /// the connection lasts without blocking other connections.
-    fn accept(&self, connection: iroh::Connection) -> n0_future::boxed::BoxFuture<Result<()>> {
-        Box::pin(async move {
-            // TODO!
-
-            Ok(())
-        })
+    async fn accept(&self, connection: iroh::endpoint::Connection) -> Result<(), iroh::protocol::AcceptError> {
+        // TODO!
+        Ok(())
     }
 }
 ```
 
-<Note>
-We're using the `n0-future` crate for the return type of `accept` here.
-This is just a shorthand for `std::pin::Pin<Box<dyn Future<Output = Result<()>> + Send + 'static>>` (which is a mouthful!).
-This shorthand is also provided by `futures-lite`, `futures-util` and many more.
-We simply use `n0-future` as it re-exports all the crates we've vetted and commonly use at number 0.
-</Note>
- 
+`ProtocolHandler::accept` is an `async fn` that returns `Result<(), AcceptError>`. The errors you hit while driving a connection (stream, read, and write errors) all convert into `AcceptError`, so you can use `?` throughout.
+
 The `accept` function is going to get called once an incoming connection with the correct ALPN is established.
 
 Now, we can modify our router so it handles incoming connections with our newly created custom protocol:
 
 ```rs
 async fn start_accept_side() -> anyhow::Result<iroh::protocol::Router> {
-    let endpoint = iroh::Endpoint::bind(iroh::presets::N0).await?;
+    let endpoint = iroh::Endpoint::bind(iroh::endpoint::presets::N0).await?;
 
     let router = iroh::protocol::Router::builder(endpoint)
         .accept(ALPN, Echo) // This makes the router handle incoming connections with our ALPN via Echo::accept!
@@ -101,39 +93,37 @@ async fn start_accept_side() -> anyhow::Result<iroh::protocol::Router> {
 ## Implementing the Accepting Side
 
 At the moment, the `Echo::accept` function is still stubbed out.
-The way it is currently implemented, it would drop the `iroh::Connection` immediately, causing the connection to close.
+The way it is currently implemented, it would drop the `Connection` immediately, causing the connection to close.
 Instead, we need to hold on to either the connection or one of its streams for as long as we want to interact with it.
-We'll do that by moving the connection to the future we return from `Echo::accept` and handling the protocol logic within that future.
+We'll do that by handling the protocol logic directly in the `Echo::accept` method, which keeps the connection alive for as long as it runs.
 
 This implements a simple [request-response pattern](/protocols/using-quic#request-and-response):
 
 ```rs
 impl ProtocolHandler for Echo {
-    fn accept(&self, connection: Connection) -> BoxFuture<Result<()>> {
-        Box::pin(async move {
-            // We can get the remote's endpoint id from the connection.
-            let endpoint_id = connection.remote_id()?;
-            println!("accepted connection from {endpoint_id}");
+    async fn accept(&self, connection: Connection) -> Result<(), AcceptError> {
+        // We can get the remote's endpoint id from the connection.
+        let endpoint_id = connection.remote_id();
+        println!("accepted connection from {endpoint_id}");
 
-            // Our protocol is a simple request-response protocol, so we expect the
-            // connecting peer to open a single bi-directional stream.
-            let (mut send, mut recv) = connection.accept_bi().await?;
+        // Our protocol is a simple request-response protocol, so we expect the
+        // connecting peer to open a single bi-directional stream.
+        let (mut send, mut recv) = connection.accept_bi().await?;
 
-            // Echo any bytes received back directly.
-            // This will keep copying until the sender signals the end of data on the stream.
-            let bytes_sent = tokio::io::copy(&mut recv, &mut send).await?;
-            println!("Copied over {bytes_sent} byte(s)");
+        // Echo any bytes received back directly.
+        // This will keep copying until the sender signals the end of data on the stream.
+        let bytes_sent = tokio::io::copy(&mut recv, &mut send).await?;
+        println!("Copied over {bytes_sent} byte(s)");
 
-            // By calling `finish` on the send stream we signal that we will not send anything
-            // further, which makes the receive stream on the other end terminate.
-            send.finish()?;
+        // By calling `finish` on the send stream we signal that we will not send anything
+        // further, which makes the receive stream on the other end terminate.
+        send.finish()?;
 
-            // Wait until the remote closes the connection, which it does once it
-            // received the response.
-            connection.closed().await;
+        // Wait until the remote closes the connection, which it does once it
+        // received the response.
+        connection.closed().await;
 
-            Ok(())
-        })
+        Ok(())
     }
 }
 ```
@@ -164,7 +154,7 @@ This follows the [request-response pattern](/protocols/using-quic#request-and-re
 
 ```rs
 async fn connect_side(addr: EndpointAddr) -> Result<()> {
-    let endpoint = Endpoint::bind(iroh::presets::N0).await?;
+    let endpoint = Endpoint::bind(iroh::endpoint::presets::N0).await?;
 
     // Open a connection to the accepting endpoint
     let conn = endpoint.connect(addr, ALPN).await?;
@@ -250,7 +240,7 @@ Putting it all together, you only need to change the `start_accept_side` functio
 
 ```rs
 async fn start_accept_side() -> anyhow::Result<iroh::Endpoint> {
-    let endpoint = Endpoint::builder()
+    let endpoint = Endpoint::builder(iroh::endpoint::presets::N0)
         // The accept side needs to opt-in to the protocols it accepts,
         // as any connection attempts that can't be found with a matching ALPN
         // will be rejected.

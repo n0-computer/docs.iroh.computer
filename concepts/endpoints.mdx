@@ -52,7 +52,7 @@ Endpoint Addresses or [`EndpointAddrs`](https://docs.rs/iroh/latest/iroh/struct.
 
 ```rust
 pub struct EndpointAddr {
-    pub id: PublicKey,
+    pub id: EndpointId,
     pub addrs: BTreeSet<TransportAddr>,
 }
 ```
@@ -73,8 +73,8 @@ default:
 use iroh::{Endpoint, endpoint::presets};
 
 // enables dialing by EndpointAddrs that only have EndpointIDs by default:
-let ep = Endpoint::builder()
-    .bind(presets::N0)
+let ep = Endpoint::builder(presets::N0)
+    .bind()
     .await?;
 ```
 

@@ -1,14 +1,14 @@
 ```rust
-use iroh::Endpoint;
-use iroh::relay::RelayUrl;
+use iroh::{Endpoint, RelayMap, RelayMode, RelayUrl, endpoint::presets};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let relay_url1: RelayUrl = "YOUR_RELAY_URL_US".parse()?;
     let relay_url2: RelayUrl = "YOUR_RELAY_URL_EU".parse()?;
+    let relay_map = RelayMap::from_iter([relay_url1, relay_url2]);
 
-    let endpoint = Endpoint::builder()
-        .relay_mode(iroh::endpoint::RelayMode::Custom(vec![relay_url1, relay_url2]))
+    let endpoint = Endpoint::builder(presets::N0)
+        .relay_mode(RelayMode::Custom(relay_map))
         .bind()
         .await?;
 
