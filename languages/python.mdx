@@ -17,6 +17,37 @@ Prebuilt wheels are published for:
 - macOS: `arm64` and `x86_64`
 - Windows: `amd64`
 
+## Register your event loop
+
+Before calling any other iroh API, hand your asyncio event loop to the bindings:
+
+```python
+async def main():
+    iroh.iroh_ffi.uniffi_set_event_loop(asyncio.get_running_loop())
+    # ... the rest of your program
+```
+
+Here is why. iroh's Rust runtime runs on its own background threads. When an operation completes (a connection arrives, a stream read finishes), one of those threads schedules the wakeup back onto your Python event loop. A Rust thread has no running asyncio loop of its own, so the bindings cannot discover yours: `uniffi_set_event_loop` tells them which loop to use. Without it, the bindings fall back to `asyncio.get_running_loop()`, which raises `RuntimeError: no running event loop` when called from a Rust thread. In practice this surfaces as that exact error, or as an `await` that never completes.
+
+The awkward name comes from [uniffi](https://github.com/mozilla/uniffi-rs), the tool that generates the bindings, which is also why it lives under `iroh.iroh_ffi` rather than on the `iroh` module itself.
+
+Two rules of thumb:
+
+1. Call it from inside a running coroutine, typically as the first line of the function you pass to `asyncio.run()`. It cannot go at module level, because `asyncio.get_running_loop()` only works while a loop is running.
+2. Register once per event loop. If your program creates more than one loop (repeated `asyncio.run()` calls, or pytest-asyncio's per-test loops), register each new loop before using iroh on it. In a test suite, an autouse fixture handles this:
+
+```python
+# conftest.py
+import asyncio
+import pytest
+import iroh
+
+@pytest.fixture(autouse=True)
+async def _uniffi_event_loop():
+    iroh.iroh_ffi.uniffi_set_event_loop(asyncio.get_running_loop())
+    yield
+```
+
 ## Hello, iroh
 
 ```python
@@ -26,6 +57,7 @@ import iroh
 ALPN = b"hello-iroh/0"
 
 async def main():
+    iroh.iroh_ffi.uniffi_set_event_loop(asyncio.get_running_loop())
     ep = await iroh.Endpoint.bind(
         iroh.EndpointOptions(preset=iroh.preset_n0(), alpns=[ALPN])
     )

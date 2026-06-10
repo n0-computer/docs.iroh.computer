@@ -172,6 +172,10 @@ async function receiver() {
 
 </CodeGroup>
 
+<Note>
+**Python: what is `uniffi_set_event_loop`?** iroh's Rust runtime runs on its own threads, and when an operation completes (a connection arrives, a read finishes) one of those threads has to wake your Python code up. A Rust thread has no running asyncio loop, so the bindings cannot find yours on their own: this call hands them your loop explicitly. Make it the first line of any coroutine you pass to `asyncio.run()`, before touching any other iroh API. Without it, calls from Rust back into Python fail with `RuntimeError: no running event loop`, which typically shows up as an `await` that never completes. See the [Python guide](/languages/python#register-your-event-loop) for details.
+</Note>
+
 ## The sender
 
 The sender creates its own endpoint, parses the receiver's ticket, and dials. Rust delegates to `iroh-ping`; the other languages open a bidirectional stream, write `hello`, await the echo, and time the round trip.
