@@ -63,7 +63,10 @@ They offer:
 
 ## Authentication
 
-Dedicated relays require authentication by default, so a relay only carries traffic for endpoints that belong to your project. Authentication is built in — there's nothing extra to wire up beyond your [API key](/iroh-services/access).
+Relays have an authentication feature which can be enabled or disabled. When
+enabled, a relay only carries traffic for endpoints that belong to your project.
+For [managed relays](/iroh-services/relays/managed), authentication is built in. There's nothing extra to wire up beyond your [API
+key](/iroh-services/access). For self-hosted relays, you'll need to configure authentication yourself.
 
 Here's how it works:
 
@@ -80,19 +83,29 @@ A few things worth knowing:
 
 Self-hosted relays you run outside of Iroh Services manage their own access, so this is handled for you only on managed relays. See [API Keys](/iroh-services/access) for where your key comes from.
 
-## Deploy your own relay
+## Deploy a relay
 
 <Card
-  title="Deploy a dedicated relay"
+  title="Deploy a managed relay"
   icon="server"
   href="https://services.iroh.computer?utm_source=docs&utm_content=concepts-relays"
 >
   Sign up for Iroh Services and spin up a managed relay for your project in minutes.
 </Card>
 
-Or self-host using the open-source relay binary:
+<Card
+  title="Deploy a self-hosted relay"
+  icon="server"
+  href="https://github.com/n0-computer/iroh/tree/main/iroh-relay"
+>
+  Deploy a self-hosted relay using the open-source relay binary.
+</Card>
+
+## Read more
 
 - [Relay source code](https://github.com/n0-computer/iroh/tree/main/iroh-relay)
 - [Relay binary releases](https://github.com/n0-computer/iroh/releases)
 - [Dedicated infrastructure guide](/deployment/dedicated-infrastructure)
+- [Managed relays documentation](/iroh-services/relays/managed)
+- [Use your own relay](/add-a-relay)
 
