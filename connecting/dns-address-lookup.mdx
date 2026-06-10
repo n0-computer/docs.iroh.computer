@@ -51,8 +51,8 @@ async fn main() -> anyhow::Result<()> {
     // Another endpoint needs only the Endpoint ID to connect,
     // because both endpoints use DNS/Pkarr address lookup services
     // via the `N0` preset.
-    let other_endpoint = Endpoint::bind(presets::N0).await?;
-    let _conn = other_endpoint.connect(id, b"your-alpn").await?;
+    let other = Endpoint::bind(presets::N0).await?;
+    let _conn = other.connect(endpoint_id, b"your-alpn").await?;
     // It works :)
 
     Ok(())
