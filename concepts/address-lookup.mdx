@@ -2,15 +2,13 @@
 title: "Address Lookup"
 ---
 
-
-Address Lookup is the glue that connects an [Endpoint](/concepts/endpoints#endpoint-identifiers) to something we can dial. Address Lookup services resolve EndpointIDs to either a home Relay URL or direct-dialing information. 
+Address Lookup is the glue that connects an [Endpoint ID](/concepts/endpoints#endpoint-identifiers) to something we can dial. Address Lookup services resolve Endpoint IDs to either their home Relay URL or direct-dialing information.
 
 <Note>
   More details can be found in the address lookup module [documentation](https://docs.rs/iroh/latest/iroh/address_lookup/index.html)
 </Note>
 
-Address lookup is an automated system for an [Endpoint](/concepts/endpoints) to retrieve addressing information. Each iroh endpoint will automatically publish their own addressing information with configured address lookup services. Usually this means publishing which [Home Relay](/concepts/relays) an endpoint is findable at, but they could also publish their direct addresses.
-
+Address Lookup services form an automated system for an [Endpoint](/concepts/endpoints) to retrieve addressing information. Each iroh endpoint will automatically publish their own addressing information with configured address lookup services. Usually this means publishing which [Home Relay](/concepts/relays) an endpoint is findable at, but they could also publish their direct addresses.
 
 ## Address Lookup Services
 
@@ -22,7 +20,7 @@ iroh ships several address lookup implementations. **By default, iroh uses DNS/P
 | [Local](/connecting/local-address-lookup) | uses an mDNS-like system to find endpoints on the local network | ❌ Disabled |
 | [DHT](/connecting/dht-address-lookup) | publishes the same signed records to the BitTorrent Mainline DHT | ❌ Disabled |
 
-### The motivation
+## Background on address lookup and DNS/Pkarr
 
 We want iroh to establish connections with as little friction as possible. Our
 first big push toward chipping away at this goal was adding [NAT traversal](/concepts/nat-traversal) into
@@ -83,7 +81,7 @@ that endpoint. So the Pkarr packet currently only needs to contain the EndpointI
 the relay URL of its preferred relay server (which we call its "home relay").
 When Pkarr publishing is enabled on your iroh endpoint, your endpoint will create a
 Pkarr packet with its EndpointID and relay URL, sign it, and defaults to publishing
-on an `iroh-dns` server that is run by [n0.computer](https://n0.computer).
+on an `iroh-dns-server` instance that is run by [n0.computer](https://n0.computer).
 
 From there, others can discover your dialing information by resolving your EndpointID using regular DNS. It's worth noting that others must still learn your endpoint
 ID for this to work.

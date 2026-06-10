@@ -22,32 +22,43 @@ If you need more capacity or uptime guarantees or SLAs, you can
 run your own DNS server, or [contact us about hosted DNS
 options](https://cal.com/team/number-0/n0-protocol-services?overlayCalendar=true).
 
+You can read more about the design of the DNS/Pkarr address lookup system on the
+[address lookup](/concepts/address-lookup) page.
+
+
 ## Using DNS address lookup
 
 DNS address lookup is part of the `presets::N0` defaults, so you do not need to enable
 it explicitly. The `N0` preset adds a publisher and a resolver, both pointed at the
 n0-hosted server at `dns.iroh.link`.
 
+To discover another endpoint over DNS you need its `EndpointId`, either directly
+or from a [ticket](/concepts/tickets) that contains one. Resolution then happens
+automatically when you connect.
+
 ```rust
 use iroh::{Endpoint, endpoint::presets};
-use iroh_tickets::endpoint::EndpointTicket;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
+    // Bind an endpoint.
     let endpoint = Endpoint::bind(presets::N0).await?;
+    endpoint.online().await?;
+    // We print its Endpoint ID.
+    let endpoint_id = endpoint.id();
+    println!("endpoint id: {endpoint_id}");
 
-    println!("endpoint id: {:?}", endpoint.id());
-
-    let ticket = EndpointTicket::new(endpoint.addr());
-    println!("Share this ticket to let others connect to your endpoint: {ticket}");
+    // Another endpoint needs only the Endpoint ID to connect,
+    // because both endpoints use DNS/Pkarr address lookup services
+    // via the `N0` preset.
+    let other_endpoint = Endpoint::bind(presets::N0).await?;
+    let _conn = other_endpoint.connect(id, b"your-alpn").await?;
+    // It works :)
 
     Ok(())
 }
 ```
 
-To discover another endpoint over DNS you need its `EndpointId`, either directly
-or from a [ticket](/concepts/tickets) that contains one. Resolution then happens
-automatically when you connect.
 
 ## Use your own server
 
