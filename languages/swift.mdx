@@ -65,6 +65,27 @@ Your `.entitlements` file should now contain:
 <true/>
 ```
 
+## Local network discovery on iOS
+
+By default, iroh does not browse your local network. Endpoints learn each other's addresses through iroh's discovery service (or a ticket you paste in) and then talk over ordinary one-to-one connections, the same kind of traffic as loading a website. iOS treats that as regular internet traffic even when the two devices sit on the same Wi-Fi, so direct device-to-device connections work with no extra Info.plist keys or permission prompts. We verified this on real hardware: an iPhone and a Mac on the same network held direct connections over both their local (`192.168.x.x`) and public addresses, even with the app's Local Network toggle switched off in **Settings → Privacy & Security**.
+
+iroh can optionally discover peers over mDNS, the broadcast technology behind Bonjour, which lets endpoints find each other on the same Wi-Fi without any outside help. Because that mode genuinely browses the network, iOS gates it behind the "would like to find and connect to devices on your local network" prompt. mDNS discovery has not shipped in an iroh-ffi release yet; once it does (`presetN0WithMdns`), enabling it takes three steps:
+
+1. Add the `NSLocalNetworkUsageDescription` key to your Info.plist with a short sentence telling the user why your app looks for nearby devices. iOS shows this text in the permission prompt.
+2. Request the `com.apple.developer.networking.multicast` entitlement from Apple ([request form](https://developer.apple.com/contact/request/networking-multicast)) and add it to your app's entitlements once granted.
+3. Bind your endpoint with the mDNS preset instead of `presetN0()`:
+
+   ```swift
+   let ep = try await Endpoint.bind(options: EndpointOptions(
+       preset: presetN0WithMdns(),
+       alpns: [Data("hello-iroh/0".utf8)]
+   ))
+   ```
+
+   `presetN0WithMdns()` keeps everything the n0 preset configures (relays and public discovery) and layers local-network discovery on top, so peers on the same Wi-Fi can find each other even when the public lookup path is slow or unreachable.
+
+Until you opt into mDNS, none of this applies.
+
 ## 5. Disable previews (Xcode 16 workaround)
 
 Xcode 16's preview pipeline tries to link `SwiftUICore.framework` directly when a Swift Package is in the graph, which fails with *"product being built is not an allowed client of it"*. Until Apple ships a fix, turn previews off for the app target:
