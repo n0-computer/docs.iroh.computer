@@ -1,28 +1,26 @@
 ---
-title: "Discovery"
+title: "Address Lookup"
 ---
 
 
-Discovery is the glue that connects an [Endpoint](/concepts/endpoints#endpoint-identifiers) to something we can dial. Discovery services resolve EndpointIDs to either a home Relay URL or direct-dialing information. 
+Address Lookup is the glue that connects an [Endpoint](/concepts/endpoints#endpoint-identifiers) to something we can dial. Address Lookup services resolve EndpointIDs to either a home Relay URL or direct-dialing information. 
 
 <Note>
-  More details on discovery in the address lookup module [documentation](https://docs.rs/iroh/latest/iroh/address_lookup/index.html)
+  More details can be found in the address lookup module [documentation](https://docs.rs/iroh/latest/iroh/address_lookup/index.html)
 </Note>
 
-Endpoint discovery is an automated system for an [Endpoint](/concepts/endpoints) to retrieve addressing information. Each iroh endpoint will automatically publish their own addressing information with configured discovery services. Usually this means publishing which [Home Relay](/concepts/relays) an endpoint is findable at, but they could also publish their direct addresses.
+Address lookup is an automated system for an [Endpoint](/concepts/endpoints) to retrieve addressing information. Each iroh endpoint will automatically publish their own addressing information with configured address lookup services. Usually this means publishing which [Home Relay](/concepts/relays) an endpoint is findable at, but they could also publish their direct addresses.
 
 
-## Discovery Services
+## Address Lookup Services
 
-There are four different implementations of the discovery service in iroh. **By default, iroh uses DNS discovery** to resolve EndpointIDs to addresses. Local and DHT discovery are **disabled by default** and must be explicitly configured if you want to use them.
-
+iroh ships several address lookup implementations. **By default, iroh uses DNS/Pkarr address lookup** to resolve EndpointIDs to addresses. DNS/Pkarr adress lookup publishes signed records to a server and resolves them via DNS.
 
 | Name | Description | Default |
 | --- | --- | --- |
-| [DNS](#endpoint-discovery-via-dns) | uses a custom Domain Name System server | ✅ Enabled |
+| [DNS/Pkarr](#endpoint-discovery-via-dns) | publishes signed records to a server and resolves them over DNS | ✅ Enabled |
 | [Local](#local-discovery) | uses an mDNS-like system to find endpoints on the local network | ❌ Disabled |
-| [Pkarr](#endpoint-announces-via-pkarr) | uses Pkarr Servers over HTTP | ✅ Enabled (via DNS) |
-|  [DHT](#dht-discovery) | uses the BitTorrent Mainline DHT | ❌ Disabled |
+| [DHT](#dht-discovery) | publishes the same signed records to the BitTorrent Mainline DHT | ❌ Disabled |
 
 ### The motivation
 
@@ -57,7 +55,7 @@ discovery in the future, that needed to work in tandem with whatever federated
 solution we came up with.
 
 Second, it was very important for us as an organization that we do not invent
-protocols and specs unnecessarily. Can we instead leverage standards that have
+protocols and specs unnecessarily. Can we instead build on standards that have
 stood the test of time (and scrutiny) in novel ways to solve our problem? It
 turns out, we can! And we can do it using one of the oldest and most dependable
 technologies we have on the internet: DNS. Using the DNS standard along side
@@ -126,8 +124,8 @@ Those packets are published to a Pkarr relay server, which is a HTTP service
 handling PUT requests with the signed packets. iroh's Pkarr server is
 [`iroh-dns-server`](https://crates.io/crates/iroh-dns-server), which serves the
 received records over DNS. Pkarr packets can also be published onto the
-bittorrent mainline DHT, as specified by Pkarr (this is not yet supported in
-iroh natively, see below for our plans).
+BitTorrent Mainline DHT, as specified by Pkarr. iroh supports this through
+[DHT discovery](/connecting/dht-discovery), which is opt-in.
 
 DNS servers that support this spec will receive these Pkarr signed packets,
 check their signature and format validity, and then serve each contained record,

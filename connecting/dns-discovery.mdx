@@ -2,27 +2,31 @@
 title: "DNS"
 ---
 
-By Default, iroh uses the DNS discovery system to find other peers with a given EndpointId. 
+By default, iroh uses DNS address lookup to find other endpoints by their `EndpointId`.
 
-iroh will use a standard DNS server to publish and resolve EndpointIds to their
-home relay addresses. This allows any iroh endpoint to be discoverable globally,
-as long as they are connected to the same relay that is reachable from the public
-internet.
+An endpoint publishes a signed record that maps its `EndpointId` to its home relay
+URL (and optionally its direct addresses), and resolves the same kind of record for
+endpoints it wants to dial.
 
-## Using DNS Discovery
+## How records are published and resolved
 
-DNS discovery is the default discovery mechanism in iroh, so you don't need to
-do anything special to enable it.
+Each endpoint creates a set of records with its adressing information, and puts it into a signed [Pkarr](https://pkarr.org) packet. The packet is signed by the endpoint's secret key.
+The endpoint publishes this packet to a DNS/Pkarr server via HTTP.
+Other endpoints can then resolve these packets either via DNS queries or via HTTP.
 
-[Number 0](https://n0.computer) provides a set of public DNS servers that are
+[Number 0](https://n0.computer) provides a set of public DNS/Pkarr servers that are
 free to use, and are configured by default. You're more than welcome to run
 production systems using the public relays if you find performance acceptable.
 The public servers do rate-limit traffic, there is no guaranteed uptime. 
-
 If you need more capacity or uptime guarantees or SLAs, you can
 run your own DNS server, or [contact us about hosted DNS
 options](https://cal.com/team/number-0/n0-protocol-services?overlayCalendar=true).
 
+## Using DNS address lookup
+
+DNS address lookup is part of the `presets::N0` defaults, so you do not need to enable
+it explicitly. The `N0` preset adds a publisher and a resolver, both pointed at the
+n0-hosted server at `dns.iroh.link`.
 
 ```rust
 use iroh::{Endpoint, endpoint::presets};
@@ -41,42 +45,61 @@ async fn main() -> anyhow::Result<()> {
 }
 ```
 
-To discover other endpoints over DNS, you can use an EndpointId or a [Ticket](/concepts/tickets) that contains
-an EndpointId.
+To discover another endpoint over DNS you need its `EndpointId`, either directly
+or from a [ticket](/concepts/tickets) that contains one. Resolution then happens
+automatically when you connect.
 
-## Use your own DNS Server
+## Use your own server
 
-By default, iroh will look up the endpoint on a public shared instance of the
-DNS discovery server. If you'd like to run your own private DNS discovery server
-for more guaranteed privacy and uptime guarantees, you can configure iroh to use
-it.
+Two endpoints must publish to and resolve from the same server to find each other.
+To use your own deployment of
+[`iroh-dns-server`](https://crates.io/crates/iroh-dns-server), build the endpoint
+from `presets::Minimal` (which adds no address lookup) and configure the publisher and
+resolver yourself.
 
-
-Two nodes must connect to the same DNS discovery server to find each other using
-DNS discovery.
-
-TODO: rust code for custom dns server
-
-## Disable DNS Discovery
-
-DNS discovery is opt-out, so if you don't want your endpoint to be discoverable
-via DNS, you can disable it by using the `Endpoint::empty_builder` method
-instead of `Endpoint::builder`.
-
+`PkarrPublisher::builder` takes the relay URL to PUT records to.
+`DnsAddressLookup::builder` takes the origin domain to query under.
 
 ```rust
-use iroh::Endpoint;
+use iroh::{
+    Endpoint,
+    address_lookup::{DnsAddressLookup, PkarrPublisher},
+    endpoint::presets,
+};
+use url::Url;
+
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-      let endpoint = Endpoint::empty_builder().bind().await?;
-      // your code here
-      Ok(())
+    let pkarr_relay: Url = "https://my-dns-server.example/pkarr".parse()?;
+    let origin_domain = "my-dns-server.example".to_string();
+
+    let endpoint = Endpoint::builder(presets::Minimal)
+        .address_lookup(PkarrPublisher::builder(pkarr_relay))
+        .address_lookup(DnsAddressLookup::builder(origin_domain))
+        .bind()
+        .await?;
+    // your code here
+    Ok(())
 }
-```   
+```
 
-## Important notes 
+By default the `PkarrPublisher` publishes only the home relay URL, not direct IP
+addresses. To publish addresses as well, set an `AddrFilter` on the builder with
+`PkarrPublisher::builder(url).addr_filter(AddrFilter::unfiltered())`.
 
+## Disable DNS address lookup
 
+DNS address lookup is optional. To build an endpoint without it, use `presets::Minimal`
+instead of `presets::N0`. `Minimal` sets up a crypto provider but adds no
+address lookup and no relays, so the endpoint is not published anywhere.
 
+```rust
+use iroh::{Endpoint, endpoint::presets};
 
-For more information on how DNS discovery works, see the [Discovery](/concepts/discovery) concept page.
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let endpoint = Endpoint::builder(presets::Minimal).bind().await?;
+    // your code here
+    Ok(())
+}
+```

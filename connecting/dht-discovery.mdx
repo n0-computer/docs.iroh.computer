@@ -2,25 +2,46 @@
 title: "DHT"
 ---
 
-Discovery via DHT in iroh uses the [BitTorrent Mainline](https://en.wikipedia.org/wiki/Mainline_DHT) distributed hash table (DHT) to publish & resolve EndpointIds.
+DHT discovery publishes and resolves endpoint records on the
+[BitTorrent Mainline](https://en.wikipedia.org/wiki/Mainline_DHT) distributed hash
+table. The records are the same signed records that
+[DNS discovery](/connecting/dns-discovery) uses. The difference is where they
+are stored. DNS discovery publishes them to a hosted server and resolves over DNS,
+while DHT discovery puts them on the BitTorrent Mainline DHT. That removes the
+dependency on a hosted server: any endpoint can publish and resolve without a
+central party, at the cost of slower lookups than DNS.
 
-DHT Discovery is _not_ enabled by default, and must be enabled by the user. You'll need to add the `discovery-pkarr-dht` feature flag to your `Cargo.toml` to use it.
+DHT discovery is not enabled by default. It lives in the separate
+[`iroh-mainline-address-lookup`](https://crates.io/crates/iroh-mainline-address-lookup)
+crate, which you add alongside `iroh`.
 
 ```toml
 [dependencies]
-# Make sure to use the most recent version here instead of nn. (at the time of writing: 0.32)
-iroh = { version = "0.nn", features = ["discovery-pkarr-dht"] }
+iroh = "1.0.0-rc.1"
+iroh-mainline-address-lookup = "0.3"
 ```
 
-Then configure your endpoint to use DHT discovery concurrently with mDNS discovery, but not with the default DNS discovery, use the `Endpoint::empty_builder` method. This requires specifying a `RelayMode`, which in this example we will keep default.
+Add the `DhtAddressLookup` to the endpoint with `Endpoint::builder`. You can run it
+next to the default DNS discovery, or build from `presets::Minimal` to use only the
+DHT.
 
 ```rust
-use iroh::Endpoint;
+use iroh::{Endpoint, endpoint::presets};
+use iroh_mainline_address_lookup::DhtAddressLookup;
 
-let dht_discovery = iroh::discovery::dht::DhtDiscovery::builder();
-let mdns = iroh::discovery::mdns::MdnsDiscovery::builder();
-let ep = Endpoint::empty_builder(iroh::RelayMode::Default)
-    .discovery(dnt_discovery)
-    .bind()
-    .await?;
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let endpoint = Endpoint::builder(presets::N0)
+        .address_lookup(DhtAddressLookup::builder())
+        .bind()
+        .await?;
+    // your code here
+    Ok(())
+}
 ```
+
+DHT address lookup also combines well with [mDNS address lookup](/connecting/local-discovery)
+for both global and local discovery without depending on centralized infrastructure.
+
+For the record format shared with DNS discovery, see the
+[Discovery concept page](/concepts/discovery).
