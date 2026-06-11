@@ -13,7 +13,7 @@ description: "Use iroh from Node.js via the iroh-ffi bindings."
 All platforms require Node.js 20.3.0 or newer.
 
 - **API reference:** [JavaScript API docs](https://n0-computer.github.io/iroh-ffi/js/)
-- **Example code:** [iroh-js test scripts](https://github.com/n0-computer/iroh-ffi/tree/main/iroh-js/test), runnable scripts covering endpoints, keys, and relays
+- **Example app:** [hello-iroh-ffi](https://github.com/n0-computer/hello-iroh-ffi/tree/main/js), a console reader for the cross-platform dot demo
 - **All languages:** [platform support matrix](/languages#platform-support)
 
 The JavaScript bindings to iroh are published on npm as [`@number0/iroh`](https://www.npmjs.com/package/@number0/iroh) and shipped from [iroh-ffi](https://github.com/n0-computer/iroh-ffi). They're built with [napi-rs](https://napi.rs/), so the package distributes prebuilt native binaries. No Rust toolchain or local compilation is needed.
@@ -93,6 +93,10 @@ Start the receiver in one terminal, copy the printed ticket, and run the sender 
 
 <Card title="Connect two endpoints" icon="rocket" href="/connect-two-endpoints" horizontal>
   Walkthrough of endpoints, tickets, and ALPNs with code samples in every language.
+</Card>
+
+<Card title="hello-iroh-ffi example app" icon="github" href="https://github.com/n0-computer/hello-iroh-ffi/tree/main/js" horizontal>
+  A headless Node peer for the cross-platform dot demo. It speaks the same wire format as the Swift and Kotlin apps and prints received positions to the console.
 </Card>
 
 <Card title="JavaScript API reference" icon="book" href="https://n0-computer.github.io/iroh-ffi/js/" horizontal>
