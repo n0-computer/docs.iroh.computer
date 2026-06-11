@@ -3,9 +3,18 @@ title: "JavaScript"
 description: "Use iroh from Node.js via the iroh-ffi bindings."
 ---
 
-- **Platforms:** Node.js 20.3+ on macOS (arm64), Linux (x86_64, aarch64 — glibc + musl, armv7), Windows (x86_64, aarch64), Android (aarch64, armv7) ([full matrix](/languages#platform-support))
+| Platform | Architectures |
+| --- | --- |
+| macOS | arm64 |
+| Linux | x86_64, aarch64 (glibc and musl), armv7 |
+| Windows | x86_64, aarch64 |
+| Android | aarch64, armv7 |
+
+All platforms require Node.js 20.3.0 or newer.
+
 - **API reference:** [JavaScript API docs](https://n0-computer.github.io/iroh-ffi/js/)
-- **Example code:** [iroh-js test scripts](https://github.com/n0-computer/iroh-ffi/tree/main/iroh-js/test) — runnable scripts exercising endpoints, keys, and relays
+- **Example code:** [iroh-js test scripts](https://github.com/n0-computer/iroh-ffi/tree/main/iroh-js/test), runnable scripts covering endpoints, keys, and relays
+- **All languages:** [platform support matrix](/languages#platform-support)
 
 The JavaScript bindings to iroh are published on npm as [`@number0/iroh`](https://www.npmjs.com/package/@number0/iroh) and shipped from [iroh-ffi](https://github.com/n0-computer/iroh-ffi). They're built with [napi-rs](https://napi.rs/), so the package distributes prebuilt native binaries — no Rust toolchain or local compilation needed.
 
