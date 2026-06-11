@@ -1,0 +1,52 @@
+---
+title: "Rust"
+description: "Add iroh to your Rust project."
+---
+
+iroh is written in Rust, so the Rust crate is the most fully-featured way to use it. Everything in these docs assumes Rust unless explicitly tagged otherwise.
+
+## Install
+
+Add iroh to your project:
+
+```bash
+cargo add iroh
+```
+
+For tickets, common protocols, and async runtime support you'll usually want a few more:
+
+```bash
+cargo add iroh-tickets iroh-ping anyhow
+cargo add tokio --features full
+```
+
+## Hello, iroh
+
+```rust
+use anyhow::Result;
+use iroh::{Endpoint, endpoint::presets};
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    let endpoint = Endpoint::bind(presets::N0).await?;
+    endpoint.online().await;
+    println!("endpoint id: {}", endpoint.id());
+    Ok(())
+}
+```
+
+This binds an endpoint using the `N0` preset (public discovery + default relays), waits until it has a home relay, and prints its 64-character endpoint id. Run it with `cargo run`.
+
+## Next steps
+
+<Card title="Quickstart" icon="rocket" href="/quickstart" horizontal>
+  Run two endpoints and watch them ping each other in five minutes.
+</Card>
+
+<Card title="Connect two endpoints" icon="circle-nodes" href="/connect-two-endpoints" horizontal>
+  Build the sender/receiver flow from scratch with tickets and a custom protocol handler.
+</Card>
+
+<Card title="Rust API docs" icon="book" href="https://docs.rs/iroh" horizontal>
+  Full type and function reference on docs.rs.
+</Card>

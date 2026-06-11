@@ -16,7 +16,18 @@
           "what-is-iroh",
           "quickstart",
           "compatibility",
-          "deployment/other-languages",
+          {
+            "group": "Languages",
+            "expanded": false,
+            "pages": [
+              "languages/index",
+              "languages/rust",
+              "languages/python",
+              "languages/swift",
+              "languages/kotlin",
+              "languages/javascript"
+            ]
+          },
           {
             "group": "Tutorials",
             "expanded": true,
@@ -117,7 +128,17 @@
               "about/faq"
             ]
           },
-          "rust-api",
+          {
+            "group": "API References",
+            "expanded": false,
+            "pages": [
+              "rust-api",
+              "python-api",
+              "swift-api",
+              "kotlin-api",
+              "js-api"
+            ]
+          },
           "examples",
           "troubleshooting",
           "iroh-services/support"
@@ -179,6 +200,10 @@
     {
       "source": "/examples/examples",
       "destination": "/examples"
+    },
+    {
+      "source": "/deployment/other-languages",
+      "destination": "/languages"
     },
     {
       "source": "/protocols/kv-crdts",

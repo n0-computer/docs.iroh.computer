@@ -1,0 +1,91 @@
+---
+title: "JavaScript"
+description: "Use iroh from Node.js via the iroh-ffi bindings."
+---
+
+The JavaScript bindings to iroh are published on npm as [`@number0/iroh`](https://www.npmjs.com/package/@number0/iroh) and shipped from [iroh-ffi](https://github.com/n0-computer/iroh-ffi). They're built with [napi-rs](https://napi.rs/), so the package distributes prebuilt native binaries — no Rust toolchain or local compilation needed.
+
+## Install
+
+```bash
+npm install @number0/iroh
+```
+
+Requires Node.js 20.3.0 or newer. Prebuilt N-API binaries are published for:
+
+- macOS: `arm64` (no Intel build)
+- Linux: `x86_64` and `aarch64` (glibc + musl), `armv7` (gnueabihf + musleabihf)
+- Windows: `x86_64` and `aarch64`
+- Android: `aarch64` and `armv7`
+
+## Hello, iroh
+
+```javascript
+import { Endpoint } from '@number0/iroh'
+
+const ALPN = Array.from(Buffer.from('hello-iroh/0'))
+
+const ep = await Endpoint.bind({ alpns: [ALPN] })
+console.log('endpoint id:', ep.id().toString())
+await ep.close()
+```
+
+`Endpoint.bind` applies the `n0` preset (public discovery + default relays) by default. Pass an `EndpointOptions` object to override the preset, supply a fixed secret key, or set ALPNs.
+
+## A two-peer echo
+
+A minimal sender/receiver pair over a bidirectional stream:
+
+```javascript
+// main.mjs — run: `node main.mjs receiver` or `node main.mjs sender <ticket>`
+import { Endpoint, EndpointTicket } from '@number0/iroh'
+
+const ALPN = Array.from(Buffer.from('hello-iroh/0'))
+
+async function receiver() {
+  const ep = await Endpoint.bind({ alpns: [ALPN] })
+  console.log('ticket:', EndpointTicket.fromAddr(ep.addr()).toString())
+
+  const incoming = await ep.acceptNext()
+  const conn = await (await incoming.accept()).connect()
+  const bi = await conn.acceptBi()
+  const msg = await bi.recv.readToEnd(1024)
+  await bi.send.writeAll(msg)
+  await bi.send.finish()
+  await ep.close()
+}
+
+async function sender(ticketStr) {
+  const ep = await Endpoint.bind()
+  const addr = EndpointTicket.fromString(ticketStr).endpointAddr()
+  const conn = await ep.connect(addr, ALPN)
+
+  const bi = await conn.openBi()
+  await bi.send.writeAll(Array.from(Buffer.from('hello')))
+  await bi.send.finish()
+  const echoed = await bi.recv.readToEnd(1024)
+  console.log('echoed:', Buffer.from(echoed).toString('utf8'))
+  await ep.close()
+}
+
+const [cmd, arg] = process.argv.slice(2)
+if (cmd === 'receiver') await receiver()
+else if (cmd === 'sender') await sender(arg)
+else console.error('usage: receiver | sender <ticket>')
+```
+
+Start the receiver in one terminal, copy the printed ticket, and run the sender with it in another.
+
+## Next steps
+
+<Card title="Connect two endpoints" icon="rocket" href="/connect-two-endpoints" horizontal>
+  Walkthrough of endpoints, tickets, and ALPNs with code samples in every language.
+</Card>
+
+<Card title="JavaScript API reference" icon="book" href="https://n0-computer.github.io/iroh-ffi/js/" horizontal>
+  Generated TypeDoc reference for `@number0/iroh`.
+</Card>
+
+<Card title="iroh-ffi on GitHub" icon="github" href="https://github.com/n0-computer/iroh-ffi" horizontal>
+  Source, examples, and issue tracker for the JavaScript (and other-language) bindings.
+</Card>

@@ -1,16 +1,21 @@
 ### Add the Iroh Services Client
 
-Add the `iroh-services` crate to your `Cargo.toml`:
+In Rust, add the `iroh-services` crate to your `Cargo.toml`:
 
 ```
 cargo add iroh-services
 ```
 
+The Python, Swift, and Kotlin bindings ship the services client as part of
+`iroh-ffi`, with no extra dependency needed.
+
 ### Connect Your Endpoint
 
-Then, in your code, create a client and connect your endpoint to Iroh Services.
+Then, in your code, create a client and connect your endpoint to Iroh Services. Giving the endpoint a name makes it easy to identify on the dashboard; unnamed endpoints are harder to distinguish from each other.
 
-```rust
+<CodeGroup>
+
+```rust Rust
 use iroh::{Endpoint, endpoint::presets};
 use iroh_services::Client;
 
@@ -22,9 +27,7 @@ async fn main() -> anyhow::Result<()> {
     // Wait for the endpoint to be online
     endpoint.online().await;
 
-    // Create the Iroh Services client with your API key. Giving the endpoint
-    // a name makes it easy to identify on the dashboard. Unnamed endpoints
-    // are harder to distinguish from each other.
+    // Create the Iroh Services client with your API key.
     let client = Client::builder(&endpoint)
         .api_secret_from_str("YOUR_API_KEY")?
         .name("my-endpoint")?
@@ -36,6 +39,57 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 ```
+
+```python Python
+import asyncio
+import iroh
+
+async def main():
+    ep = await iroh.Endpoint.bind(iroh.EndpointOptions(preset=iroh.preset_n0()))
+    await ep.online()
+
+    client = await iroh.ServicesClient.create(
+        ep,
+        iroh.ServicesOptions(api_secret="YOUR_API_KEY", name="my-endpoint"),
+    )
+
+    # Your endpoint is now reporting metrics to Iroh Services!
+
+asyncio.run(main())
+```
+
+```swift Swift
+import IrohLib
+
+let endpoint = try await Endpoint.bind(options: EndpointOptions(preset: presetN0()))
+await endpoint.online()
+
+let client = try await ServicesClient.create(
+    endpoint: endpoint,
+    options: ServicesOptions(apiSecret: "YOUR_API_KEY", name: "my-endpoint")
+)
+
+// Your endpoint is now reporting metrics to Iroh Services!
+```
+
+```kotlin Kotlin
+import computer.iroh.*
+import kotlinx.coroutines.runBlocking
+
+fun main() = runBlocking {
+    val endpoint = Endpoint.bind(EndpointOptions(preset = presetN0()))
+    endpoint.online()
+
+    val client = ServicesClient.create(
+        endpoint,
+        ServicesOptions(apiSecret = "YOUR_API_KEY", name = "my-endpoint"),
+    )
+
+    // Your endpoint is now reporting metrics to Iroh Services!
+}
+```
+
+</CodeGroup>
 
 ### View Your Endpoint on the Dashboard
 
