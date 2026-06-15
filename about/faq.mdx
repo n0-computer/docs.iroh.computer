@@ -2,6 +2,31 @@
 title: "FAQ"
 ---
 
+## What problem does iroh solve?
+
+iroh is built on QUIC and doesn't try to reinvent the wheel; it combines existing IETF standards in a new way. The concrete problem it solves is connecting two devices that can't easily reach each other today.
+
+Say one device is in your home WLAN behind a NAT and the other is on a 4G network or behind a different NAT at work. In most cases iroh can establish a direct connection between the two via [hole punching](/concepts/nat-traversal), giving you the highest possible bandwidth and the lowest possible latency. Reliably getting that direct connection across arbitrary networks was not a solved problem until now.
+
+On top of that, iroh lets you dial a device by its public key (its [Endpoint ID](/concepts/endpoints)) instead of by IP address, so you don't need to know or care where the other device currently sits on the network.
+
+
+## Is iroh a replacement for IP addresses?
+
+No, iroh is an addition, not a replacement. IP isn't going anywhere, and iroh runs on top of it, adding two capabilities: the ability to dial an endpoint by its public key, and the ability to get a direct connection whenever one is possible.
+
+Because applications dial by key rather than by address, iroh is also well positioned for the future. If some other technology eventually replaces the IP address paradigm, nothing changes from the application developer's point of view: you still dial by key, and iroh makes sure under the hood that you get the best possible connection, over IP or otherwise.
+
+
+## How is iroh different from other peer-to-peer networks?
+
+The main difference is that iroh tries to use existing IETF standards as much as possible instead of reinventing the wheel. An iroh connection is just a QUIC connection, using TLS and TLS ALPNs for protocol negotiation. If you look at one in Wireshark, it's indistinguishable from any other QUIC connection, so existing tooling works and what you learn using iroh transfers to plain QUIC and vice versa.
+
+Most iroh contributors come out of the P2P world and had a bit of "abstraction fatigue" after years of working on traditional P2P networks. So where many P2P networks ship their own DHT for discovery, iroh resisted that temptation and instead uses the biggest DHT that already exists, [BitTorrent's Mainline DHT](/connecting/dht-address-lookup), for peer-to-peer [address lookup](/concepts/address-lookup).
+
+Some "regular P2P networks" actually run on iroh under the hood, including [Holochain](https://blog.holochain.org) and various P2P chat apps.
+
+
 ## Does iroh use relay servers?
 
 Yes, and relay servers are a core part of what makes iroh connections reliable. See the [Relays concept page](/concepts/relays) for a full overview.
@@ -41,6 +66,13 @@ You're not dependent on us. The relay code is [open-source](https://github.com/n
 The easiest path is a [dedicated relay via Iroh Services](/concepts/relays#dedicated-relays), which gives you an isolated, managed relay with uptime guarantees. If you'd rather self-host, you need a server with a public IP and a DNS name pointing to it. Automatic TLS via [ACME](https://en.wikipedia.org/wiki/Automatic_Certificate_Management_Environment) is built in. Either way, configure the relay URL for your endpoint (see [Use your own relay](/add-a-relay)) and you're set.
 
 Running your own relay doesn't affect interoperability. Your endpoints can still connect to peers using other relay servers, and since relays are stateless and logic lives at the client, can be swapped independently.
+
+
+## What are the risks of running a public relay?
+
+Running a public, unauthenticated relay means you act as the home relay for anyone who has your relay in their relay map and is close to you in terms of latency. The main practical consequence is traffic: you might get a lot of it, so you'll want to configure rate limiting, as we do on our [public relays](/iroh-services/relays/public).
+
+The security exposure is limited. The traffic you relay is fully end-to-end encrypted and cannot be decrypted by the relay. The only information a relay has is what it needs to function: the endpoint IDs and IP addresses of the endpoints currently connected to it, plus which endpoints are paired. A relay has no egress to the open internet, so if you're comparing it to Tor, running a relay is like running a guard/middle relay, not an exit node.
 
 
 ## Is establishing a connection without relays or when offline possible?
@@ -89,6 +121,13 @@ It's also possible to combine multiple address lookup mechanisms at once, or wri
 We think it's particularly helpful to write application-specific address lookup mechanisms that are tailored to an application's need.
 
 
+## Does using the Mainline DHT mean BitTorrent clients respond to iroh lookups?
+
+First, peer-to-peer [address lookup over the Mainline DHT](/connecting/dht-address-lookup) is an optional feature that you have to enable explicitly. It's disabled by default, partly so that mobile apps don't look like BitTorrent clients and get flagged by the OS. Mainline itself is very frugal in terms of resource use.
+
+When you do a P2P address lookup, any Mainline server node could respond: each [BEP 44](https://www.bittorrent.org/beps/bep_0044.html) record is stored on 20 random Mainline nodes. So yes, a BitTorrent client that participates in the DHT as a server and has been running long enough to be in the routing tables will respond.
+
+
 ## What ports does iroh use?
 
 Iroh listens on **Two UDP ports**: one for IPv4 and one for IPv6, used for direct P2P connections; configurable via [`endpoint::Builder`](https://docs.rs/iroh/latest/iroh/endpoint/struct.Builder.html)
@@ -103,6 +142,20 @@ It's totally possible that you maintain connections to multiple relays at a time
 Iroh supports custom transports, which means you can route connections over Tor. Check out our [blog post on using iroh with Tor](https://www.iroh.computer/blog/tor-custom-transport) for a walkthrough of how this works in practice.
 
 
+## Will iroh support WebRTC, BLE, LoRa, or another transport?
+
+Out of the box, iroh supports IPv4, IPv6 and relay transports. There's such a large variety of potentially interesting transports out there that we can't build them all in without turning the codebase into an unmaintainable maze of feature flags.
+
+Instead, iroh lets you implement custom transports that live in a completely separate crate. Existing experimental ones include [Tor](/transports/tor), [Nym](/transports/nym) and [Bluetooth (BLE)](/transports/bluetooth). For a walkthrough of how custom transports work under the hood, see the [custom transports blog post](https://www.iroh.computer/blog/iroh-0-97-0-custom-transports).
+
+
+## Can iroh help route around internet segmentation or censorship?
+
+iroh doesn't solve every problem created by internet segmentation (DNS control, TLS certificate revocation, and so on), but it's very much possible today to assemble iroh components into a setup that lets you forget about segmentation while you use it. iroh is designed from the ground up to build on existing internet technologies while avoiding lock-in and dependencies on browser vendors or other large players.
+
+For example, you can route iroh connections over custom transports like [Tor](/transports/tor) or [Nym](/transports/nym), or connect over local links with [Bluetooth](/transports/bluetooth) or direct WiFi, giving application developers the building blocks to route around segmentation.
+
+
 ## How is iroh development funded?
 
 The company behind iroh is number 0.
@@ -110,6 +163,15 @@ It is partly venture capital and partly founder backed (as in: founders have inv
 Number 0 is healthy and has investors we actually think are a value-add.
 We earn revenue through [Iroh Services](https://services.iroh.computer), which provides managed relay and DNS address lookup infrastructure to keep your endpoints connected, from free public infrastructure for development and testing to dedicated cloud deployments for production.
 We rely on iroh remaining open source, and are committed to keeping it that way, including server-side code for relays and DNS address lookup.
+
+
+## How does iroh compare to Tailscale?
+
+Tailscale and iroh both get devices connected across NATs, but they operate at different layers. Tailscale is built to be global to your device: it sets up a network interface that all of your applications share. iroh is built to be embedded into each individual application.
+
+That difference matters. With iroh, connectivity lives inside your app rather than in a single global bridge, which gives developers and users a much more fine-grained and bespoke setup. You can ship an Android or iOS app that uses iroh direct connections under the hood, and the person using it never has to know or care that iroh is involved, with no separate VPN or daemon to install and manage.
+
+If you want one virtual network spanning all the apps on a machine, Tailscale is a natural fit. If you want direct, encrypted connections built directly into your application, iroh is designed for that.
 
 
 ## How does iroh compare to WebRTC?
@@ -161,6 +223,13 @@ Where libp2p has more:
 - **DHT.** Libp2p has a Kademlia-based DHT; iroh does not. If your design depends on DHT-based routing or content discovery, that's a gap.
 
 If your focus is on the protocol you're building rather than the networking layer beneath it, iroh is designed to get out of your way.
+
+
+## What languages can I use iroh from? Is there a Go version?
+
+iroh's focus is the Rust implementation, which is easy to use directly from Rust, C and C++ and to embed into languages like [JavaScript](/languages/javascript), [Python](/languages/python), [Swift](/languages/swift) and [Kotlin](/languages/kotlin). See the [Languages](/languages) overview for the full list of official bindings.
+
+There's no official Go version. Because iroh is a combination of existing standards (QUIC plus the multipath extension and a small amount of custom TLS logic), a native Go implementation is possible in theory using a Go QUIC library that supports multipath, and there are third-party efforts such as [go-iroh](https://github.com/tmc/go-iroh). Our own focus stays on the Rust implementation.
 
 
 ## Do you support keys other than Ed25519?

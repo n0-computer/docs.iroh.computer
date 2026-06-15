@@ -116,7 +116,6 @@
               "about/roadmap",
               "about/release-policy",
               "deployment/security-privacy",
-              "about/faq",
               {
                 "group": "Services Billing",
                 "expanded": false,
@@ -142,7 +141,8 @@
           },
           "examples",
           "troubleshooting",
-          "iroh-services/support"
+          "iroh-services/support",
+          "about/faq"
         ]
       }
     ]
