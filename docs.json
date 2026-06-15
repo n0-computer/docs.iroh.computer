@@ -46,7 +46,7 @@
             "pages": [
               "concepts/endpoints",
               "concepts/tickets",
-              "concepts/discovery",
+              "concepts/address-lookup",
               "concepts/relays",
               "concepts/nat-traversal",
               "concepts/protocols"
@@ -57,9 +57,9 @@
             "expanded": false,
             "pages": [
               "connecting/creating-endpoint",
-              "connecting/dns-discovery",
-              "connecting/dht-discovery",
-              "connecting/local-discovery",
+              "connecting/dns-address-lookup",
+              "connecting/dht-address-lookup",
+              "connecting/local-address-lookup",
               "connecting/gossip",
               "connecting/endpoint-hooks"
             ]
@@ -208,6 +208,26 @@
     {
       "source": "/protocols/kv-crdts",
       "destination": "/protocols/documents"
+    },
+    {
+      "source": "/concepts/discovery",
+      "destination": "/concepts/address-lookup",
+      "permanent": true
+    },
+    {
+      "source": "/connecting/dns-discovery",
+      "destination": "/connecting/dns-address-lookup",
+      "permanent": true
+    },
+    {
+      "source": "/connecting/dht-discovery",
+      "destination": "/connecting/dht-address-lookup",
+      "permanent": true
+    },
+    {
+      "source": "/connecting/local-discovery",
+      "destination": "/connecting/local-address-lookup",
+      "permanent": true
     }
   ]
 }

@@ -35,11 +35,9 @@ node is involved in the connection.
 
 ### `iroh` crate features
 
-As of iroh version 0.33, you need to disable all optional features on iroh for the Wasm build to succeed.
-To do so, depend on iroh via `iroh = { version = "0.33", default-features = false }`.
-This will install a version of iroh with default features, except it doesn't track `metrics` locally.
-We'll get rid of this limitation very soon (likely with iroh version 0.34).
-Non-default features like `discovery-local-network` or `discovery-dht` will likely never be available in browsers, unless browser APIs making them possible are added.
+You need to disable iroh's default features for the Wasm build to succeed.
+To do so, depend on iroh via `iroh = { version = "1.0.0-rc.1", default-features = false }`.
+This drops the `metrics` feature, so iroh no longer tracks metrics locally.
 
 ### npm package
 
@@ -71,4 +69,3 @@ Otherwise feel free to open a discussion or a thread on that discussion with you
 
 We're expanding browser support from the iroh crate to our off-the-shelf protocols.
 [iroh-gossip](https://www.iroh.computer/proto/iroh-gossip) already supports being built for browsers starting with version 0.33.
-

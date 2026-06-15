@@ -1,0 +1,47 @@
+---
+title: "DHT"
+---
+
+DHT address lookup publishes and resolves endpoint records on the
+[BitTorrent Mainline](https://en.wikipedia.org/wiki/Mainline_DHT) distributed hash
+table. The records are the same signed records that
+[DNS address lookup](/connecting/dns-address-lookup) uses. The difference is where they
+are stored. DNS address lookup publishes them to a hosted server and resolves over DNS,
+while DHT address lookup puts them on the BitTorrent Mainline DHT. That removes the
+dependency on a hosted server: any endpoint can publish and resolve without a
+central party, at the cost of slower lookups than DNS.
+
+DHT address lookup is not enabled by default. It lives in the separate
+[`iroh-mainline-address-lookup`](https://crates.io/crates/iroh-mainline-address-lookup)
+crate, which you add alongside `iroh`.
+
+```toml
+[dependencies]
+iroh = "1.0.0-rc.1"
+iroh-mainline-address-lookup = "0.3"
+```
+
+Add the `DhtAddressLookup` to the endpoint with `Endpoint::builder`. You can run it
+next to the default DNS address lookup, or build from `presets::Minimal` to use only the
+DHT.
+
+```rust
+use iroh::{Endpoint, endpoint::presets};
+use iroh_mainline_address_lookup::DhtAddressLookup;
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let endpoint = Endpoint::builder(presets::N0)
+        .address_lookup(DhtAddressLookup::builder())
+        .bind()
+        .await?;
+    // your code here
+    Ok(())
+}
+```
+
+DHT address lookup also combines well with [mDNS address lookup](/connecting/local-address-lookup)
+for both global and local address lookup without depending on centralized infrastructure.
+
+For the record format shared with DNS address lookup, see the
+[Address Lookup concept page](/concepts/address-lookup).

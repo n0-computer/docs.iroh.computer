@@ -37,10 +37,10 @@ let transport = TorCustomTransport::builder()
     .build(secret_key.clone())
     .await?;
 
-let endpoint = Endpoint::builder()
+let endpoint = Endpoint::builder(presets::N0)
     .secret_key(secret_key)
     .preset(transport.preset())
-    .bind(presets::N0)
+    .bind()
     .await?;
 ```
 

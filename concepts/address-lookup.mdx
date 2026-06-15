@@ -1,30 +1,26 @@
 ---
-title: "Discovery"
+title: "Address Lookup"
 ---
 
-
-Discovery is the glue that connects an [Endpoint](/concepts/endpoints#endpoint-identifiers) to something we can dial. Discovery services resolve EndpointIDs to either a home Relay URL or direct-dialing information. 
+Address Lookup is the glue that connects an [Endpoint ID](/concepts/endpoints#endpoint-identifiers) to something we can dial. Address Lookup services resolve Endpoint IDs to either their home Relay URL or direct-dialing information.
 
 <Note>
-  More details on discovery in the address lookup module [documentation](https://docs.rs/iroh/latest/iroh/address_lookup/index.html)
+  More details can be found in the address lookup module [documentation](https://docs.rs/iroh/latest/iroh/address_lookup/index.html)
 </Note>
 
-Endpoint discovery is an automated system for an [Endpoint](/concepts/endpoints) to retrieve addressing information. Each iroh endpoint will automatically publish their own addressing information with configured discovery services. Usually this means publishing which [Home Relay](/concepts/relays) an endpoint is findable at, but they could also publish their direct addresses.
+Address Lookup services form an automated system for an [Endpoint](/concepts/endpoints) to retrieve addressing information. Each iroh endpoint will automatically publish their own addressing information with configured address lookup services. Usually this means publishing which [Home Relay](/concepts/relays) an endpoint is findable at, but they could also publish their direct addresses.
 
+## Address Lookup Services
 
-## Discovery Services
-
-There are four different implementations of the discovery service in iroh. **By default, iroh uses DNS discovery** to resolve EndpointIDs to addresses. Local and DHT discovery are **disabled by default** and must be explicitly configured if you want to use them.
-
+iroh ships several address lookup implementations. **By default, iroh uses DNS/Pkarr address lookup** to resolve EndpointIDs to addresses. It publishes signed records to a server and resolves them via DNS.
 
 | Name | Description | Default |
 | --- | --- | --- |
-| [DNS](#endpoint-discovery-via-dns) | uses a custom Domain Name System server | ✅ Enabled |
-| [Local](#local-discovery) | uses an mDNS-like system to find endpoints on the local network | ❌ Disabled |
-| [Pkarr](#endpoint-announces-via-pkarr) | uses Pkarr Servers over HTTP | ✅ Enabled (via DNS) |
-|  [DHT](#dht-discovery) | uses the BitTorrent Mainline DHT | ❌ Disabled |
+| [DNS/Pkarr](#endpoint-address-lookup-via-dns) | publishes signed records to a server and resolves them over DNS | ✅ Enabled |
+| [Local](/connecting/local-address-lookup) | uses an mDNS-like system to find endpoints on the local network | ❌ Disabled |
+| [DHT](/connecting/dht-address-lookup) | publishes the same signed records to the BitTorrent Mainline DHT | ❌ Disabled |
 
-### The motivation
+## Background on address lookup and DNS/Pkarr
 
 We want iroh to establish connections with as little friction as possible. Our
 first big push toward chipping away at this goal was adding [NAT traversal](/concepts/nat-traversal) into
@@ -48,21 +44,21 @@ address data?
 
 ### The solution
 
-We had two "guiding lights" while doing research on global endpoint discovery:
+We had two "guiding lights" while doing research on global endpoint address lookup:
 
 First, we needed to see a path forward that would allow for a fully distributed
 topology, even if our first solution had a federated structure. If we (or some
 contributor) wanted to create or opt into a fully p2p version of global endpoint
-discovery in the future, that needed to work in tandem with whatever federated
+address lookup in the future, that needed to work in tandem with whatever federated
 solution we came up with.
 
 Second, it was very important for us as an organization that we do not invent
-protocols and specs unnecessarily. Can we instead leverage standards that have
+protocols and specs unnecessarily. Can we instead build on standards that have
 stood the test of time (and scrutiny) in novel ways to solve our problem? It
 turns out, we can! And we can do it using one of the oldest and most dependable
 technologies we have on the internet: DNS. Using the DNS standard along side
 Pkarr (public-key addressable resource records), **we now have global endpoint
-discovery in iroh**!
+address lookup in iroh**!
 
 ## The approach
 
@@ -85,16 +81,16 @@ that endpoint. So the Pkarr packet currently only needs to contain the EndpointI
 the relay URL of its preferred relay server (which we call its "home relay").
 When Pkarr publishing is enabled on your iroh endpoint, your endpoint will create a
 Pkarr packet with its EndpointID and relay URL, sign it, and defaults to publishing
-on an `iroh-dns` server that is run by [n0.computer](https://n0.computer).
+on an `iroh-dns-server` instance that is run by [n0.computer](https://n0.computer).
 
 From there, others can discover your dialing information by resolving your EndpointID using regular DNS. It's worth noting that others must still learn your endpoint
 ID for this to work.
 
-The following sections describe the format of the Pkarr publishing records and endpoint discovery via DNS queries in greater detail.
+The following sections describe the format of the Pkarr publishing records and endpoint address lookup via DNS queries in greater detail.
 
-## Endpoint discovery via DNS
+## Endpoint address lookup via DNS
 
-When connecting to an unknown `EndpointId`, the DNS discovery mechanism in iroh will perform a DNS query to discover relays or addresses for the endpoint. The DNS discovery is configured with a *origin domain* (which defaults to *dns.iroh.link*, a server run by n0). iroh will then perform a DNS query through the configured DNS resolver (which defaults to using the host system's nameservers):
+When connecting to an unknown `EndpointId`, the DNS address lookup mechanism in iroh will perform a DNS query to discover relays or addresses for the endpoint. The DNS address lookup is configured with a *origin domain* (which defaults to *dns.iroh.link*, a server run by n0). iroh will then perform a DNS query through the configured DNS resolver (which defaults to using the host system's nameservers):
 
 `_iroh.<z32-endpoint-id>.<origin-domain> TXT`
 
@@ -111,7 +107,7 @@ This spec defines the following attributes:
 - `addr=<addr> <addr> ..` A space-separated list of socket addresses for this iroh endpoint. Each address is an IPv4 or IPv6 address with a port (e.g. `1.2.3.4:7367` or `[::1]:3521`)
 
 <Note>
-**Ready to use DNS discovery?** Learn how to configure DNS discovery in your application in the [DNS Discovery guide](/connecting/dns-discovery).
+**Ready to use DNS address lookup?** Learn how to configure DNS address lookup in your application in the [DNS Address Lookup guide](/connecting/dns-address-lookup).
 </Note>
 
 ## Endpoint announces via `pkarr`
@@ -126,13 +122,13 @@ Those packets are published to a Pkarr relay server, which is a HTTP service
 handling PUT requests with the signed packets. iroh's Pkarr server is
 [`iroh-dns-server`](https://crates.io/crates/iroh-dns-server), which serves the
 received records over DNS. Pkarr packets can also be published onto the
-bittorrent mainline DHT, as specified by Pkarr (this is not yet supported in
-iroh natively, see below for our plans).
+BitTorrent Mainline DHT, as specified by Pkarr. iroh supports this through
+[DHT address lookup](/connecting/dht-address-lookup), which is opt-in.
 
 DNS servers that support this spec will receive these Pkarr signed packets,
 check their signature and format validity, and then serve each contained record,
 with the DNS server's configured *origin domain* appended to all record names.
 
 <Note>
-**Want to publish via Pkarr?** This is handled automatically when using DNS discovery. See the [DNS Discovery guide](/connecting/dns-discovery) for configuration details.
+**Want to publish via Pkarr?** This is handled automatically when using DNS address lookup. See the [DNS Address Lookup guide](/connecting/dns-address-lookup) for configuration details.
 </Note>

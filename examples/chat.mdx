@@ -62,17 +62,17 @@ async fn main() -> Result<()> {
     let secret_key = SecretKey::generate();
 
     // Create an endpoint.
-    // By default we turn on our n0 discovery services.
+    // By default we turn on our n0 address lookup services.
     //  This allows you to
     // dial by `EndpointId`, and allows you to be
     // dialed by `EndpointId`.
-    let endpoint = Endpoint::builder()
+    let endpoint = Endpoint::builder(presets::N0)
         // Pass in your secret key. If you don't pass
         // in a secret key a new one will be generated
         // for you each time.
         .secret_key(secret_key)
         // Bind the endpoint to the socket.
-        .bind(presets::N0)
+        .bind()
         .await?;
 
     println!("> our endpoint id: {}", endpoint.id());
@@ -104,8 +104,8 @@ async fn main() -> Result<()> {
     // We've removed the `SecretKey::generate` method.
     // The `Endpoint` will generate a `SecretKey` for
     // you under the hood if you don't supply one.
-    let endpoint = Endpoint::builder()
-        .bind(presets::N0)
+    let endpoint = Endpoint::builder(presets::N0)
+        .bind()
         .await?;
 
     println!("> our endpoint id: {}", endpoint.id());
@@ -553,7 +553,7 @@ use serde::{Deserialize, Serialize};
 ///
 /// By default a new endpoint id is created when starting the example.
 ///
-/// By default, we use the default n0 discovery services to dial by `EndpointId`.
+/// By default, we use the default n0 address lookup services to dial by `EndpointId`.
 #[derive(Parser, Debug)]
 struct Args {
     /// Set your nickname.

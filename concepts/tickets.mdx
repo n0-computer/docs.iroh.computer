@@ -18,7 +18,7 @@ Here's an example ticket:
 docaaacarwhmusoqf362j3jpzrehzkw3bqamcp2mmbhn3fmag3mzzfjp4beahj2v7aezhojvfqi5wltr4vxymgzqnctryyup327ct7iy4s5noxy6aaa
 ```
 
-Yes, they're long. But they pack a lot of information: an endpoint address (node ID, relay URL, and direct addresses) plus optional application-specific data like a document ID or blob hash.
+Yes, they're long. But they pack a lot of information: an endpoint address (endpoint ID, relay URL, and direct addresses) plus optional application-specific data like a document ID or blob hash.
 
 The key insight: instead of making users copy and paste just a hash and then figure out where to find the data, tickets combine *what* you want with *where to get it from*. This gives iroh everything needed to establish a connection immediately.
 
@@ -37,7 +37,7 @@ Tickets work well in QR codes, can be sent via messaging apps, or published to a
 - You're building long-lived connections where dialing details change frequently
 - You can cache `EndpointID`s and let iroh resolve dialing details at runtime
 
-If you have *any* means of coordinating (a database, server, or gossip protocol), we recommend you work with `EndpointID`s directly instead of tickets. Let iroh handle the discovery and connection details transparently.
+If you have *any* means of coordinating (a database, server, or gossip protocol), we recommend you work with `EndpointID`s directly instead of tickets. Let iroh handle the address lookup and connection details transparently.
 
 ## Creating tickets
 

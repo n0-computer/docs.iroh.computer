@@ -1,0 +1,116 @@
+---
+title: "DNS"
+---
+
+By default, iroh uses DNS address lookup to find other endpoints by their `EndpointId`.
+
+An endpoint publishes a signed record that maps its `EndpointId` to its home relay
+URL (and optionally its direct addresses), and resolves the same kind of record for
+endpoints it wants to dial.
+
+## How records are published and resolved
+
+Each endpoint creates a set of records with its addressing information, and puts it into a signed [Pkarr](https://pkarr.org) packet. The packet is signed by the endpoint's secret key.
+The endpoint publishes this packet to a DNS/Pkarr server via HTTP.
+Other endpoints can then resolve these packets either via DNS queries or via HTTP.
+
+[Number 0](https://n0.computer) provides a set of public DNS/Pkarr servers that are
+free to use, and are configured by default. You're more than welcome to run
+production systems using the public relays if you find performance acceptable.
+The public servers do rate-limit traffic, there is no guaranteed uptime. 
+If you need more capacity or uptime guarantees or SLAs, you can
+run your own DNS server, or [contact us about hosted DNS
+options](https://cal.com/team/number-0/n0-protocol-services?overlayCalendar=true).
+
+You can read more about the design of the DNS/Pkarr address lookup system on the
+[address lookup](/concepts/address-lookup) page.
+
+
+## Using DNS address lookup
+
+DNS address lookup is part of the `presets::N0` defaults, so you do not need to enable
+it explicitly. The `N0` preset adds a publisher and a resolver, both pointed at the
+n0-hosted server at `dns.iroh.link`.
+
+To discover another endpoint over DNS you need its `EndpointId`, either directly
+or from a [ticket](/concepts/tickets) that contains one. Resolution then happens
+automatically when you connect.
+
+```rust
+use iroh::{Endpoint, endpoint::presets};
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    // Bind an endpoint.
+    let endpoint = Endpoint::bind(presets::N0).await?;
+    endpoint.online().await?;
+    // We print its Endpoint ID.
+    let endpoint_id = endpoint.id();
+    println!("endpoint id: {endpoint_id}");
+
+    // Another endpoint needs only the Endpoint ID to connect,
+    // because both endpoints use DNS/Pkarr address lookup services
+    // via the `N0` preset.
+    let other = Endpoint::bind(presets::N0).await?;
+    let _conn = other.connect(endpoint_id, b"your-alpn").await?;
+    // It works :)
+
+    Ok(())
+}
+```
+
+
+## Use your own server
+
+Two endpoints must publish to and resolve from the same server to find each other.
+To use your own deployment of
+[`iroh-dns-server`](https://crates.io/crates/iroh-dns-server), build the endpoint
+from `presets::Minimal` (which adds no address lookup) and configure the publisher and
+resolver yourself.
+
+`PkarrPublisher::builder` takes the relay URL to PUT records to.
+`DnsAddressLookup::builder` takes the origin domain to query under.
+
+```rust
+use iroh::{
+    Endpoint,
+    address_lookup::{DnsAddressLookup, PkarrPublisher},
+    endpoint::presets,
+};
+use url::Url;
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let pkarr_relay: Url = "https://my-dns-server.example/pkarr".parse()?;
+    let origin_domain = "my-dns-server.example".to_string();
+
+    let endpoint = Endpoint::builder(presets::Minimal)
+        .address_lookup(PkarrPublisher::builder(pkarr_relay))
+        .address_lookup(DnsAddressLookup::builder(origin_domain))
+        .bind()
+        .await?;
+    // your code here
+    Ok(())
+}
+```
+
+By default the `PkarrPublisher` publishes only the home relay URL, not direct IP
+addresses. To publish addresses as well, set an `AddrFilter` on the builder with
+`PkarrPublisher::builder(url).addr_filter(AddrFilter::unfiltered())`.
+
+## Disable DNS address lookup
+
+DNS address lookup is optional. To build an endpoint without it, use `presets::Minimal`
+instead of `presets::N0`. `Minimal` sets up a crypto provider but adds no
+address lookup and no relays, so the endpoint is not published anywhere.
+
+```rust
+use iroh::{Endpoint, endpoint::presets};
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let endpoint = Endpoint::builder(presets::Minimal).bind().await?;
+    // your code here
+    Ok(())
+}
+```

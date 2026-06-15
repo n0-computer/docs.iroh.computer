@@ -1,0 +1,44 @@
+---
+title: "mDNS"
+---
+
+The mDNS address lookup mechanism will automatically broadcast your endpoint's
+presence on the local network, and listen for other endpoints doing the same. When
+another endpoint is discovered, the dialing information is exchanged, and a
+connection can be established directly over the local network without needing a relay.
+
+Devices need to be connected to the same local network for mDNS address lookup to
+work. This can be a Wi-Fi network, an Ethernet network, or even a mobile
+hotspot. mDNS is not designed to work over the internet or across different
+networks.
+
+## Usage
+
+mDNS address lookup is not enabled by default. It lives in the separate
+[`iroh-mdns-address-lookup`](https://crates.io/crates/iroh-mdns-address-lookup)
+crate, which you add alongside `iroh`.
+
+```toml
+[dependencies]
+iroh = "1.0.0-rc.1"
+iroh-mdns-address-lookup = "0.3"
+```
+
+Add the `MdnsAddressLookup` to the endpoint with `Endpoint::builder`. We run it next to the default DNS address lookup, so connections still work when the two endpoints are not on the same local network.
+
+```rust
+use iroh::{Endpoint, endpoint::presets};
+use iroh_mdns_address_lookup::MdnsAddressLookup;
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let endpoint = Endpoint::builder(presets::N0)
+        .address_lookup(MdnsAddressLookup::builder())
+        .bind()
+        .await?;
+    // your code here
+    Ok(())
+}
+```
+
+For more on how mDNS address lookup works, see the [`iroh-mdns-address-lookup` documentation](https://docs.rs/iroh-mdns-address-lookup).

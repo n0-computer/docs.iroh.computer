@@ -27,10 +27,10 @@ use nym_sdk::mixnet::MixnetClient;
 let nym_client = MixnetClient::connect_new().await?;
 let transport = Arc::new(NymUserTransport::new(nym_client));
 
-let endpoint = Endpoint::builder()
+let endpoint = Endpoint::builder(presets::N0)
     .clear_ip_transports()
     .add_custom_transport(transport)
-    .bind(presets::N0)
+    .bind()
     .await?;
 ```
 
