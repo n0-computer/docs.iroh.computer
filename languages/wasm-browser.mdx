@@ -5,7 +5,6 @@ title: "WebAssembly and Browsers"
 
 Iroh can be compiled to WebAssembly for use in browsers!
 
-As of the iroh 0.33 release, iroh can be used in projects that compile to WebAssembly.
 Add `iroh` to your browser project's dependencies and keep building it using [wasm-bindgen](https://github.com/rustwasm/wasm-bindgen/).
 
 For end-to-end examples of integrating iroh into a browser page, see these examples on our [iroh-examples repository](https://github.com/n0-computer/iroh-examples):
@@ -45,17 +44,11 @@ Currently we don't bundle iroh's Wasm build as an NPM package.
 There is no technical limitation for this: You could build this today!
 Should you need javascript APIs, we recommend that you write an application-specific rust wrapper crate that depends on iroh and exposes whatever the javascript side needs via [wasm-bindgen](https://github.com/rustwasm/wasm-bindgen/).
 
-### Use in node.js/bun.js/deno
+### Node.js, Deno, and Bun
 
-We check that the browser version of iroh works in node.js regularly.
-And it's likely that Deno will work out of the box, too, given it closely resembles the browser's Web APIs.
-We haven't checked if bun.js works right now, and don't have plans to check that continually.
+When running on JavaScript platforms outside the browser, it usually is preferable to use the FFI bindings. Our [JavaScript bindings](/languages/javascript) are built on [NAPI](https://napi.rs) and wrap native iroh, so you get the full iroh environment, including direct connections and hole punching, rather than the relay-only subset the browser build is limited to. The primarily target [Node.js](https://nodejs.org/en) but will likely work in Deno and Bun.js as well.
 
-As these runtimes are outside the browser sandbox, it would technically be possible to ship bigger parts of iroh to these environments, such as all hole-punching related functionality.
-However, we currently don't plan to expand the browser-related WebAssembly work to integrate with that.
-In the future, it's more likely we'll use [NAPI](https://napi.rs) or [WASI](https://wasi.dev/) to make these integrations possible.
-If you want to try this today, take a look at our existing code at [iroh-ffi](https://github.com/n0-computer/iroh-ffi/) and feel free to adapt it to your needs or newer iroh versions.
-
+The WebAssembly build does run in Node.js, and we test that it keeps working. Deno should work too, since it closely tracks the browser's Web APIs, though we don't test Bun. However, there is usually no reason to use the WebAssembly build in these runtimes, because the NAPI FFI bindings allow you to use the full power of iroh and thus are our preferred way of integration for non-browser JavaScript platforms.
 
 ## Troubleshooting
 

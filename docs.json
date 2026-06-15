@@ -25,7 +25,8 @@
               "languages/python",
               "languages/swift",
               "languages/kotlin",
-              "languages/javascript"
+              "languages/javascript",
+              "languages/wasm-browser"
             ]
           },
           {
@@ -227,6 +228,11 @@
     {
       "source": "/connecting/local-discovery",
       "destination": "/connecting/local-address-lookup",
+      "permanent": true
+    },
+    {
+      "source": "/deployment/wasm-browser-support",
+      "destination": "/languages/wasm-browser",
       "permanent": true
     }
   ]
