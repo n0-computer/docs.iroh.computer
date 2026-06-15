@@ -20,8 +20,8 @@ crate, which you add alongside `iroh`.
 
 ```toml
 [dependencies]
-iroh = "1.0.0-rc.1"
-iroh-mdns-address-lookup = "0.3"
+iroh = "1"
+iroh-mdns-address-lookup = "0.4"
 ```
 
 Add the `MdnsAddressLookup` to the endpoint with `Endpoint::builder`. We run it next to the default DNS address lookup, so connections still work when the two endpoints are not on the same local network.

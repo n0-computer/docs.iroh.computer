@@ -32,7 +32,7 @@ pip install iroh
 swift package init --type executable --name ping-pong
 cd ping-pong
 # add to Package.swift dependencies:
-#   .package(url: "https://github.com/n0-computer/iroh-ffi", from: "1.0.0-rc.0")
+#   .package(url: "https://github.com/n0-computer/iroh-ffi", from: "1.0.0")
 # and to your target dependencies:
 #   .product(name: "IrohLib", package: "iroh-ffi")
 # work in Sources/ping-pong/main.swift
@@ -40,7 +40,7 @@ cd ping-pong
 
 ```bash Kotlin
 # scaffold a Gradle project, then add the iroh dependency:
-#   dependencies { implementation("computer.iroh:iroh:1.0.0-rc.0") }
+#   dependencies { implementation("computer.iroh:iroh:1.0.0") }
 # (Maven Central — requires mavenCentral() in your repositories block)
 # work in a Main.kt with `fun main(...)`
 ```
