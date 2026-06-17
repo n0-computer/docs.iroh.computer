@@ -1,0 +1,28 @@
+---
+title: "Design"
+description: "A conceptual specification of how iroh works — for power users and integrators who want to understand iroh's design and behavior without reading the source."
+---
+
+This section describes how iroh works at a conceptual level. It is intended for power users
+and integrators who want to understand iroh's design and behavior without reading the source
+code. Where the [How it works](/concepts/endpoints) pages give a high-level introduction,
+these pages document the mechanisms in detail.
+
+For the low-level wire protocol specification, see the
+[wire spec](https://github.com/n0-computer/iroh/tree/main/specs/wire) in the iroh repository.
+
+<Info>
+This material is maintained as the iroh design specification (currently **v1.2**) in the
+[iroh repository](https://github.com/n0-computer/iroh/tree/main/specs/design).
+</Info>
+
+## Contents
+
+1. [Overview](/design/overview) — What iroh is, design philosophy, and building blocks
+2. [Endpoints](/design/endpoints) — Endpoint setup, identity, home relay selection, and authentication
+3. [Connections](/design/connections) — QUIC connections, streams, and datagrams
+4. [Addressing](/design/addressing) — Endpoint addresses and transport address types
+5. [Address Lookup](/design/address-lookup) — Resolving endpoint IDs to dialable addresses
+6. [Relays](/design/relays) — Relay servers, home relay selection, and packet forwarding
+7. [Holepunching](/design/holepunching) — NAT traversal and direct connection upgrade
+8. [Transports](/design/transports) — UDP, relay, custom transports, and multipath

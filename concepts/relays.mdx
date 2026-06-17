@@ -5,6 +5,12 @@ title: "Relays"
 Relays are servers that temporarily route encrypted traffic until a direct, P2P connection is feasible. Once this direct path is set up, the relay server steps back, and the data flows directly between devices. This approach allows Iroh to maintain a secure, low-latency connection, even in challenging network situations.
 There are situations where a direct connection can’t be established, and in those cases traffic falls back to running through the relay. Relay servers do not have access to the data being transmitted, as it’s encrypted end-to-end.
 
+<Note>
+For the mechanism-level design — the relay connection handshake, authorization,
+packet forwarding, and QAD — see [Relays](/design/relays) in the
+[Design](/design) section.
+</Note>
+
 Relays serve two roles in iroh:
 
 1. **NAT Traversal.**  When two endpoints first connect, they exchange network information through the relay to attempt a direct P2P connection.

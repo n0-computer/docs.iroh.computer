@@ -42,6 +42,21 @@
             ]
           },
           {
+            "group": "Design",
+            "expanded": false,
+            "pages": [
+              "design/index",
+              "design/overview",
+              "design/endpoints",
+              "design/connections",
+              "design/addressing",
+              "design/address-lookup",
+              "design/relays",
+              "design/holepunching",
+              "design/transports"
+            ]
+          },
+          {
             "group": "Creating Connections",
             "expanded": false,
             "pages": [
