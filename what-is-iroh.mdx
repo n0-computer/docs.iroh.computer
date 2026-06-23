@@ -11,7 +11,7 @@ application — in Rust, or in C, C++, Swift, Python, JavaScript, and Kotlin
 through [our bindings](/languages).
 
 <Frame>
-  <img src="/images/how-iroh-works/embedding-phone.svg" alt="iroh embedded across six device contexts: iOS, Android, desktop, browser, server, embedded" style={{ background: '#fff', borderRadius: '0.5rem', padding: '0.75rem', width: '100%' }} />
+  <img src="/images/how-iroh-works/embedding-phone.svg" alt="iroh embedded across six device contexts: iOS, Android, desktop, browser, server, embedded" style={{ width: '100%' }} />
 </Frame>
 
 ## Core features
@@ -52,7 +52,7 @@ That key — not an IP address — is the address. It lets you connect to a peer
 matter where it is, even as its network location changes underneath it.
 
 <Frame>
-  <img src="/images/how-iroh-works/connect-by-key.svg" alt="Alice connects to Bob by key — IPs change, the key stays stable" style={{ background: '#fff', borderRadius: '0.5rem', padding: '0.75rem', width: '100%' }} />
+  <img src="/images/how-iroh-works/connect-by-key.svg" alt="Alice connects to Bob by key — IPs change, the key stays stable" style={{ width: '100%' }} />
 </Frame>
 
 ### Reliable connections
@@ -62,7 +62,7 @@ possible. When network conditions change, iroh immediately reacts and switches
 to the new best path — transparently, without dropping the connection.
 
 <Frame>
-  <img src="/images/how-iroh-works/routing-moves.svg" alt="Alice and Bob connected via a shared router, with two more routers available for when Bob moves" style={{ background: '#fff', borderRadius: '0.5rem', padding: '0.75rem', width: '100%' }} />
+  <img src="/images/how-iroh-works/routing-moves.svg" alt="Alice and Bob connected via a shared router, with two more routers available for when Bob moves" style={{ width: '100%' }} />
 </Frame>
 
 Now that we've seen *what* iroh does, here's *how*.
@@ -94,7 +94,7 @@ closest relay becomes the **home relay**, and the endpoint keeps a secure
 WebSocket connection open to it.
 
 <Frame>
-  <img src="/images/how-iroh-works/endpoint-startup.svg" alt="A map of the US and Europe with iroh relays in us-west (Seattle), us-east (Delaware), and eu-west (Frankfurt), and an endpoint in Florida" style={{ background: '#fff', borderRadius: '0.5rem', padding: '0.75rem', width: '100%' }} />
+  <img src="/images/how-iroh-works/endpoint-startup.svg" alt="A map of the US and Europe with iroh relays in us-west (Seattle), us-east (Delaware), and eu-west (Frankfurt), and an endpoint in Florida" style={{ width: '100%' }} />
 </Frame>
 
 ### Finding peers
@@ -110,7 +110,7 @@ reach Bob resolves that record with a DNS or HTTPS query. See
 [DNS address lookup](/connecting/dns-address-lookup).
 
 <Frame>
-  <img src="/images/how-iroh-works/publish-relay.svg" alt="Bob publishes a signed DNS record with his home relay to dns.iroh.link via an HTTPS PUT; Alice resolves it with a DNS lookup" style={{ background: '#fff', borderRadius: '0.5rem', padding: '0.75rem', width: '100%' }} />
+  <img src="/images/how-iroh-works/publish-relay.svg" alt="Bob publishes a signed DNS record with his home relay to dns.iroh.link via an HTTPS PUT; Alice resolves it with a DNS lookup" style={{ width: '100%' }} />
 </Frame>
 
 #### Mainline DHT lookup
@@ -122,7 +122,7 @@ exact same signed record using the
 [DHT address lookup](/connecting/dht-address-lookup).
 
 <Frame>
-  <img src="/images/how-iroh-works/publish-relay-dht.svg" alt="Bob publishes his signed record to several random nodes of the Mainline DHT; Alice resolves it by querying several random nodes" style={{ background: '#fff', borderRadius: '0.5rem', padding: '0.75rem', width: '100%' }} />
+  <img src="/images/how-iroh-works/publish-relay-dht.svg" alt="Bob publishes his signed record to several random nodes of the Mainline DHT; Alice resolves it by querying several random nodes" style={{ width: '100%' }} />
 </Frame>
 
 ### Direct connections
@@ -141,7 +141,7 @@ but using its own transport parameter ID. See
 [NAT traversal](/concepts/nat-traversal).
 
 <Frame>
-  <img src="/images/how-iroh-works/hole-punching.svg" alt="Alice and Bob, each behind a home router, connected through the relay — all data flows up to the relay and back down" style={{ background: '#fff', borderRadius: '0.5rem', padding: '0.75rem', width: '100%' }} />
+  <img src="/images/how-iroh-works/hole-punching.svg" alt="Alice and Bob, each behind a home router, connected through the relay — all data flows up to the relay and back down" style={{ width: '100%' }} />
 </Frame>
 
 #### Local connections
@@ -151,7 +151,7 @@ just needs to learn the other's local address. See
 [local address lookup](/connecting/local-address-lookup).
 
 <Frame>
-  <img src="/images/how-iroh-works/hole-punching-lan.svg" alt="Alice and Bob on the same home network discover each other over the relay, then connect directly across the LAN — the relay uplink fades away once the local path is validated" style={{ background: '#fff', borderRadius: '0.5rem', padding: '0.75rem', width: '100%' }} />
+  <img src="/images/how-iroh-works/hole-punching-lan.svg" alt="Alice and Bob on the same home network discover each other over the relay, then connect directly across the LAN — the relay uplink fades away once the local path is validated" style={{ width: '100%' }} />
 </Frame>
 
 ## How the pieces stack together
