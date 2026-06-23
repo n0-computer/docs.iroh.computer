@@ -2,9 +2,17 @@
 title: "What is iroh?"
 ---
 
-iroh is a modular networking stack written in Rust. It provides
-the building blocks to create applications that can communicate
-using fast, cheap, and reliable connections.
+iroh is a modular networking stack written in Rust. It provides the building
+blocks to create applications that can communicate using fast, cheap, and
+reliable connections.
+
+It's a lightweight native library meant to be embedded directly into your
+application — in Rust, or in C, C++, Swift, Python, JavaScript, and Kotlin
+through [our bindings](/languages).
+
+<Frame>
+  <img src="/images/how-iroh-works/embedding-phone.svg" alt="iroh embedded across six device contexts: iOS, Android, desktop, browser, server, embedded" style={{ width: '100%' }} />
+</Frame>
 
 ## Core features
 - **Fast**: iroh enables direct connections between
@@ -31,6 +39,120 @@ and data synchronization. Any kind of CRDT or OT sync protocol can be integrated
 - **Real-time communication**: Build [chat applications](/examples/chat), [RPC
 services](/protocols/rpc), and [streaming data](/protocols/streaming) with
 iroh's communication protocols.
+
+## How iroh works
+
+iroh's job comes down to two promises: you can reach a peer no matter where it
+is, and the connection you get is the best one available.
+
+### Connect by key
+
+Every iroh [endpoint](/concepts/endpoints) is identified by a cryptographic key.
+That key — not an IP address — is the address. It lets you connect to a peer no
+matter where it is, even as its network location changes underneath it.
+
+<Frame>
+  <img src="/images/how-iroh-works/connect-by-key.svg" alt="Alice connects to Bob by key — IPs change, the key stays stable" style={{ width: '100%' }} />
+</Frame>
+
+### Reliable connections
+
+We make sure you get a connection whenever possible, and that it's as fast as
+possible. When network conditions change, iroh immediately reacts and switches
+to the new best path — transparently, without dropping the connection.
+
+<Frame>
+  <img src="/images/how-iroh-works/routing-moves.svg" alt="Alice and Bob connected via a shared router, with two more routers available for when Bob moves" style={{ width: '100%' }} />
+</Frame>
+
+Now that we've seen *what* iroh does, here's *how*.
+
+### Library and relays
+
+There are two pieces to the system:
+
+- **The iroh library** runs inside your application. It provides the API to
+  create endpoints, connect to other endpoints, and open connections and data
+  streams.
+- **[Relays](/concepts/relays)** run in the background on publicly reachable
+  servers. They help endpoints find each other and establish direct
+  connections, and relay data as a fallback when a direct connection isn't
+  possible.
+
+### Endpoint startup
+
+An iroh endpoint is configured with a set of relays — the rate-limited public
+relays operated by number 0, relays from iroh services, or self-hosted ones.
+iroh works fine with a single relay, but works best with relays in every region
+where your users are.
+
+On startup, an endpoint sends
+[QAD](https://datatracker.ietf.org/doc/draft-ietf-quic-address-discovery/)
+probes to all configured relays. This does two things: it learns the endpoint's
+own public IP address, and it learns which relay is closest by latency. The
+closest relay becomes the **home relay**, and the endpoint keeps a secure
+WebSocket connection open to it.
+
+<Frame>
+  <img src="/images/how-iroh-works/endpoint-startup.svg" alt="A map of the US and Europe with iroh relays in us-west (Seattle), us-east (Delaware), and eu-west (Frankfurt), and an endpoint in Florida" style={{ width: '100%' }} />
+</Frame>
+
+### Finding peers
+
+When there are multiple relays, Alice needs to know which relay to use to reach
+Bob. iroh offers two ways to publish and look up that information.
+
+#### DNS-based lookup
+
+Out of the box, iroh uses DNS. Bob publishes a signed record with his home relay
+to a DNS server operated by number 0 via an HTTPS `PUT`. Anyone who wants to
+reach Bob resolves that record with a DNS or HTTPS query. See
+[DNS address lookup](/connecting/dns-address-lookup).
+
+<Frame>
+  <img src="/images/how-iroh-works/publish-relay.svg" alt="Bob publishes a signed DNS record with his home relay to dns.iroh.link via an HTTPS PUT; Alice resolves it with a DNS lookup" style={{ width: '100%' }} />
+</Frame>
+
+#### Mainline DHT lookup
+
+DNS works in most cases, but sometimes you want something fully peer-to-peer.
+For that, iroh offers an optional lookup over the Mainline DHT: it publishes the
+exact same signed record using the
+[BEP 44](https://www.bittorrent.org/beps/bep_0044.html) extension. See
+[DHT address lookup](/connecting/dht-address-lookup).
+
+<Frame>
+  <img src="/images/how-iroh-works/publish-relay-dht.svg" alt="Bob publishes his signed record to several random nodes of the Mainline DHT; Alice resolves it by querying several random nodes" style={{ width: '100%' }} />
+</Frame>
+
+### Direct connections
+
+So far we've described a system where endpoints can always talk — but all data
+flows through the relays. That adds latency, limits throughput, and costs the
+relay operator money. Making connections fast and direct is arguably the most
+complex part of the system.
+
+#### Hole punching
+
+Hole punching happens *inside* the QUIC connection via an
+`n0_nat_traversal` extension, inspired by the
+[QUIC NAT traversal draft](https://datatracker.ietf.org/doc/draft-seemann-quic-nat-traversal/)
+but using its own transport parameter ID. See
+[NAT traversal](/concepts/nat-traversal).
+
+<Frame>
+  <img src="/images/how-iroh-works/hole-punching.svg" alt="Alice and Bob, each behind a home router, connected through the relay — all data flows up to the relay and back down" style={{ width: '100%' }} />
+</Frame>
+
+#### Local connections
+
+If two devices are on the same network, hole punching isn't needed — each side
+just needs to learn the other's local address. See
+[local address lookup](/connecting/local-address-lookup).
+
+<Frame>
+  <img src="/images/how-iroh-works/hole-punching-lan.svg" alt="Alice and Bob on the same home network discover each other over the relay, then connect directly across the LAN — the relay uplink fades away once the local path is validated" style={{ width: '100%' }} />
+</Frame>
 
 ## How the pieces stack together
 
