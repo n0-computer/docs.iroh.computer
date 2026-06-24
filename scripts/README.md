@@ -36,6 +36,22 @@ animation.
 (The one `<style>` block used purely for `background-color: transparent` /
 `color-scheme` is fine — it's static, not animation.)
 
+## Testing under production conditions
+
+`mint dev` sends no CSP, so a CSS animation works in local preview but breaks on
+the deployed site — preview alone won't catch a regression. `csp_preview.py`
+reproduces the production header: it serves the diagrams with
+`Content-Security-Policy: default-src 'none'` and embeds them via `<img>`.
+
+```sh
+python3 scripts/csp_preview.py        # then open http://localhost:8000/
+python3 scripts/csp_preview.py 8080   # override the port if 8000 is busy
+```
+
+If a diagram animates there, it will animate in production. If it freezes there
+but moves in `mint dev`, it's still relying on CSS/`<style>` animation — convert
+it to SMIL.
+
 ## Not generated
 
 `images/how-iroh-works/embedding-phone.svg` is static and has no generator
