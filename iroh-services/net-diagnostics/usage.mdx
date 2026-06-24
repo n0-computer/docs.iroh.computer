@@ -82,6 +82,26 @@ async fn setup_net_diagnostics(endpoint: &Endpoint) -> Result<Router> {
 }
 ```
 
+### 4. Register on your existing router
+
+The example above spawns a router that serves only `CLIENT_HOST_ALPN`. Most
+applications already run a `Router` with their own protocols. Register the
+handler on that same builder rather than spawning a second router:
+
+```rust
+use iroh::protocol::Router;
+use iroh_services::{ClientHost, CLIENT_HOST_ALPN};
+
+let router = Router::builder(endpoint.clone())
+    .accept(MY_PROTOCOL_ALPN, my_protocol) // your application's protocols
+    .accept(CLIENT_HOST_ALPN, ClientHost::new(&endpoint)) // add this line
+    .spawn();
+```
+
+Calling `.spawn()` finalizes the router's set of protocols, so the
+`.accept(CLIENT_HOST_ALPN, ...)` call has to come before it. Register every
+ALPN your endpoint serves on the one router you spawn for that endpoint.
+
 ## Understanding Reports
 
 ### NAT Types
@@ -107,3 +127,10 @@ The capability grant (`NetDiagnosticsCap::GetAny`) authorizes the platform to
 request diagnostics from your endpoint. Without this grant, the **Run
 Diagnostics** button will be disabled in the dashboard even if the endpoint is
 online.
+
+If the button is enabled but the report never arrives, your endpoint is not
+accepting `CLIENT_HOST_ALPN`. The grant only tells the platform that it may dial
+back; the endpoint still has to answer that dial with a `ClientHost`. Confirm
+that you call `.accept(CLIENT_HOST_ALPN, ClientHost::new(&endpoint))` on the
+router you spawn for this endpoint, that the call happens before `.spawn()`, and
+that the router stays alive for as long as the endpoint does.
