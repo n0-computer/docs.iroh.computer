@@ -10,10 +10,17 @@ whatever your application needs.
 iroh provides the pool of encrypted QUIC connections - protocols define what to
 do with them.
 
+## Client-server protocols
+
+Sometimes it is best to have classical client and server roles at the application
+level. Iroh connections do support this, and many n0 protocols are written in this
+way. [Sendme], [dumbpipe], [iroh-blobs] and all [irpc] based protocols have clear
+client and server roles at the application level.
+
 ## Peer-to-peer protocols
 
 Unlike HTTP's client/server model where one side only sends requests and the
-other only responds, peer-to-peer protocols typically support **both**
+other only responds, peer-to-peer protocols support **both**
 initiating and accepting connections on the same endpoint.
 
 This means:
@@ -21,9 +28,10 @@ This means:
 - Any peer can offer data to any other peer  
 - Roles can change over time (today's client is tomorrow's server)
 
+[Gossip] and [docs] are examples of peer-to-peer protocols.
+
 You can still build client/server-style protocols if your application needs that
 distinction, but iroh's P2P foundation gives you more flexibility.
-
 
 ## Building blocks, not a framework
 
@@ -83,3 +91,10 @@ Ready to start building with protocols?
 - [Write your own protocol guide](/protocols/writing-a-protocol)
 - [QUIC streaming patterns](/protocols/using-quic)
 - [Router API documentation](https://docs.rs/iroh/latest/iroh/protocol/struct.Router.html)
+
+[Sendme]: https://github.com/n0-computer/sendme
+[dumbpipe]: https://github.com/n0-computer/dumbpipe
+[iroh-blobs]: /protocols/blobs
+[irpc]: https://docs.rs/irpc
+[Gossip]: /connecting/gossip
+[docs]: /protocols/documents
