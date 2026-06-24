@@ -3,7 +3,9 @@ title: "Connect two endpoints"
 description: "Build a ping program that connects two endpoints over iroh"
 ---
 
-In this tutorial we'll build a small peer-to-peer ping program using iroh and the [iroh-ping](https://github.com/n0-computer/iroh-ping) protocol. One endpoint runs as a **receiver**, prints a ticket, and waits for incoming pings. The other runs as a **sender**, dials the receiver using the ticket, and reports the round-trip time.
+In this tutorial we'll build a small ping program using iroh and the [iroh-ping](https://github.com/n0-computer/iroh-ping) protocol. One endpoint runs as a **receiver**, prints a ticket, and waits for incoming pings. The other runs as a **sender**, dials the receiver using the ticket, and reports the round-trip time.
+
+Ping is a simple request/response protocol with sender and receiver roles. But unlike IP ping ([ICMP]), iroh ping works even if both devices are behind a NAT.
 
 The full example can be [viewed on GitHub](https://github.com/n0-computer/iroh-ping/blob/main/examples/quickstart.rs).
 
@@ -449,9 +451,11 @@ IROH_SERVICES_API_SECRET=YOUR_API_KEY cargo run -- receiver
 
 ## More tutorials
 
-You've now built a peer-to-peer ping tool. The full example is [on GitHub](https://github.com/n0-computer/iroh-ping).
+You've now built a ping tool. The full example is [on GitHub](https://github.com/n0-computer/iroh-ping).
 
 If you're hungry for more, check out:
 - [Blob storage with iroh-blobs](/protocols/blobs)
 - [Build your own P2P chat app](/examples/chat)
 - [Rust API documentation](https://docs.rs/iroh)
+
+[ICMP]: https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol

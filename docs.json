@@ -69,11 +69,11 @@
             "group": "Sending Data",
             "expanded": false,
             "pages": [
-              "protocols/documents",
               "protocols/blobs",
               "protocols/rpc",
               "protocols/automerge",
               "protocols/streaming",
+              "protocols/documents",
               "protocols/writing-a-protocol"
             ]
           },
