@@ -158,21 +158,9 @@ just needs to learn the other's local address. See
 
 An iroh application is a stack of small layers, each with one job:
 
-```mermaid
-flowchart TB
-    app["Your application"]
-    protocols["Protocols<br/>blobs, docs, gossip, yours"]
-    router["Router<br/>dispatches connections by ALPN"]
-    endpoint["Endpoint<br/>identity, address lookup, NAT, relay"]
-    quic["QUIC + TLS 1.3"]
-    transport["Transport<br/>UDP default, Tor, Nym, BLE"]
-
-    app --- protocols
-    protocols --- router
-    router --- endpoint
-    endpoint --- quic
-    quic --- transport
-```
+<Frame>
+  <img src="https://www.iroh.computer/animations/layer-stack.svg" alt="An iroh application as a stack of layers inside your application: Protocols (blobs, gossip, yours), Router (dispatches connections by ALPN), Endpoint (identity, address lookup, NAT, relay), QUIC + TLS 1.3 (encryption, auth, stream mux), and Transport (UDP and relay by default, swappable) — with Ethernet, Wi-Fi, and Tor as interchangeable transports underneath" style={{ width: '100%' }} />
+</Frame>
 
 - **Transport** carries encrypted bytes between machines. UDP is the default;
   you can swap in [Tor](/transports/tor), [Nym](/transports/nym), or

@@ -8,6 +8,10 @@ An endpoint publishes a signed record that maps its `EndpointId` to its home rel
 URL (and optionally its direct addresses), and resolves the same kind of record for
 endpoints it wants to dial.
 
+<Frame>
+  <img src="https://www.iroh.computer/animations/publish-relay.svg" alt="Bob publishes a signed DNS record with his home relay to dns.iroh.link via an HTTPS PUT; Alice resolves it with a DNS lookup" style={{ width: '100%' }} />
+</Frame>
+
 ## How records are published and resolved
 
 Each endpoint creates a set of records with its addressing information, and puts it into a signed [Pkarr](https://pkarr.org) packet. The packet is signed by the endpoint's secret key.
