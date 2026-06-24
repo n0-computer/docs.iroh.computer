@@ -60,18 +60,92 @@ The report appears on the **Net Diagnostics** page and includes:
 
 ## Integrate Net Diagnostics into your app
 
-The example above uses a ready-made client. To get on-demand reports from your users' endpoints, wire the same integration into your own iroh app:
+The example above uses a ready-made client. To get on-demand reports from your
+users' endpoints, wire the same integration into your own iroh app.
 
-1. Add `iroh-services` to your `Cargo.toml`
-2. Build an `iroh_services::Client` and grant the `NetDiagnosticsCap::GetAny` capability to your project
-3. Run a `ClientHost` so the platform can dial back into the endpoint when you click **Run Diagnostics**
+### Add the dependency
+
+```bash
+cargo add iroh-services
+```
+
+### Connect and grant the capability
+
+Build an `iroh_services::Client`, grant iroh services the
+`NetDiagnosticsCap::GetAny` capability so it can request diagnostics, and run a
+`ClientHost` so it can dial back into your endpoint. The client reads the API
+key you exported in step 1:
+
+```rust
+use anyhow::Result;
+use iroh::{Endpoint, protocol::Router};
+use iroh_services::{
+    ApiSecret, Client, ClientHost, CLIENT_HOST_ALPN, API_SECRET_ENV_VAR_NAME,
+    caps::NetDiagnosticsCap,
+};
+
+async fn setup_net_diagnostics(endpoint: &Endpoint) -> Result<Router> {
+    // Get your secret somehow, either from an environment variable or config file
+    let secret = ApiSecret::from_env_var(API_SECRET_ENV_VAR_NAME)?;
+
+    // The remote_id is the id of the endpoint we'll be sending the network
+    // report to, derived from the secret's address
+    let remote_id = secret.addr().id;
+
+    // Build the client
+    let client = Client::builder(endpoint)
+        .api_secret(secret)?
+        .build()
+        .await?;
+
+    // Grant the GetAny capability so the platform can request diagnostics
+    // from this endpoint on demand
+    let client2 = client.clone();
+    tokio::spawn(async move {
+        client2
+            .grant_capability(remote_id, vec![NetDiagnosticsCap::GetAny])
+            .await
+            .unwrap();
+    });
+
+    // Set up a ClientHost so the platform can dial back into this endpoint
+    let host = ClientHost::new(endpoint);
+    let router = Router::builder(endpoint.clone())
+        .accept(CLIENT_HOST_ALPN, host)
+        .spawn();
+
+    Ok(router)
+}
+```
+
+For a complete runnable version, see the [`net_diagnostics` example](https://github.com/n0-computer/iroh-services/tree/main/examples/net_diagnostics.rs) in the `iroh-services` repository.
+
+### Register on your existing router
+
+The snippet above spawns a router that serves only `CLIENT_HOST_ALPN`. Most
+applications already run a `Router` with their own protocols. Register the
+handler on that same builder rather than spawning a second router:
+
+```rust
+use iroh::protocol::Router;
+use iroh_services::{ClientHost, CLIENT_HOST_ALPN};
+
+let router = Router::builder(endpoint.clone())
+    .accept(MY_PROTOCOL_ALPN, my_protocol) // your application's protocols
+    .accept(CLIENT_HOST_ALPN, ClientHost::new(&endpoint)) // add this line
+    .spawn();
+```
+
+Calling `.spawn()` finalizes the router's set of protocols, so the
+`.accept(CLIENT_HOST_ALPN, ...)` call has to come before it. Register every
+ALPN your endpoint serves on the one router you spawn for that endpoint.
 
 <Card
-  title="Full integration guide"
-  icon="code"
+  title="Reading reports and troubleshooting"
+  icon="book"
   href="./usage"
 >
-  Complete walkthrough with Cargo config, a minimal Rust integration, and a reference for reading reports (NAT type, connectivity summary).
+  Reference for interpreting a report (NAT type, connectivity summary) and fixing common setup problems.
 </Card>
 
 ## Next steps

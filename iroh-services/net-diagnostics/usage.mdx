@@ -1,6 +1,6 @@
 ---
 title: "Network Diagnostics"
-description: "Integrate on-demand connectivity reports into your iroh application"
+description: "Read connectivity reports and troubleshoot net diagnostics setup"
 ---
 
 When you click **Run Diagnostics** in the dashboard, the platform dials back into your
@@ -9,98 +9,7 @@ the request, runs the diagnostics locally (probing UDP connectivity, NAT
 behavior, relay latency, and port mapping), and returns the report to iroh services for
 display.
 
-## Integrating Net Diagnostics Into Your App
-
-To add net diagnostics support to your own iroh application, you need to:
-
-1. Connect to iroh services with an `iroh_services::Client`
-2. Grant the `NetDiagnosticsCap::GetAny` capability to iroh services so it can request diagnostics from your endpoint
-3. Run a `ClientHost` so iroh services can dial back into your endpoint
-
-[See the `net_diagnostics` example in the `iroh-services` repository for a complete working example of this integration.](https://github.com/n0-computer/iroh-services/tree/main/examples/net_diagnostics.rs)
-
-
-### 1. Update Cargo.toml
-
-Add the dependency
-
-```bash
-cargo add iroh-services
-```
-
-### 2. Get Your API Key
-
-Create one from your project's **Settings → API Keys** tab. See [API Keys](/iroh-services/access) for the full walkthrough. Then export it as an environment variable:
-
-```bash
-export IROH_SERVICES_API_SECRET=<your-api-key>
-```
-
-### 3. Connect to iroh services and Grant Capability
-
-Here's a minimal integration:
-
-```rust
-use anyhow::Result;
-use iroh::{Endpoint, protocol::Router};
-use iroh_services::{
-    ApiSecret, Client, ClientHost, CLIENT_HOST_ALPN, API_SECRET_ENV_VAR_NAME,
-    caps::NetDiagnosticsCap,
-};
-
-async fn setup_net_diagnostics(endpoint: &Endpoint) -> Result<Router> {
-    // Get your secret somehow, either from an environment variable or config file
-    let secret = ApiSecret::from_env_var(API_SECRET_ENV_VAR_NAME)?;
-
-    // The remote_id is the id of the endpoint we'll be sending the network
-    // report to, derived from the secret's address
-    let remote_id = secret.addr().id;
-
-    // Build the client
-    let client = Client::builder(endpoint)
-        .api_secret(secret)?
-        .build()
-        .await?;
-
-    // Grant the GetAny capability so the platform can request diagnostics
-    // from this endpoint on demand
-    let client2 = client.clone();
-    tokio::spawn(async move {
-        client2
-            .grant_capability(remote_id, vec![NetDiagnosticsCap::GetAny])
-            .await
-            .unwrap();
-    });
-
-    // Set up a ClientHost so the platform can dial back into this endpoint
-    let host = ClientHost::new(endpoint);
-    let router = Router::builder(endpoint.clone())
-        .accept(CLIENT_HOST_ALPN, host)
-        .spawn();
-
-    Ok(router)
-}
-```
-
-### 4. Register on your existing router
-
-The example above spawns a router that serves only `CLIENT_HOST_ALPN`. Most
-applications already run a `Router` with their own protocols. Register the
-handler on that same builder rather than spawning a second router:
-
-```rust
-use iroh::protocol::Router;
-use iroh_services::{ClientHost, CLIENT_HOST_ALPN};
-
-let router = Router::builder(endpoint.clone())
-    .accept(MY_PROTOCOL_ALPN, my_protocol) // your application's protocols
-    .accept(CLIENT_HOST_ALPN, ClientHost::new(&endpoint)) // add this line
-    .spawn();
-```
-
-Calling `.spawn()` finalizes the router's set of protocols, so the
-`.accept(CLIENT_HOST_ALPN, ...)` call has to come before it. Register every
-ALPN your endpoint serves on the one router you spawn for that endpoint.
+To wire net diagnostics into your own application, follow [Diagnose a connectivity issue](./quickstart). This page is the reference for reading the report it produces and fixing common setup problems.
 
 ## Understanding Reports
 
