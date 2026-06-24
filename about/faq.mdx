@@ -22,7 +22,7 @@ Because applications dial by key rather than by address, iroh is also well posit
 
 The main difference is that iroh tries to use existing IETF standards as much as possible instead of reinventing the wheel. An iroh connection is just a QUIC connection, using TLS and TLS ALPNs for protocol negotiation. If you look at one in Wireshark, it's indistinguishable from any other QUIC connection, so existing tooling works and what you learn using iroh transfers to plain QUIC and vice versa.
 
-Most iroh contributors come out of the P2P world and had a bit of "abstraction fatigue" after years of working on traditional P2P networks. So where many P2P networks ship their own DHT for discovery, iroh resisted that temptation and instead uses the biggest DHT that already exists, [BitTorrent's Mainline DHT](/connecting/dht-address-lookup), for peer-to-peer [address lookup](/concepts/address-lookup).
+Many iroh contributors come out of the P2P world and had a bit of "abstraction fatigue" after years of working on traditional P2P networks. So where many P2P networks ship their own DHT for discovery, iroh resisted that temptation and instead uses the biggest DHT that already exists, [BitTorrent's Mainline DHT](/connecting/dht-address-lookup), for peer-to-peer [address lookup](/concepts/address-lookup).
 
 Some "regular P2P networks" actually run on iroh under the hood, including [Holochain](https://blog.holochain.org) and various P2P chat apps.
 
