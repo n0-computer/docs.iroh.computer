@@ -161,7 +161,8 @@ d_ue, L_ue = arc(bx_, by_, uex, uey, k=0.05)
 d_ew, L_ew = arc(bx_, by_, ewx, ewy, k=0.10)
 
 wires = f'''  <!-- ========== Connections (wires) — light gray curved routes, fade in after 2s ========== -->
-  <g class="wires" fill="none" stroke="#b4bac4" stroke-width="1.5">
+  <g opacity="0" fill="none" stroke="#b4bac4" stroke-width="1.5">
+    <animate attributeName="opacity" begin="0s" dur="{CYCLE}s" repeatCount="indefinite" calcMode="linear" keyTimes="0;0.1429;0.2143;1" values="0;0;1;1"/>
     <path id="w-uw" d="{d_uw}"/>
     <path id="w-ue" d="{d_ue}"/>
     <path id="w-ew" d="{d_ew}"/>
@@ -206,7 +207,9 @@ def readline(y, label, ms, begin):
             f'values="0;0;1;1" keyTimes="0;{t0:.4f};{t1:.4f};1"/></text>')
 readout = f'''  <!-- ========== Latency readout — a line fades in as each packet returns ========== -->
   <g>
-    <rect class="wires" x="360" y="248" width="126" height="90" rx="6" fill="#e5e7eb" stroke="#9ca3af" stroke-width="1"/>
+    <rect x="360" y="248" width="126" height="90" rx="6" fill="#e5e7eb" stroke="#9ca3af" stroke-width="1" opacity="0">
+      <animate attributeName="opacity" begin="0s" dur="{CYCLE}s" repeatCount="indefinite" calcMode="linear" keyTimes="0;0.1429;0.2143;1" values="0;0;1;1"/>
+    </rect>
 {readline(268, "us-east", 19, ret_time(L_ue))}
 {readline(294, "us-west", 71, ret_time(L_uw))}
 {readline(320, "eu-west", 102, ret_time(L_ew))}
@@ -238,16 +241,6 @@ phone_ip = f'''  <!-- endpoint public IP, learned from the first relay to respon
 VB_X, VB_Y, VB_W, VB_H = 0, 92, 705, 280
 svg = f'''<svg viewBox="{VB_X} {VB_Y} {VB_W} {VB_H}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <style>/* transparent-canvas */ :root {{ background-color: transparent; color-scheme: light dark; }}</style>
-  <defs>
-    <style><![CDATA[
-      .wires {{ opacity: 0; animation: wires-in 14s linear infinite; }}
-      @keyframes wires-in {{
-        0%, 14.29% {{ opacity: 0; }}
-        21.43%, 100% {{ opacity: 1; }}
-      }}
-    ]]></style>
-  </defs>
-
   <!-- ========== Land (Natural Earth 110m, plate carrée std parallel 45°, US + Europe window) ========== -->
   <path d="{land}" fill="#e5e7eb" stroke="#9ca3af" stroke-width="1"/>
 
