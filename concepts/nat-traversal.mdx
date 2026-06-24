@@ -52,6 +52,10 @@ Both peers try to connect to each other **at the same time**. When peer A sends 
 
 Because both mappings are now established and both firewalls expect traffic from each other, the packets get through and a direct connection is formed.
 
+<Frame>
+  <img src="https://www.iroh.computer/animations/hole-punching.svg" alt="Alice and Bob, each behind a home router, first reach each other through the relay, then both send packets simultaneously to punch through their NATs; once the direct path is validated the relay path falls away and traffic flows directly" style={{ width: '100%' }} />
+</Frame>
+
 ### 4. Fallback to Relay
 
 If NAT traversal fails (some networks use particularly strict configurations), iroh automatically falls back to routing traffic through the relay server. This ensures connections always work, even if they can't be direct.
