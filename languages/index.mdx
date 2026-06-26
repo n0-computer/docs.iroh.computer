@@ -1,6 +1,6 @@
 ---
 title: "Overview"
-description: "Use iroh from Rust, Python, Swift, Kotlin, or JavaScript."
+description: "Use iroh from Rust, Python, Swift, Kotlin, JavaScript or Go."
 ---
 
 iroh is available in Rust, Python, Swift, Kotlin, and JavaScript. Pick the language that fits your app and follow its guide to get a working endpoint in minutes.
@@ -12,6 +12,7 @@ iroh is available in Rust, Python, Swift, Kotlin, and JavaScript. Pick the langu
 | [Swift](/languages/swift) | Official | iOS + macOS |
 | [Kotlin](/languages/kotlin) | Official | JVM + Android |
 | [JavaScript](/languages/javascript) | Official | Node.js via N-API |
+| [Go](/languages/go) | Community | FFI bindings via [iroh-ffi](https://github.com/n0-computer/iroh-ffi) |
 
 All five official bindings share the same basic API surface for sending streams
 or datagrams over QUIC.  The Rust language bindings are the most complete and
@@ -25,19 +26,19 @@ up-to-date, and contain custom configuration and protocol features.
 
 The [n0.computer](https://n0.computer) team offers official support for the following platforms.
 
-| Platform                  | Rust | Python | Swift | Kotlin | JavaScript |
-| ---                       | ---  | ---    | ---   | ---    | ---        |
-| iOS (device + sim)        | ✓    | —      | ✓     | —      | —          |
-| Android (aarch64, armv7)  | ✓    | —      | —     | ✓      | ✓          |
-| macOS arm64               | ✓    | ✓      | ✓     | ✓      | ✓          |
-| macOS x86_64              | ✓    | ✓      | ✗     | ✓      | ✗          |
-| Linux x86_64 (glibc)      | ✓    | ✓      | —     | ✓      | ✓          |
-| Linux x86_64 (musl)       | ✓    | ✗      | —     | ✗      | ✓          |
-| Linux aarch64 (glibc)     | ✓    | ✓      | —     | ✓      | ✓          |
-| Linux aarch64 (musl)      | ✓    | ✗      | —     | ✗      | ✓          |
-| Linux armv7               | ✓    | ✗      | —     | ✗      | ✓          |
-| Windows x86_64            | ✓    | ✓      | —     | ✓      | ✓          |
-| Windows aarch64           | ✓    | ✗      | —     | ✗      | ✓          |
+| Platform                  | Rust | Python | Swift | Kotlin | JavaScript | Go |
+| ---                       | ---  | ---    | ---   | ---    | ---        | -- |
+| iOS (device + sim)        | ✓    | —      | ✓     | —      | —          | -  |
+| Android (aarch64, armv7)  | ✓    | —      | —     | ✓      | ✓          | -  |
+| macOS arm64               | ✓    | ✓      | ✓     | ✓      | ✓          | -  |
+| macOS x86_64              | ✓    | ✓      | ✗     | ✓      | ✗          | -  |
+| Linux x86_64 (glibc)      | ✓    | ✓      | —     | ✓      | ✓          | -  |
+| Linux x86_64 (musl)       | ✓    | ✗      | —     | ✗      | ✓          | ✓  |
+| Linux aarch64 (glibc)     | ✓    | ✓      | —     | ✓      | ✓          | -  |
+| Linux aarch64 (musl)      | ✓    | ✗      | —     | ✗      | ✓          | ✓  |
+| Linux armv7               | ✓    | ✗      | —     | ✗      | ✓          | -  |
+| Windows x86_64            | ✓    | ✓      | —     | ✓      | ✓          | -  |
+| Windows aarch64           | ✓    | ✗      | —     | ✗      | ✓          | -  |
 
 <Card title="Need a language we don't support?" icon="envelope" href="https://cal.com/team/number-0/iroh-services" horizontal>
   Get in touch and tell us what you're building. We can prioritize new bindings or help you maintain your own.
