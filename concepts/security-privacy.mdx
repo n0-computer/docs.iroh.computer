@@ -73,6 +73,10 @@ Services like Tor provide onion routing, which encrypts packet metadata for each
 relay in the route. This offers strong IP privacy guarantees through multi-hop
 routing with layered encryption.
 
+Iroh supports custom transports and there is a [Tor
+implementation](/transports/tor) available for iroh endpoints. Both sides of a
+connection must support the same transport, so both endpoints must have Tor installed and be configured accordingly.
+
 ### Upcoming
 
 #### Relay-Only Mode 

@@ -52,7 +52,8 @@
               "concepts/address-lookup",
               "concepts/relays",
               "concepts/nat-traversal",
-              "concepts/protocols"
+              "concepts/protocols",
+              "concepts/security-privacy"
             ]
           },
           {
@@ -117,7 +118,6 @@
               "about/changelog",
               "about/roadmap",
               "about/release-policy",
-              "deployment/security-privacy",
               {
                 "group": "Services Billing",
                 "expanded": false,
