@@ -236,6 +236,11 @@
       "source": "/deployment/wasm-browser-support",
       "destination": "/languages/wasm-browser",
       "permanent": true
+    },
+    {
+      "source": "/deployment/security-privacy",
+      "destination": "/concepts/security-privacy",
+      "permanent": true
     }
   ]
 }
