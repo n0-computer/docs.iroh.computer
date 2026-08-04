@@ -272,7 +272,7 @@ let downloader = store.downloader(&endpoint);
 println!("Starting download.");
 
 downloader
-    .download(ticket.hash(), Some(ticket.endpoint_addr().id)
+    .download(ticket.hash(), Some(ticket.addr().id)
     .await?;
 
 println!("Finished download.");
