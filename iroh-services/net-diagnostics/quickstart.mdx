@@ -140,6 +140,39 @@ Calling `.spawn()` finalizes the router's set of protocols, so the
 `.accept(CLIENT_HOST_ALPN, ...)` call has to come before it. Register every
 ALPN your endpoint serves on the one router you spawn for that endpoint.
 
+### Report automatically at startup
+
+Dashboard-initiated reports only work while an endpoint is online, which is no
+help for a user whose app fails to connect and gets closed. Have the endpoint
+report itself instead: call `net_diagnostics(true)` once after building the
+client. It runs the probes locally and uploads the report to your project, so
+it's waiting on the **Net Diagnostics** page whether or not the endpoint is
+still running.
+
+```rust
+// `true` uploads the report to iroh services; `false` keeps it local
+let report = client.net_diagnostics(true).await?;
+```
+
+This needs no capability grant and no `ClientHost` — the endpoint is pushing its
+own report rather than answering a request. Keep both if you also want
+on-demand reports from the dashboard.
+
+Startup is early enough that the endpoint may not have finished its first net
+report, so run it in a task rather than blocking your launch path:
+
+```rust
+let client2 = client.clone();
+tokio::spawn(async move {
+    if let Err(err) = client2.net_diagnostics(true).await {
+        tracing::warn!("startup diagnostics failed: {err:?}");
+    }
+});
+```
+
+The [`net_diagnostics` example](https://github.com/n0-computer/iroh-services/tree/main/examples/net_diagnostics.rs)
+does this on every run.
+
 <Card
   title="Reading reports and troubleshooting"
   icon="book"
