@@ -26,20 +26,73 @@ iroh is regularly tested on a wide range of hardware, from servers to microcontr
 |----------|-------|
 | x86\_64 servers & desktops | Fully supported  |
 | Apple Silicon (M-series) | Fully supported |
-| Raspberry Pi | Fully supported |
-| ESP32 | Supported with caveats |
+| Raspberry Pi (Linux) | Fully supported |
+| ESP32 (Xtensa & RISC-V) | [Supported](#esp32) |
+| RP2350 (Raspberry Pi Pico 2, Pimoroni Presto) | [Supported](#rp2350-pico-2-and-presto) |
 
-For hardware you don't see here, or to integrate your custom hardware into our testing frameworks on every iroh release, [contact us.](mailto:support@iroh.computer) 
+For hardware you don't see here, or to integrate your custom hardware into our testing frameworks on every iroh release, [contact us.](mailto:support@iroh.computer)
 
+## Microcontrollers
 
-### ESP32 Resource Requirements
+iroh can run as a full QUIC endpoint on microcontrollers, using the same endpoint
+IDs, tickets, and protocols as it would on a server. What a device can do mostly
+comes down to its available RAM and flash:
 
-We have built a version of iroh which has been tested on ESP32 with very constrained resources:
+- **RAM.** With PSRAM, a device has room for the relay client and [pkarr address
+  lookup](/connecting/dns-address-lookup). That means you can connect to it from
+  anywhere, including from a browser via WebAssembly.
+- **Without PSRAM** (~512 KiB internal SRAM), the relay client and pkarr address
+  lookup won't fit. You can still connect on the local network using a long ticket
+  that includes the device's IP address, or discover it by endpoint ID with
+  [mDNS](/connecting/local-address-lookup). Browsers can't connect this way because
+  they don't support mDNS or direct UDP.
+- **Flash.** Devices with less than 8 MiB of flash need our reduced-dependency
+  build of iroh. Common 4 MiB development boards fit with a little size tuning
+  (`opt-level = "z"`, `panic = "immediate-abort"`, and `-Os` on the ESP-IDF side),
+  with no custom partition table required.
 
-- **4 MiB Flash / 4 MiB RAM**: working, though 4 MiB flash is right at the limit
-- **4 MiB Flash / 2 MiB RAM**: also works in testing
+### ESP32
 
-To use ESP32 in production, [contact us for licensing & support.](mailto:support@iroh.computer)
+| Board | Architecture | PSRAM | Reachability |
+|-------|--------------|-------|--------------|
+| ESP32-WROVER / M5StickC PLUS2 | Xtensa LX6 | Yes | Relay + address lookup |
+| ESP32-S3 | Xtensa LX7 | Yes | Relay + address lookup |
+| ESP32-C61 | RISC-V | 2 MiB | Relay + address lookup |
+| ESP32-P4 | RISC-V (dual-core) | 32 MiB | Relay + address lookup |
+| ESP32 | Xtensa LX6 | No | LAN-direct |
+| ESP32-S3 | Xtensa LX7 | No | LAN-direct |
+| ESP32-C6 | RISC-V | No | LAN-direct |
+
+<Note>
+The RISC-V variants (ESP32-C\*, ESP32-P\*) build with stock Rust. Xtensa
+(ESP32, ESP32-S3) needs the [`esp` Rust
+toolchain](https://docs.esp-rs.org/book/installation/riscv-and-xtensa.html).
+The ESP32-P4 has no radio of its own. WiFi comes from an ESP32-C6 companion
+over ESP-Hosted.
+</Note>
+
+You'll find working firmware for every variant above, along with a desktop CLI
+and browser (WebAssembly) client, in
+[iroh-esp32-examples](https://github.com/n0-computer/iroh-esp32-examples).
+For a complete example, see
+[iroh-smart-fan](https://github.com/n0-computer/iroh-smart-fan): a PSRAM ESP32
+that reads a temperature sensor and drives a fan over [irpc](/protocols/rpc),
+with controls available from a terminal or browser.
+
+### RP2350: Pico 2 and Presto
+
+iroh also runs on the RP2350, found in the Raspberry Pi Pico 2 and the [Pimoroni
+Presto](https://shop.pimoroni.com/products/presto) (RP2350B, RM2 radio, 8 MiB
+PSRAM). Relay and address lookup are enabled, so you can connect to these boards
+from anywhere.
+
+These chips don't yet have an upstream Rust `std` target, so we built one. It
+uses nightly Rust with a custom Cortex-M33 target, the Pico SDK for startup, USB,
+and the radio, FreeRTOS for threads, newlib, and lwIP for networking. iroh builds
+on top without modification.
+
+To use a microcontroller in production, [contact us for licensing, support, and
+access to the Pico/Presto examples.](mailto:support@iroh.computer)
 
 ## Network Transports
 
