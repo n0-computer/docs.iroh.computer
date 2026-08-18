@@ -87,6 +87,12 @@ Store it the way you'd store a private key or password — file permissions, a
 keychain, or an OS secret store — not in source control.
 </Note>
 
+<Note>
+The `EndpointId` must always be globally unique, otherwise there would
+be two nodes impersonating each other. When using a persisted key
+make sure no other endpoint is using the same key at the same time.
+</Note>
+
 ## Next Steps
 
 With an endpoint created, you can now start discovering and connecting to other endpoints.
