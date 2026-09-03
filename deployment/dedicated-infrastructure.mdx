@@ -69,8 +69,14 @@ connection speeds and reduce latency for your specific use case.
 
 ## Recommended setup
 
-We recommend setting up at least two relays for redundancy in different regions.
-For example, you could set up one relay in North America and another in Europe.
+Place relays as close as possible to the users they serve. Shorter network paths
+reduce latency and improve response times, including time to first byte when a
+connection uses a relay. For a globally distributed user base, prioritize
+regions near your largest user populations.
+
+For redundancy, run at least two relays in different regions. This placement
+should complement proximity: choose regions that keep relays near users while
+avoiding a single regional point of failure.
 
 ## Why this architecture is powerful
 

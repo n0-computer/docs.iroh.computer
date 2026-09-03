@@ -97,9 +97,18 @@ just don't require your API key to connect.
 
 ## Recommended setup
 
-For production, deploy at least two relays in different geographic regions. If one relay becomes unreachable, iroh automatically falls back to the next one in your list, so your peers will still find each other.
+Place relays as close as possible to the users they serve. Shorter network paths
+reduce latency and improve response times, including time to first byte when a
+connection uses a relay. For a globally distributed user base, prioritize
+regions near your largest user populations.
 
-Each relay handles up to 60,000 concurrent connections. For larger deployments, [contact us](mailto:support@iroh.computer) to increase relay capacity.
+For production, also deploy at least two relays in different geographic
+regions. If one relay becomes unreachable, iroh automatically falls back to the
+next one in your list, so your peers will still find each other. Choose regions
+that balance user proximity with protection from a single regional outage.
+
+Each relay handles up to 60,000 concurrent connections. For larger deployments,
+[contact us](mailto:support@iroh.computer) to increase relay capacity.
 
 ## Request a custom region
 

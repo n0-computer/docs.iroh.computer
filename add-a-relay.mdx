@@ -70,10 +70,16 @@ Services can manage it for you, or you can self-host.
 
 ## Recommended setup
 
-For dedicated production deployments, run at least two relays in different
+Place relays as close as possible to the users they serve. Shorter network paths
+reduce latency and improve response times, including time to first byte when a
+connection uses a relay.
+
+For dedicated production deployments, also run at least two relays in different
 geographic regions, for example one in North America and one in Europe. iroh
 clients try multiple relays automatically, so if one becomes unreachable
-they'll seamlessly fall back to another.
+they'll seamlessly fall back to another. For a globally distributed user base,
+prioritize regions near your largest user populations while maintaining this
+regional redundancy.
 
 Each relay handles up to 60,000 concurrent connections. For larger deployments, run multiple relays per region or [contact us](https://cal.com/team/number-0/n0-protocol-services) to size up.
 
