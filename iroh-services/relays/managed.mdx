@@ -17,7 +17,7 @@ includes:
 - **Isolation**: your traffic only; no noisy neighbors
 - **Capacity**: up to 60,000 concurrent connections
 - **Egress**: 250 GB per month, then $0.09/GB
-- **Version locking**: pin to a specific iroh version or run blue/green deployments
+- **[Version locking](#version-locking)**: pin to a specific iroh version or run blue/green deployments
 - **Multi-region**: deploy across multiple regions for lowest latency and high availability. [Contact us](mailto:support@iroh.computer) to request a custom region if the available regions don't meet your needs.
 
 Multi-cloud, on-premises deployments, and SLAs are available on Enterprise
@@ -68,6 +68,15 @@ endpoint with the [`preset()`](#4-configure-your-endpoint), the SDK derives an
 endpoint-bound relay token locally from your project API key. See [API
 Keys](/iroh-services/access#how-relay-authentication-works) for the authoritative
 authentication description.
+
+## Version locking
+
+Dedicated relays can be pinned to a specific supported iroh relay version
+instead of moving automatically to a newer release. This lets you coordinate
+relay upgrades with your endpoint rollout and operate old and new relay versions
+side by side during a blue/green deployment. The pin applies to the relay
+software; you remain responsible for verifying compatibility with the iroh
+versions used by your endpoints.
 
 ## Turn authentication off
 
