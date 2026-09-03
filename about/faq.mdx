@@ -29,13 +29,26 @@ Some "regular P2P networks" actually run on iroh under the hood, including [Holo
 
 ## Does iroh use relay servers?
 
-Yes, and relay servers are a core part of what makes iroh connections reliable. See the [Relays concept page](/concepts/relays) for a full overview.
+Yes, and relay servers are a core part of what makes iroh connections reliable when two devices are not on the same WiFi or low-radio range (e.g., Bluetooth or LoRa).
+See the [Relays concept page](/concepts/relays) for a full overview.
 
-Relays serve two roles: they assist with [NAT Traversal](/concepts/nat-traversal) to help establish direct P2P connections, and they act as an encrypted fallback when a direct connection can't be made. In practice, roughly 9 out of 10 connections go direct; the relay is only a stepping stone.
+Relays serve two roles: they assist with [NAT
+Traversal](/concepts/nat-traversal) to help establish direct P2P connections,
+and they act as an encrypted fallback when a direct connection can't be made. In
+practice, roughly 9 out of 10 connections go direct; the relay is only a
+stepping stone.
 
-Because relays are **stateless** (they route encrypted packets but store nothing), they're cheap to run and easy to scale. There's no database to sync, no state to migrate, and automatic failover across relay instances is built in.
+Because relays are **stateless** (they route encrypted packets but store
+nothing), they're cheap to run and easy to scale. There's no database to sync,
+no state to migrate, and automatic failover across relay instances is built in.
 
-By default iroh is configured with several public rate-limited relay servers run by number 0 (two in the US, one in Europe, and one in Asia), free to use for development and testing. To prevent abuse, throughput through public relays is rate-limited. For production workloads, use [Shared Relays](/concepts/relays#shared-relays), a [dedicated relay](/concepts/relays#dedicated-relays), or [self-host your own](/concepts/relays#deploy-your-own-relay).
+By default iroh is configured with several public rate-limited relay servers run
+by number 0 (US West, US East, Europe Central, and Singapore). These are free to
+use for development and testing. To prevent abuse, throughput through public
+relays is rate-limited. For production workloads, use [Shared
+Relays](/concepts/relays#shared-relays), a [dedicated
+relay](/concepts/relays#dedicated-relays), or [self-host your
+own](/concepts/relays#deploy-your-own-relay).
 
 
 ## Can relays read the traffic they route?
@@ -66,22 +79,37 @@ Be aware of security caveats to forward secrecy when using the [opt-in 0-RTT fea
 You're not dependent on us. The relay code is [open-source](https://github.com/n0-computer/iroh/tree/main/iroh-relay), and running your own is possible.
 
 For managed production infrastructure, Iroh Services offers [Shared
-Relays](/concepts/relays#shared-relays) and isolated [Dedicated
-Relays](/concepts/relays#dedicated-relays). Uptime SLAs are available on
-Enterprise plans. To remove the managed-service dependency, self-host on a
+Relays](/concepts/relays#shared-relays) and [Dedicated
+Relays](/concepts/relays#dedicated-relays). For dedicated relays, we offer
+Custom DNS names, so that you can run your own relay and point your endpoints to
+it without having to change the code in your app. This is the recommended
+approach for production deployments.
+
+To remove the managed-service dependency, self-host on a
 server with a public IP and a DNS name pointing to it. Automatic TLS via
 [ACME](https://en.wikipedia.org/wiki/Automatic_Certificate_Management_Environment)
 is built in. Configure the relay URL for your endpoint (see [Add a
 relay](/add-a-relay)) and you're set.
 
-Running your own relay doesn't affect interoperability. Your endpoints can still connect to peers using other relay servers, and since relays are stateless and logic lives at the client, can be swapped independently.
+Running your own relay doesn't affect interoperability. Your endpoints can still
+connect to peers using other relay servers, and since relays are stateless and
+logic lives at the client, can be swapped independently.
 
 
 ## What are the risks of running a public relay?
 
-Running a public, unauthenticated relay means you act as the home relay for anyone who has your relay in their relay map and is close to you in terms of latency. The main practical consequence is traffic: you might get a lot of it, so you'll want to configure rate limiting, as we do on our [public relays](/iroh-services/relays/public).
+Running a public, unauthenticated relay means you act as the home relay for
+anyone who has your relay in their relay map and is close to you in terms of
+latency. The main practical consequence is traffic: you might get a lot of it,
+so you'll want to configure rate limiting, as we do on our [public
+relays](/iroh-services/relays/public).
 
-The security exposure is limited. The traffic you relay is fully end-to-end encrypted and cannot be decrypted by the relay. The only information a relay has is what it needs to function: the endpoint IDs and IP addresses of the endpoints currently connected to it, plus which endpoints are paired. A relay has no egress to the open internet, so if you're comparing it to Tor, running a relay is like running a guard/middle relay, not an exit node.
+The security exposure is limited. The traffic you relay is fully end-to-end
+encrypted and cannot be decrypted by the relay. The only information a relay has
+is what it needs to function: the endpoint IDs and IP addresses of the endpoints
+currently connected to it, plus which endpoints are paired. A relay has no
+egress to the open internet, so if you're comparing it to Tor, running a relay
+is like running a guard/middle relay, not an exit node.
 
 
 ## Is establishing a connection without relays or when offline possible?

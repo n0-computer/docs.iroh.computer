@@ -18,10 +18,10 @@ includes:
 - **Capacity**: up to 60,000 concurrent connections
 - **Egress**: 250 GB per month, then $0.09/GB
 - **Version locking**: pin to a specific iroh version or run blue/green deployments
-- **Multi-region**: deploy across available regions for resilience
+- **Multi-region**: deploy across multiple regions for lowest latency and high availability. [Contact us](mailto:support@iroh.computer) to request a custom region if the available regions don't meet your needs.
 
 Multi-cloud, on-premises deployments, and SLAs are available on Enterprise
-plans. [Contact us](mailto:support@iroh.computer) to discuss those requirements.
+plans. [Contact us](mailto:support@iroh.computer) to discuss.
 
 Only traffic carried by a relay counts as relay egress. Direct peer-to-peer
 traffic does not.
@@ -41,11 +41,10 @@ The project must be on the Pro plan to deploy managed relays. You can also upgra
 Navigate to **Relays** in your project sidebar and click **Deploy Relay**. Select a region for your relay.
 
 ![Add relay dialog](/images/add-relay.png)
-![Add relay dialog](/images/region-relay.png)
 
 ### 3. Copy your relay URL
 
-Once deployed, your relay URL will appear in the dashboard. Copy it; you'll need it to configure your endpoints.
+Once deployed, your relay URL will appear in the dashboard. Hit Connect to see a code snippet to connect to your relay. 
 
 ### 4. Configure your endpoint
 
@@ -55,7 +54,9 @@ Set your endpoint to use your dedicated relay URLs instead of the public relays:
 
 ### 5. Verify connectivity
 
-Go to your project's **Relays** page to confirm your endpoints are connecting through your dedicated relay. You should see connected endpoint counts and traffic metrics.
+Go to your project's **Relays** page to confirm your endpoints are connecting
+through your dedicated relay. You should see connected endpoint counts and
+traffic metrics.
 
 ![Relay metrics](/images/metrics-relay.png)
 
