@@ -8,10 +8,13 @@ import RelayPresetConfig from '/snippets/relay-preset-config.mdx';
 By default, iroh endpoints use the public relays maintained by
 [n0.computer](https://n0.computer) to facilitate connections when direct
 peer-to-peer links aren't possible. The public relays are for development and
-testing. For production, use [Shared Relays](/iroh-services/relays/shared) on
-the Pro plan unless you need single-tenant capacity, custom regions, [version
-locking](/iroh-services/relays/managed#version-locking), or an SLA. Use Dedicated for the first three requirements; use an
-Enterprise plan when you need an SLA.
+testing. We recommend that you do not use the public relays for 
+production workloads. 
+
+Use authenticated [Shared Relays](/iroh-services/relays/shared) for growth and
+development. If you need more control over what version of iroh relay is used,
+no rate limits, and better uptime, use [dedicated
+infrastructure](/deployment/dedicated-infrastructure) instead.
 
 ## Configure your endpoint
 
@@ -41,8 +44,8 @@ architecture story.
 ## Get a relay
 
 Choose Shared Relays for the standard Pro production setup. Choose dedicated
-infrastructure when you need isolation or infrastructure controls; Iroh
-Services can manage it for you, or you can self-host.
+infrastructure when you need isolation, [version locking](/iroh-services/relays/managed#version-locking), or blue/green deployments. [Iroh
+Services](https://services.iroh.computer) can manage it for you, or you can self-host.
 
 <Card
   title="Use Shared Relays"
