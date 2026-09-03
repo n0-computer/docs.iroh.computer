@@ -1,0 +1,46 @@
+---
+title: "Self-hosted"
+description: "Run your own relay"
+---
+
+> 🚨 **WARNING** 🚨 This guide is maintained by the community and may not reflect the most up-to-date relay deployment configuration at all times. Please feel free [to contribute patches](https://github.com/n0-computer/docs.iroh.computer) it if you see inconsistencies or have useful additions for the benefit of other relay operators.
+
+## Documentation
+
+The official in-repository documentation for self-hosting a relay is [here](https://github.com/n0-computer/iroh/tree/main/iroh-relay). Deeper technical documentation about the functioning of the relay is available on [`docs.rs`](https://docs.rs/iroh/latest/iroh/#relay-servers). Documentation of all possible configuration options for the relay is not published currently. For the time bring, you can [peek in the source code](https://github.com/n0-computer/iroh/blob/main/iroh-relay/src/main.rs) to see the entire configuration listing.
+
+## Install
+
+### Binary
+
+The latest binaries are available on the `n0-computer/iroh` [Github releases page](https://github.com/n0-computer/iroh/releases).
+
+### Image
+
+An image published on `hub.docker.com` under the following namespace.
+
+> `n0computer/iroh-relay`
+
+All available tags are listed [here](https://hub.docker.com/r/n0computer/iroh-relay/tags).
+
+## Basic configuration
+
+The relay's configuration file is in TOML. The example configuration below is all that is required to get your relay online with automatic TLS via ACME. This configuration can be placed in `/etc/iroh-relay/config.toml` and run with `iroh-relay -c config.toml`.
+
+```toml
+http_bind_addr = "[::]:80"
+
+[tls]
+https_bind_addr = "[::]:443"
+hostname = "relay.example.org"
+cert_mode = "LetsEncrypt"
+cert_dir = "/var/lib/iroh-relay/certs"
+contact = "someone@somewhere.org"
+```
+
+## Simple health check
+
+```bash
+curl --noproxy '*' --fail --show-error \
+  https://relay.example.org/healthz
+```
