@@ -1,11 +1,17 @@
 ---
-title: "Use your own relay"
-description: "Configure dedicated relays so your endpoints don't share infrastructure with the public network"
+title: "Add a relay"
+description: "Choose and configure production relays for your endpoints"
 ---
 
 import RelayPresetConfig from '/snippets/relay-preset-config.mdx';
 
-By default, iroh endpoints use the public relays maintained by [n0.computer](https://n0.computer) to facilitate connections when direct peer-to-peer links aren't possible. The public relays are great for development and testing, but production deployments should run their own.
+By default, iroh endpoints use the public relays maintained by
+[n0.computer](https://n0.computer) to facilitate connections when direct
+peer-to-peer links aren't possible. The public relays are for development and
+testing. For production, use [Shared Relays](/iroh-services/relays/shared) on
+the Pro plan unless you need single-tenant capacity, custom regions, version
+locking, or an SLA. Use Dedicated for the first three requirements; use an
+Enterprise plan when you need an SLA.
 
 ## Configure your endpoint
 
@@ -34,15 +40,24 @@ architecture story.
 
 ## Get a relay
 
-You have two paths. Pick **managed** if you want a relay running today. But
-you're never locked in! You can always self-host later if you want. 
+Choose Shared Relays for the standard Pro production setup. Choose dedicated
+infrastructure when you need isolation or infrastructure controls; Iroh
+Services can manage it for you, or you can self-host.
 
 <Card
-  title="Deploy a managed relay"
+  title="Use Shared Relays"
+  icon="users"
+  href="/iroh-services/relays/shared"
+>
+  Use authenticated, multi-tenant production relays included with the Pro plan.
+</Card>
+
+<Card
+  title="Deploy a dedicated relay"
   icon="server"
   href="https://services.iroh.computer?utm_source=docs&utm_content=add-a-relay"
 >
-  Sign up for Iroh Services and spin up a managed relay for your project in minutes.
+  Add single-tenant capacity, custom regions, and version locking through Iroh Services.
 </Card>
 
 <Card
@@ -55,10 +70,15 @@ you're never locked in! You can always self-host later if you want.
 
 ## Recommended setup
 
-For production, run at least two relays in different geographic regions, for example one in North America and one in Europe. iroh clients try multiple relays automatically, so if one becomes unreachable they'll seamlessly fall back to another.
+For dedicated production deployments, run at least two relays in different
+geographic regions, for example one in North America and one in Europe. iroh
+clients try multiple relays automatically, so if one becomes unreachable
+they'll seamlessly fall back to another.
 
 Each relay handles up to 60,000 concurrent connections. For larger deployments, run multiple relays per region or [contact us](https://cal.com/team/number-0/n0-protocol-services) to size up.
 
 ## Learn more
 
-For the full architecture story (why stateless relays make uptime management easier, how multi-cloud resilience works, and managed relay deployment steps) see [Dedicated Infrastructure](/deployment/dedicated-infrastructure).
+For the full architecture story (why stateless relays make uptime management
+easier, how multiple relays provide resilience, and managed relay deployment
+steps), see [Dedicated Infrastructure](/deployment/dedicated-infrastructure).

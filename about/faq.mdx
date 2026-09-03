@@ -35,7 +35,7 @@ Relays serve two roles: they assist with [NAT Traversal](/concepts/nat-traversal
 
 Because relays are **stateless** (they route encrypted packets but store nothing), they're cheap to run and easy to scale. There's no database to sync, no state to migrate, and automatic failover across relay instances is built in.
 
-By default iroh is configured with several public rate-limited relay servers run by number 0 (two in the US, one in Europe, and one in Asia), free to use for development and testing. To prevent abuse, throughput through public relays is rate-limited. For production workloads, you can run a [dedicated relay](/concepts/relays#dedicated-relays) or [self-host your own](/concepts/relays#deploy-your-own-relay).
+By default iroh is configured with several public rate-limited relay servers run by number 0 (two in the US, one in Europe, and one in Asia), free to use for development and testing. To prevent abuse, throughput through public relays is rate-limited. For production workloads, use [Shared Relays](/concepts/relays#shared-relays), a [dedicated relay](/concepts/relays#dedicated-relays), or [self-host your own](/concepts/relays#deploy-your-own-relay).
 
 
 ## Can relays read the traffic they route?
@@ -63,9 +63,16 @@ Be aware of security caveats to forward secrecy when using the [opt-in 0-RTT fea
 
 ## What if number 0 stops running relay servers?
 
-You're not dependent on us. The relay code is [open-source](https://github.com/n0-computer/iroh/tree/main/iroh-relay), and running your own is possible. 
+You're not dependent on us. The relay code is [open-source](https://github.com/n0-computer/iroh/tree/main/iroh-relay), and running your own is possible.
 
-The easiest path is a [dedicated relay via Iroh Services](/concepts/relays#dedicated-relays), which gives you an isolated, managed relay with uptime guarantees. If you'd rather self-host, you need a server with a public IP and a DNS name pointing to it. Automatic TLS via [ACME](https://en.wikipedia.org/wiki/Automatic_Certificate_Management_Environment) is built in. Either way, configure the relay URL for your endpoint (see [Use your own relay](/add-a-relay)) and you're set.
+For managed production infrastructure, Iroh Services offers [Shared
+Relays](/concepts/relays#shared-relays) and isolated [Dedicated
+Relays](/concepts/relays#dedicated-relays). Uptime SLAs are available on
+Enterprise plans. To remove the managed-service dependency, self-host on a
+server with a public IP and a DNS name pointing to it. Automatic TLS via
+[ACME](https://en.wikipedia.org/wiki/Automatic_Certificate_Management_Environment)
+is built in. Configure the relay URL for your endpoint (see [Add a
+relay](/add-a-relay)) and you're set.
 
 Running your own relay doesn't affect interoperability. Your endpoints can still connect to peers using other relay servers, and since relays are stateless and logic lives at the client, can be swapped independently.
 
@@ -123,10 +130,11 @@ project, sending net diagnostics reports, and connecting to an authenticated
 [relay](/concepts/relays#authentication).
 
 Your instinct about shipping it is correct. An API key is a long-lived,
-project-wide bearer secret with no scopes, so a copy extracted from your binary
-grants access to send metrics and connect to your relays until you rotate it.
+project-wide signing secret. The SDK derives an endpoint-bound relay token from
+it, but a process that extracts the API key can mint tokens for endpoints it
+controls, send metrics, and use your relays until you rotate the key.
 
-- **Enterprise deployments can use API keys out of the box.* If you control who can read the machine and whether you can rotate the key without shipping a new
+- **Enterprise deployments can use API keys out of the box.** If you control who can read the machine and whether you can rotate the key without shipping a new
   release, then you are ok. Run this on an MDM-managed fleet, in servers, or in CI, where
   the key arrives as a managed configuration and can be revoked from a console.
 - **For consumer apps, we recommend adding an authentication layer.** Build an authentication layer to decide who may connect based on the endpoint's ID,
@@ -202,7 +210,7 @@ For example, you can route iroh connections over custom transports like [Tor](/t
 The company behind iroh is number 0.
 It is partly venture capital and partly founder backed (as in: founders have invested their own money).
 Number 0 is healthy and has investors we actually think are a value-add.
-We earn revenue through [Iroh Services](https://services.iroh.computer), which provides managed relay and DNS address lookup infrastructure to keep your endpoints connected, from free public infrastructure for development and testing to dedicated cloud deployments for production.
+We earn revenue through [Iroh Services](https://services.iroh.computer), which provides managed relay and DNS address lookup infrastructure to keep your endpoints connected, from free public infrastructure for development and testing to Shared, Dedicated, and Enterprise production deployments.
 We rely on iroh remaining open source, and are committed to keeping it that way, including server-side code for relays and DNS address lookup.
 
 

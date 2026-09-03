@@ -16,8 +16,19 @@ maintained by [n0.computer](https://n0.computer), and are shared by a global pub
 developers.
 
 We recommend using the public relays for development and testing, as they are
-free to use and require no setup. However, for production systems, we recommend
-using dedicated relays instead.
+free to use and require no setup. For most production systems, use [Shared
+Relays](/iroh-services/relays/shared), the multi-tenant relay option included
+with the Pro plan. Use dedicated relays when you need single-tenant capacity,
+custom regions, or version locking. Use an Enterprise plan when you need an
+SLA.
+
+<Card
+  title="Use Shared Relays"
+  icon="users"
+  href="/iroh-services/relays/shared"
+>
+  Use authenticated, multi-tenant relays for the standard Pro production setup.
+</Card>
 
 <Card
   title="Deploy a dedicated relay"
@@ -42,17 +53,18 @@ To use a specific set of relays with your iroh endpoint, configure your relay UR
 
 <RelayEndpointConfig />
 
-Managed relays from Iroh Services **supply authentication by default**, and
-your endpoints authenticate to them with your project's API key. For that flow,
-and full deployment steps, see the [managed relay
-guide](/iroh-services/relays/managed).
+Managed relays from Iroh Services **supply authentication by default**. The SDK
+uses your project API key locally to create an endpoint-bound relay token; it
+does not send the API key to the relay. For that flow and full deployment steps,
+see the [managed relay guide](/iroh-services/relays/managed).
 
 ## Why use dedicated relays in production?
 
-Using dedicated relays can provide several benefits, including improved performance,
-enhanced security, better uptime guarantees, and greater control over your network infrastructure. By
-using your own servers, you can optimize connection speeds and reduce
-latency for your specific use case. 
+Dedicated relays provide single-tenant capacity and greater control over your
+network infrastructure. They are also the right choice when you need custom
+regions or version locking. Enterprise plans add options such as SLAs and
+multi-cloud deployments. By using dedicated servers, you can optimize
+connection speeds and reduce latency for your specific use case.
 
 
 ## Recommended setup
@@ -78,7 +90,10 @@ in your clients. This means:
 iroh clients automatically try multiple relays when connecting. If one relay is unavailable, clients seamlessly fall back to another relay in your list without application-level retry logic. Your peers will find each other as long as at least one relay is reachable.
 
 **Multi-cloud resilience**  
-For even better guarantees, you can distribute relays across multiple cloud providers. If one provider experiences an outage, your application keeps running on relays hosted elsewhere. Since relays don't store state, you can freely mix providers without worrying about cross-cloud data consistency.
+Enterprise plans can distribute relays across multiple cloud providers. If one
+provider experiences an outage, your application keeps running on relays hosted
+elsewhere. Since relays don't store state, you can mix providers without
+worrying about cross-cloud data consistency.
 
 **Cost-effective scaling**  
 Adding capacity means spinning up more lightweight relay instances, not provisioning databases or managing complex stateful server infrastructure. You can easily scale up for peak usage and scale down during quiet periods.

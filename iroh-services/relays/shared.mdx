@@ -28,23 +28,34 @@ Shared relays:
 For **$19/month**:
 
 - Four relays across the globe
-- 10,000 endpoints included, then $0.0003 per endpoint
-- Higher rate limits than the public relays, for better performance
+- Up to 10,000 concurrent connections, then $0.003 per additional endpoint per month
+- 100 GB of relay egress per month, then $0.09/GB
+- A 5 MB/s rate limit
 - API key authentication, so you can revoke access for endpoints as needed
+
+Only traffic carried by a relay counts as relay egress. Direct peer-to-peer
+traffic does not.
+
+Authentication uses an endpoint-bound capability token signed locally with your
+project API key. See [API Keys](/iroh-services/access#how-relay-authentication-works)
+for how tokens and project-wide credentials differ.
 
 Metrics are already included with the Pro plan: throughput, direct connection rates, relay usage, and rate limits. See [Metrics](/iroh-services/metrics/index).
 
 ## Free trial
 
-You can try shared relays free for 30 days. We won't charge you until the following month, and you can cancel anytime.
+The Pro plan includes a 30-day free trial.
 
 ## How to get shared relays
 
-Shared relays are in beta, so they're enabled per project on a case-by-case basis. Email [support@iroh.computer](mailto:support@iroh.computer) with your project name and we'll turn them on for you.
+Sign up at [services.iroh.computer](https://services.iroh.computer?utm_source=docs&utm_content=shared-relays)
+and create a Pro project, or upgrade an existing project to Pro. Shared relays
+are included with the plan.
 
 ## Configure your endpoint
 
-Once shared relays are enabled, go to **Relays → Code Snippet** in your project dashboard to get the configuration for your endpoints.
+Go to **Relays → Code Snippet** in your project dashboard to get the
+configuration for your endpoints.
 
 ![Relay code snippet](/images/relay-code-snippet.png)
 
@@ -53,6 +64,7 @@ Once shared relays are enabled, go to **Relays → Code Snippet** in your projec
 ## Shared vs. Dedicated
 
 Shared relays give you authentication, isolation from public traffic, and higher
-rate limits at a low fixed price. Choose [dedicated
-relays](/iroh-services/relays/managed) when you need single-tenant isolation,
-version locking, blue/green deployments, custom regions, or an uptime SLA.
+rate limits at a low fixed price. Choose [Dedicated
+Relays](/iroh-services/relays/managed) when you need single-tenant isolation,
+version locking, blue/green deployments, or custom regions. Choose Enterprise
+when you need an SLA or multi-cloud deployment.

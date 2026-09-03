@@ -1,23 +1,39 @@
 ---
 title: "Overview"
-description: "Deploy dedicated relay infrastructure for your iroh project"
+description: "Choose relay infrastructure for development, production, and enterprise deployments"
 ---
 
-Iroh Services lets you run dedicated relay servers for your project, no infrastructure to manage yourself. For background on how relays work, see [Relay concepts](/concepts/relays).
+Choose the relay option that matches your project's stage and infrastructure
+requirements. For background on how relays work, see [Relay
+concepts](/concepts/relays).
 
 <Columns cols={2}>
   <Card
-    title="Managed Relays"
-    icon="server"
-    href="/iroh-services/relays/managed"
-  >
-    Dedicated relays provisioned through Iroh Services. Isolated, version-locked, with SLAs. Recommended for production.
-  </Card>
-  <Card
-    title="Public Relays"
+    title="Community: Public Relays"
     icon="globe"
     href="/iroh-services/relays/public"
   >
-    Free shared relays built into iroh. No setup required. Development and hobby use only.
+    Free, unauthenticated, rate-limited relays for development, testing, and hobby projects.
+  </Card>
+  <Card
+    title="Pro: Shared Relays"
+    icon="users"
+    href="/iroh-services/relays/shared"
+  >
+    Authenticated production relays with predictable capacity, without the cost of single-tenant infrastructure.
+  </Card>
+  <Card
+    title="Pro: Dedicated Relays"
+    icon="server"
+    href="/iroh-services/relays/managed"
+  >
+    Single-tenant capacity with custom regions and version locking for workloads that need more control.
+  </Card>
+  <Card
+    title="Enterprise"
+    icon="building"
+    href="mailto:support@iroh.computer"
+  >
+    Multi-cloud and on-premises deployments, custom capacity, SLAs, and dedicated support.
   </Card>
 </Columns>
