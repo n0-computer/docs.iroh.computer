@@ -14,15 +14,24 @@ Once a direct path is established, the relay steps back and data flows peer-to-p
 
 In practice, roughly 9 out of 10 networking conditions allow a direct connection. iroh's NAT traversal implementation is deterministic: if it works between two devices once, it will continue to work as long as their networking setup stays stable.
 
-## Deploy your own relay
+## Choose a production relay
 
-<Card
-  title="Deploy a dedicated relay"
-  icon="server"
-  href="https://services.iroh.computer?utm_source=docs&utm_content=concepts-relays"
->
-  Sign up for Iroh Services and spin up a managed relay for your project in minutes.
-</Card>
+<Columns cols={2}>
+  <Card
+    title="Use Shared Relays"
+    icon="users"
+    href="/iroh-services/relays/shared"
+  >
+    Use the standard Pro production option without managing single-tenant infrastructure.
+  </Card>
+  <Card
+    title="Deploy a dedicated relay"
+    icon="server"
+    href="/iroh-services/relays/managed"
+  >
+    Use single-tenant capacity, custom regions, or [version locking](/iroh-services/relays/managed#version-locking).
+  </Card>
+</Columns>
 
 
 ## Why relays are better
@@ -47,7 +56,17 @@ Public relays:
 - Carry no uptime or performance guarantees
 - Are shared across all iroh developers worldwide
 
-**Public relays are suitable for development and testing.** For production, use dedicated relays.
+**Public relays are suitable for development and testing.** For production, use
+Shared Relays on the Pro plan unless you need single-tenant capacity, custom
+regions, [version locking](/iroh-services/relays/managed#version-locking), or an SLA. Use Dedicated for the first three
+requirements; use an Enterprise plan when you need an SLA.
+
+## Shared relays
+
+Shared Relays are authenticated, multi-tenant relays included with the Pro plan.
+They provide predictable production capacity without requiring you to deploy or
+operate single-tenant infrastructure. See [Shared
+Relays](/iroh-services/relays/shared) for limits and pricing.
 
 ## Dedicated relays
 
@@ -57,23 +76,27 @@ They offer:
 
 - **Authenticated by default**: only your project's endpoints can connect, authenticated automatically with your API key. You can turn authentication off from the dashboard if you want any endpoint that has the URL to be able to use it.
 - **Isolation**: no noisy neighbors; your traffic is yours alone
-- **Uptime guarantees**: SLAs available via [Iroh Services](/iroh-services/relays)
-- **Version locking**: stay on a specific iroh version or run blue/green deployments
-- **Multi-region & multi-cloud**: deploy relays across regions and providers for resilience
+- **[Version locking](/iroh-services/relays/managed#version-locking)**: stay on a specific iroh version or run blue/green deployments
+- **Multi-region**: deploy relays across regions for resilience
+
+SLAs and multi-cloud deployments are available on Enterprise plans.
 
 ## Authentication
 
-Dedicated relays require authentication by default, so a relay only carries traffic for endpoints that belong to your project. Authentication is built in — there's nothing extra to wire up beyond your [API key](/iroh-services/access).
+Shared and Dedicated relays require authentication by default, so they only
+carry traffic for endpoints authorized by your project. The project API key is
+a long-lived signing secret. The SDK uses it locally to create an expiring,
+endpoint-bound relay capability token, and the endpoint presents that token to
+the relay. The API key itself is not sent to the relay.
 
-Here's how it works:
-
-1. **Your relay knows your project.** When Iroh Services provisions a relay, it tells the relay which of your project's API keys are allowed to use it. This allow-set is kept in sync as you create or revoke keys.
-2. **Your endpoint presents a token, not the key itself.** When you build an endpoint with the `iroh_services::preset()` builder and your API key, the SDK mints a short-lived, signed access token scoped to that endpoint's identity. The endpoint presents this token when it connects to the relay. Your API key never leaves your application.
-3. **The relay verifies and admits.** The relay checks that the token was signed by one of your project's allowed keys and hasn't expired, then admits the connection. An endpoint with no token, an expired token, or a token from a revoked key is refused at the handshake.
+The project API key remains a project-wide root credential; separately issued
+per-endpoint credentials are not implemented. See [API
+Keys](/iroh-services/access#how-relay-authentication-works) for the authoritative
+implementation and security guidance.
 
 A few things worth knowing:
 
-- **Revocation is live.** Delete an API key and its access is withdrawn from your relays right away, including connections that are already open. The relay will kick off clients using that key, and they won't be able to reconnect until they have a valid token again.
+- **Revocation is live when authentication is enabled.** Delete an API key and its access is withdrawn from authenticated relays, including connections that are already open. Clients using that key cannot reconnect without a token from an allowed key.
 - **Authentication is a toggle, not a different relay.** Turning authentication off from the dashboard tells the relay to admit any endpoint without a token. Turn it back on and the token check resumes for new connections. See [Turn authentication off](/iroh-services/relays/managed#turn-authentication-off).
 - **Turning authentication off doesn't make a relay discoverable.** Your relay is never listed or advertised anywhere. With authentication off, any endpoint that already knows the relay's URL can use it, but it still has to know the URL.
 - **Authentication is about access, not privacy.** All relay traffic is end-to-end encrypted regardless. Authentication controls *who may use* your relay; it doesn't change what the relay can see (it still can't read your traffic).
@@ -95,4 +118,3 @@ Or self-host using the open-source relay binary:
 - [Relay source code](https://github.com/n0-computer/iroh/tree/main/iroh-relay)
 - [Relay binary releases](https://github.com/n0-computer/iroh/releases)
 - [Dedicated infrastructure guide](/deployment/dedicated-infrastructure)
-

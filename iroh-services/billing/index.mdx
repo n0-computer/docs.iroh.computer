@@ -18,6 +18,16 @@ Iroh Services billing is usage-based, calculated monthly. Your bill is determine
 
 Billing is managed through the [Iroh Services dashboard](https://services.iroh.computer). You can view your current plan, usage, and invoices at any time.
 
+## Billing terms
+
+- **Concurrent connections** are the peak number of endpoint connections active on your project's relay service at the same time during a monthly billing cycle. They are relay connections, not the peer-to-peer application connections carried inside iroh.
+- **Relay egress** is data sent from an Iroh Services relay to an endpoint. Only traffic actually carried by a relay is billable relay egress. Traffic sent over a direct peer-to-peer connection does not pass through a relay and is not billed as relay egress.
+- **Billing attribution** assigns managed infrastructure to the project that provisioned it and endpoint usage to the project whose API key authorized the endpoint. All endpoints using a project's key contribute to that project's connection, egress, metrics, and diagnostics usage, regardless of where those endpoints run.
+
+Included usage and overages are calculated over the project's monthly billing
+cycle. See the [pricing page](https://iroh.computer/pricing) for current
+allowances and rates.
+
 ## Next steps
 
 - [Manage your subscription](/iroh-services/billing/manage-subscription): upgrade, downgrade, or cancel your plan.

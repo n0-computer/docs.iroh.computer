@@ -1,6 +1,8 @@
-Your endpoint authenticates to your relays using (optionally) an API key. The iroh-services
-preset mints a short-lived access token scoped to your endpoint's key and to
-relay use only, then configures the endpoint to use your relays.
+By default, your endpoint authenticates to Shared and Dedicated relays. The
+iroh-services preset uses your project API key locally to mint a token bound to
+the endpoint's Endpoint ID and scoped to relay use. The token expires after 30
+days by default; the project API key is not sent to the relay. See [API
+Keys](/iroh-services/access#how-relay-authentication-works) for details.
 
 <CodeGroup>
 
