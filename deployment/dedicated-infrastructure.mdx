@@ -1,5 +1,5 @@
 ---
-title: "Dedicated Infrastructure"
+title: "Overview"
 ---
 
 import RelayEndpointConfig from '/snippets/relay-endpoint-config.mdx';
@@ -47,7 +47,7 @@ SLA.
   Learn how to self-host a relay for your project.
 </Card>
 
-## Using dedicated relays
+## Using your own relays
 
 To use a specific set of relays with your iroh endpoint, configure your relay URLs as part of an iroh-services preset:
 
@@ -57,15 +57,6 @@ Managed relays from Iroh Services **supply authentication by default**. The SDK
 uses your project API key locally to create an endpoint-bound relay token; it
 does not send the API key to the relay. For that flow and full deployment steps,
 see the [managed relay guide](/iroh-services/relays/managed).
-
-## Why use dedicated relays in production?
-
-Dedicated relays provide single-tenant capacity and greater control over your
-network infrastructure. They are also the right choice when you need custom
-regions or [version locking](/iroh-services/relays/managed#version-locking). Enterprise plans add options such as SLAs and
-multi-cloud deployments. By using dedicated servers, you can optimize
-connection speeds and reduce latency for your specific use case.
-
 
 ## Recommended setup
 
