@@ -1,5 +1,6 @@
 ---
 title: "Compatibility"
+description: "Operating system, hardware, microcontroller, and network transport support for iroh."
 ---
 
 Send data to and from any device running anywhere, big or small: cloud servers, tablets, or embedded systems. The core peer-to-peer technology is open source and built on open standards, so you're never locked in.
@@ -28,7 +29,7 @@ iroh is regularly tested on a wide range of hardware, from servers to microcontr
 | Apple Silicon (M-series) | Fully supported |
 | Raspberry Pi (Linux) | Fully supported |
 | ESP32 (Xtensa & RISC-V) | [Supported](#esp32) |
-| RP2350 (Raspberry Pi Pico 2, Pimoroni Presto) | [Supported](#rp2350-pico-2-and-presto) |
+| RP2350 | [Supported](#rp2350) |
 
 For hardware you don't see here, or to integrate your custom hardware into our testing frameworks on every iroh release, [contact us.](mailto:support@iroh.computer)
 
@@ -79,20 +80,20 @@ For a complete example, see
 that reads a temperature sensor and drives a fan over [irpc](/protocols/rpc),
 with controls available from a terminal or browser.
 
-### RP2350: Pico 2 and Presto
+### RP2350
 
-iroh also runs on the RP2350, found in the Raspberry Pi Pico 2 and the [Pimoroni
-Presto](https://shop.pimoroni.com/products/presto) (RP2350B, RM2 radio, 8 MiB
-PSRAM). Relay and address lookup are enabled, so you can connect to these boards
-from anywhere.
+iroh also runs on RP2350-based devices. With WiFi and sufficient PSRAM, relay
+and address lookup are enabled, so you can connect to these boards from anywhere.
+For a technical walkthrough of the Rust `std` port, WiFi, PSRAM, display support,
+and a working iroh endpoint, read [iroh on
+RP2350](https://iroh.computer/blog/iroh-on-rp2350).
 
-These chips don't yet have an upstream Rust `std` target, so we built one. It
+RP2350 doesn't yet have an upstream Rust `std` target, so we built one. It
 uses nightly Rust with a custom Cortex-M33 target, the Pico SDK for startup, USB,
 and the radio, FreeRTOS for threads, newlib, and lwIP for networking. iroh builds
 on top without modification.
 
-To use a microcontroller in production, [contact us for licensing, support, and
-access to the Pico/Presto examples.](mailto:support@iroh.computer)
+[Contact us for production support.](mailto:support@iroh.computer)
 
 ## Network Transports
 
