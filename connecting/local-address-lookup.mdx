@@ -12,20 +12,24 @@ and mobile hotspots, but does not cross networks or work in browsers.
 
 ## Choose an mDNS lookup
 
-Two separate crates provide local discovery for iroh 1.x:
+Local discovery is optional in iroh 1.x. Neither of these crates is enabled by
+default; add one when your application needs to find peers on the same network.
+They make different performance trade-offs:
 
 | Crate | How it discovers peers | When to consider it |
 | --- | --- | --- |
-| [`iroh-mdns-address-lookup`](https://docs.rs/iroh-mdns-address-lookup/latest/iroh_mdns_address_lookup/) | Uses [`swarm-discovery`](https://crates.io/crates/swarm-discovery), which limits multicast traffic as the number of peers grows. | Long-running endpoints, especially on busy local networks. |
-| [`iroh-mdns-peer-lookup`](https://docs.rs/iroh-mdns-peer-lookup/latest/iroh_mdns_peer_lookup/) | Uses standard mDNS/DNS-SD records and aims to return local addresses quickly. | Short-lived or on-demand lookups where connection setup time matters, such as a phone waking to connect. |
+| [`iroh-mdns-address-lookup`](https://docs.rs/iroh-mdns-address-lookup/latest/iroh_mdns_address_lookup/) | Uses [`swarm-discovery`](https://crates.io/crates/swarm-discovery), which limits multicast traffic as the number of peers grows. | Long-running endpoints or large local meshes where controlling multicast traffic matters. |
+| [`iroh-mdns-peer-lookup`](https://docs.rs/iroh-mdns-peer-lookup/latest/iroh_mdns_peer_lookup/) | Uses standard mDNS/DNS-SD records and aims to return local addresses quickly. | Short-lived or on-demand clients, including mobile apps that need a quick initial connection. |
 
-These use different discovery formats, so check that the endpoints you want to
-find use a compatible lookup. Consider multicast traffic and battery use on
-mobile devices when deciding how long to keep discovery running.
+For mobile devices, weigh connection setup time against how long discovery stays
+active and its effect on battery use. A mobile app participating in a large local
+mesh may prefer bounded multicast traffic; an app that wakes briefly to connect
+may prefer faster initial lookup. These crates use different discovery formats,
+so check that the endpoints you want to find use a compatible lookup.
 
 ## Use `iroh-mdns-address-lookup`
 
-mDNS is opt-in. Add the crate alongside iroh:
+Add the crate alongside iroh:
 
 ```toml
 [dependencies]
