@@ -17,7 +17,7 @@ iroh ships several address lookup implementations. **By default, iroh uses DNS/P
 | Name | Description | Default |
 | --- | --- | --- |
 | [DNS/Pkarr](#endpoint-address-lookup-via-dns) | publishes signed records to a server and resolves them over DNS | ✅ Enabled |
-| [Local](/connecting/local-address-lookup) | uses an mDNS-like system to find endpoints on the local network | ❌ Disabled |
+| [Local](/connecting/local-address-lookup) | finds endpoints on the local network with an optional mDNS lookup crate | ❌ Disabled |
 | [DHT](/connecting/dht-address-lookup) | publishes the same signed records to the BitTorrent Mainline DHT | ❌ Disabled |
 
 ## Background on address lookup and DNS/Pkarr
