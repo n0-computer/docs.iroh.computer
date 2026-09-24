@@ -2,9 +2,15 @@
 title: "mDNS"
 ---
 
-mDNS lets endpoints on the same local network discover each other's dialing
-information and connect directly without a relay. It works on Wi-Fi, Ethernet,
-and mobile hotspots, but does not cross networks or work in browsers.
+The mDNS address lookup mechanism will automatically broadcast your endpoint's
+presence on the local network, and listen for other endpoints doing the same. When
+another endpoint is discovered, the dialing information is exchanged, and a
+connection can be established directly over the local network without needing a relay.
+
+Devices need to be connected to the same local network for mDNS address lookup to
+work. This can be a Wi-Fi network, an Ethernet network, or even a mobile
+hotspot, but does not work in browsers.
+
 
 <Frame>
   <img src="https://www.iroh.computer/animations/mdns-address-lookup.svg" alt="Three devices on the same network — an iPhone, an Android phone and an embedded device — behind one router; each multicasts an mDNS announcement of its key and local address, and every device's known-peers list grows as the announcements arrive" style={{ width: '100%' }} />
