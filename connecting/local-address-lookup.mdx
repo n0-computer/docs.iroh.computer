@@ -25,7 +25,7 @@ They make different performance trade-offs:
 | Crate | How it discovers peers | When to consider it |
 | --- | --- | --- |
 | [`iroh-mdns-address-lookup`](https://docs.rs/iroh-mdns-address-lookup/latest/iroh_mdns_address_lookup/) | Uses [`swarm-discovery`](https://crates.io/crates/swarm-discovery), which periodically announces addresses in a frequency based on observed traffic | Long-running endpoints or large local meshes where limiting multicast traffic matters. |
-| [`iroh-mdns-peer-lookup`](https://docs.rs/iroh-mdns-peer-lookup/latest/iroh_mdns_peer_lookup/) | Uses standard mDNS/DNS-SD records and aims to return local addresses quickly. | Short-lived or on-demand clients, including mobile apps that need a quick initial connection. |
+| [`iroh-mdns-peer-lookup`](https://docs.rs/iroh-mdns-peer-lookup/latest/iroh_mdns_peer_lookup/) | Uses the standard mDNS/DNS-SD query and response protocol. | Short-lived or on-demand clients, including mobile apps that need a quick initial connection. |
 
 For mobile devices, weigh connection setup time against how long discovery stays
 active and its effect on battery use. A mobile app participating in a large local
