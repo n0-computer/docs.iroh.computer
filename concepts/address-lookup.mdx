@@ -12,13 +12,15 @@ Address Lookup services form an automated system for an [Endpoint](/concepts/end
 
 ## Address Lookup Services
 
-iroh ships several address lookup implementations. **By default, iroh uses DNS/Pkarr address lookup** to resolve EndpointIDs to addresses. It publishes signed records to a server and resolves them via DNS.
+iroh includes Pkarr publishing and address lookup. Its default configuration
+publishes signed records to a Pkarr server and resolves them through DNS or
+HTTPS-based Pkarr lookup. See the [DNS Address Lookup guide](/connecting/dns-address-lookup)
+for configuration details.
 
-| Name | Description | Default |
-| --- | --- | --- |
-| [DNS/Pkarr](#endpoint-address-lookup-via-dns) | publishes signed records to a server and resolves them over DNS | ✅ Enabled |
-| [Local](/connecting/local-address-lookup) | finds endpoints on the local network with an optional mDNS lookup crate | ❌ Disabled |
-| [DHT](/connecting/dht-address-lookup) | publishes the same signed records to the BitTorrent Mainline DHT | ❌ Disabled |
+Additional crates provide other address lookup options:
+
+- [mDNS address lookup](/connecting/local-address-lookup) finds endpoints on the local network.
+- [DHT address lookup](/connecting/dht-address-lookup) publishes and resolves signed records through the BitTorrent Mainline DHT.
 
 ## Background on address lookup and DNS/Pkarr
 
