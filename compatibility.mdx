@@ -47,12 +47,16 @@ comes down to its available RAM and flash:
   that includes the device's IP address, or discover it by endpoint ID with
   [mDNS](/connecting/local-address-lookup). Browsers can't connect this way because
   they don't support mDNS or direct UDP.
-- **Flash.** Devices with less than 8 MiB of flash need our reduced-dependency
-  build of iroh. Common 4 MiB development boards fit with a little size tuning
-  (`opt-level = "z"`, `panic = "immediate-abort"`, and `-Os` on the ESP-IDF side),
-  with no custom partition table required.
+- **Flash.** Starting with iroh 1.2.0, ESP32 devices with 4 MiB of flash can run
+  the published iroh crate out of the box. A reduced-dependency fork is no longer
+  required. Flash capacity is separate from the RAM requirements above.
 
 ### ESP32
+
+In [iroh 1.2.0](https://www.iroh.computer/blog/iroh-1-3-0), switching from
+`hickory-resolver` to `n0-dns-resolver` reduced binary size by more than 10%,
+enabling support for ESP32 boards with 4 MiB of flash without a patched iroh
+build. Relay and address lookup still require sufficient RAM, as shown below.
 
 | Board | Architecture | PSRAM | Reachability |
 |-------|--------------|-------|--------------|
