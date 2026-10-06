@@ -47,12 +47,14 @@ comes down to its available RAM and flash:
   that includes the device's IP address, or discover it by endpoint ID with
   [mDNS](/connecting/local-address-lookup). Browsers can't connect this way because
   they don't support mDNS or direct UDP.
-- **Flash.** Devices with less than 8 MiB of flash need our reduced-dependency
-  build of iroh. Common 4 MiB development boards fit with a little size tuning
-  (`opt-level = "z"`, `panic = "immediate-abort"`, and `-Os` on the ESP-IDF side),
-  with no custom partition table required.
+- **Flash.** In iroh 1.2.0 and later, devices with 4 MiB of flash can run
+  the published iroh crate out of the box. 
 
 ### ESP32
+
+In [iroh 1.2.0](https://www.iroh.computer/blog/iroh-1-3-0) and above,
+iroh supports ESP32 boards with 4 MiB of flash without a patched iroh
+build. Relay and address lookup still require sufficient RAM, as shown below.
 
 | Board | Architecture | PSRAM | Reachability |
 |-------|--------------|-------|--------------|
@@ -68,8 +70,6 @@ comes down to its available RAM and flash:
 The RISC-V variants (ESP32-C\*, ESP32-P\*) build with stock Rust. Xtensa
 (ESP32, ESP32-S3) needs the [`esp` Rust
 toolchain](https://docs.esp-rs.org/book/installation/riscv-and-xtensa.html).
-The ESP32-P4 has no radio of its own. WiFi comes from an ESP32-C6 companion
-over ESP-Hosted.
 </Note>
 
 You'll find working firmware for every variant above, along with a desktop CLI
