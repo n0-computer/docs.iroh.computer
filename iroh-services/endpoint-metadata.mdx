@@ -1,0 +1,98 @@
+---
+title: "Endpoint Metadata: Attributes & Groups"
+description: "Tag endpoints with a group and custom key-value attributes so you can find and filter them on the dashboard"
+---
+
+Beyond a [name](/iroh-services/quickstart), an endpoint connected to Iroh Services can carry two more pieces of cloud-side metadata: a single **group**, and a set of arbitrary **attributes** (key-value pairs). Use them to tag endpoints by whatever dimension matters to you — environment, region, tenant, app version — then find and filter on that dimension from the dashboard.
+
+<Note>
+**Rust only, for now.** Groups and attributes are available in the `iroh-services` Rust crate. The Python, Swift, and Kotlin bindings (via `iroh-ffi`) currently only expose `name` / `set_name` — group and attribute support hasn't landed there yet.
+</Note>
+
+## Prerequisites
+
+This tutorial assumes you already have an endpoint wired up to Iroh Services. If you don't, start with the [quickstart](/iroh-services/quickstart) — it covers getting an [API key](/iroh-services/access), adding the `iroh-services` crate, and connecting a client.
+
+```bash
+cargo add iroh-services
+```
+
+## Set metadata at build time
+
+Like `name`, `group` and `attributes` can be set on the `ClientBuilder`. Both are validated locally before the client ever talks to the network; a failure to send them once connected is logged rather than returned, so use the `Client` setters below when you need explicit error handling for updates made after construction.
+
+```rust
+use iroh_services::Client;
+
+let client = Client::builder(&endpoint)
+    .api_secret_from_env()?
+    .name("worker-7")?
+    .group("staging")?
+    .attributes([("region", "us-west"), ("app-version", "1.4.2")])?
+    .build()
+    .await?;
+```
+
+- **`group`** is a single string, 2 to 128 bytes of UTF-8 — the same rule as `name`. Uniqueness isn't enforced, so any number of endpoints can share a group.
+- **`attributes`** takes any iterable of `(key, value)` pairs — an array of tuples, a `Vec`, a `HashMap`, a `BTreeMap`. Keys follow the same 2–128 byte rule as names; values may be empty and are capped at 128 bytes; the map is capped at 128 entries.
+
+## Update metadata later
+
+Each field can also be changed after the client is built. `set_group` and `set_attributes` mirror the builder methods; `set_attribute` is a convenience for changing one value without touching the rest:
+
+```rust
+client.set_group("production").await?;
+
+// Replaces the whole attribute map
+client.set_attributes([("region", "us-west"), ("app-version", "1.4.3")]).await?;
+
+// Merges a single key into the existing map instead
+client.set_attribute("app-version", "1.4.4").await?;
+```
+
+<Note>
+`set_attributes` fully replaces the map on every call — pass an empty iterator to clear it. Reach for `set_attribute` when you only want to change one value without re-sending the rest.
+</Note>
+
+## Reading metadata back
+
+`client.name()` and `client.group()` return the locally cached value (`Option<String>`) — whatever was last set successfully, whether from the builder or a `set_*` call. There's no `attributes()` getter yet; track the current map on your own side if you need to read it back.
+
+## See it on the dashboard
+
+Group and Attributes show up on your project's **Endpoints** page:
+
+- The search box matches by name, endpoint id, group, or attribute.
+- The sidebar has a **Group** filter listing every distinct group in the project.
+- **Group** and **Attributes** columns exist in the table but are hidden by default — click **Columns** above the table to turn them on. Attribute pills are capped at two per row before collapsing into a `+N` badge; hover a row to see the full set.
+- Open an endpoint to see its full **Group** and **Attributes** on the detail page.
+
+<Frame>
+![Group and Attributes columns and filter on the endpoints list](/images/endpoints-list-group-attributes.png)
+</Frame>
+
+<Frame>
+![Group and Attributes on an endpoint's detail page](/images/endpoint-detail-group-attributes.png)
+</Frame>
+
+## Full example
+
+A runnable example that exercises both the builder and the update paths is [on GitHub](https://github.com/n0-computer/iroh-services/blob/main/examples/endpoint_meta.rs):
+
+```bash
+IROH_SERVICES_API_SECRET=YOUR_API_KEY cargo run --example endpoint_meta
+```
+
+## What's next
+
+<Card title="Iroh Services quickstart" icon="rocket" href="/iroh-services/quickstart" horizontal>
+  Wire up your first endpoint and see it on the dashboard.
+</Card>
+
+<Card title="API keys" icon="key" href="/iroh-services/access" horizontal>
+  Understand what an API key authorizes and how to get one.
+</Card>
+
+<Card title="Diagnose a connectivity issue" icon="stethoscope" href="/iroh-services/net-diagnostics/quickstart" horizontal>
+  Run remote diagnostic reports on your users' endpoints to find out why connections fail.
+</Card>

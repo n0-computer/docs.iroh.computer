@@ -37,6 +37,7 @@
             "pages": [
               "connect-two-endpoints",
               "iroh-services/quickstart",
+              "iroh-services/endpoint-metadata",
               "iroh-services/net-diagnostics/quickstart",
               "protocols/using-quic",
               "examples/chat",
