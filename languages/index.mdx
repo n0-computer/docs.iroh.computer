@@ -1,9 +1,9 @@
 ---
 title: "Overview"
-description: "Use iroh from Rust, Python, Swift, Kotlin, JavaScript, C, or Go."
+description: "Use iroh from Rust, Python, Swift, Kotlin, JavaScript, C, Go, Dart, and Flutter."
 ---
 
-iroh is available in Rust, Python, Swift, Kotlin, JavaScript, C, and Go. Pick the language that fits your app and follow its guide to get a working endpoint in minutes.
+iroh is available in Rust, Python, Swift, Kotlin, JavaScript, C, Go, Dart, and Flutter. Pick the language that fits your app and follow its guide to get a working endpoint in minutes.
 
 | Language | Status | Platform notes |
 | --- | --- | --- |
@@ -14,6 +14,8 @@ iroh is available in Rust, Python, Swift, Kotlin, JavaScript, C, and Go. Pick th
 | [JavaScript](/languages/javascript) | Official | Node.js via N-API |
 | [C](/languages/c) | Official | Raw FFI via [iroh-c-ffi](https://github.com/n0-computer/iroh-c-ffi), build from source |
 | [Go](/languages/go) | Community | FFI bindings via [iroh-ffi](https://github.com/n0-computer/iroh-ffi) |
+| [Dart](/languages/dart) | Community | FFI bindings via [iroh-dart](https://github.com/snowpinelabs/iroh_dart/tree/main/packages/iroh_quic), generated via flutter_rust_bridge_codegen |
+| [Flutter](/languages/flutter) | Community | FFI bindings via [iroh-flutter](https://github.com/snowpinelabs/iroh_dart/blob/main/packages/iroh_flutter), generated via flutter_rust_bridge_codegen |
 
 "Community" bindings are built and maintained by community members rather than
 the number0 team. They aren't covered by official support, may lag behind
@@ -32,19 +34,19 @@ up-to-date, and contain custom configuration and protocol features.
 
 The [n0.computer](https://n0.computer) team offers official support for the following platforms.
 
-| Platform                  | Rust | Python | Swift | Kotlin | JavaScript | C | Go |
-| ---                       | ---  | ---    | ---   | ---    | ---        | - | -- |
-| iOS (device + sim)        | ✓    | —      | ✓     | —      | —          | ✗ | -  |
-| Android (aarch64, armv7)  | ✓    | —      | —     | ✓      | ✓          | ✗ | -  |
-| macOS arm64               | ✓    | ✓      | ✓     | ✓      | ✓          | ✓ | -  |
-| macOS x86_64              | ✓    | ✓      | ✗     | ✓      | ✗          | ✗ | -  |
-| Linux x86_64 (glibc)      | ✓    | ✓      | —     | ✓      | ✓          | ✓ | -  |
-| Linux x86_64 (musl)       | ✓    | ✗      | —     | ✗      | ✓          | ✗ | ✓  |
-| Linux aarch64 (glibc)     | ✓    | ✓      | —     | ✓      | ✓          | ✗ | -  |
-| Linux aarch64 (musl)      | ✓    | ✗      | —     | ✗      | ✓          | ✗ | ✓  |
-| Linux armv7               | ✓    | ✗      | —     | ✗      | ✓          | ✗ | -  |
-| Windows x86_64            | ✓    | ✓      | —     | ✓      | ✓          | ✓ | -  |
-| Windows aarch64           | ✓    | ✗      | —     | ✗      | ✓          | ✗ | -  |
+| Platform                  | Rust | Python | Swift | Kotlin | JavaScript | C | Go | Dart | Flutter |
+| ---                       | ---  | ---    | ---   | ---    | ---        | - | -- | ---  | ---     |
+| iOS (device + sim)        | ✓    | —      | ✓     | —      | —          | ✗ | -  | —    | ✓       |
+| Android (aarch64, armv7)  | ✓    | —      | —     | ✓      | ✓          | ✗ | -  | —    | ✓       |
+| macOS arm64               | ✓    | ✓      | ✓     | ✓      | ✓          | ✓ | -  | ✓    | ✓       |
+| macOS x86_64              | ✓    | ✓      | ✗     | ✓      | ✗          | ✗ | -  | ✓    | ✓       |
+| Linux x86_64 (glibc)      | ✓    | ✓      | —     | ✓      | ✓          | ✓ | -  | ✓    | ✓       |
+| Linux x86_64 (musl)       | ✓    | ✗      | —     | ✗      | ✓          | ✗ | ✓  | ✗    | ✗       |
+| Linux aarch64 (glibc)     | ✓    | ✓      | —     | ✓      | ✓          | ✗ | -  | ✓    | ✓       |
+| Linux aarch64 (musl)      | ✓    | ✗      | —     | ✗      | ✓          | ✗ | ✓  | ✗    | ✗       |
+| Linux armv7               | ✓    | ✗      | —     | ✗      | ✓          | ✗ | -  | ✗    | ✗       |
+| Windows x86_64            | ✓    | ✓      | —     | ✓      | ✓          | ✓ | -  | ✓    | ✓       |
+| Windows aarch64           | ✓    | ✗      | —     | ✗      | ✓          | ✗ | -  | ✓    | ✓       |
 
 <Card title="Need a language we don't support?" icon="envelope" href="https://cal.com/team/number-0/iroh-services" horizontal>
   Get in touch and tell us what you're building. We can prioritize new bindings or help you maintain your own.
