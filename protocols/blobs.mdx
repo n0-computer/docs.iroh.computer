@@ -19,7 +19,7 @@ Chunk hashes are distinct from root hashes and only used during data transfer. T
 
 ## Collections
 
-A *Collection* is an ordered sequence of hashes that refer to other blobs. Collection reference counts can range from 0-billions. Collections are the _only_ means of relating blobs, and form the basis of synchronization & querying. Collections cannot be queried nested as graphs.
+A *Collection* is an ordered sequence of hashes that refer to other blobs. Collection reference counts can range from 0-billions. Collections are the _only_ means of relating blobs, and form the basis of synchronization & querying.
 
 The serialized form of a collection is each 32 byte hash in the collection, concatenated without any separator. A collection is only valid if it's byte length is a multiple of 32, which also makes indexing into a collection with a known byte length trivial: multiply the desired index by 32.
 
