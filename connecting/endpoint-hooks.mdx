@@ -23,6 +23,10 @@ Note that hooks cannot *use* connections, they can only *observe* or *reject* th
 
 > **Note:** Hooks live on the `Endpoint` instance. Never store an `Endpoint` inside your hook type (even indirectly), or it may cause reference-counting cycles and prevent clean shutdown.
 
+Hooks are part of the [`iroh` crate](https://crates.io/crates/iroh). See the
+[`EndpointHooks` API reference](https://docs.rs/iroh/latest/iroh/endpoint/trait.EndpointHooks.html)
+for callback signatures and outcomes.
+
 ## Example: Observing connection events
 
 This example shows a minimal hook implementation that logs the context available at each stage and spawns a task to watch the connection's network paths. It does not alter behavior, only observes.

@@ -36,7 +36,12 @@ successfully, we will report the metric to the Iroh Services platform.
 For a complete example, see the [iroh-ping example on GitHub](https://github.com/n0-computer/iroh-ping).
 
 Custom metrics live in a struct that derives `MetricsGroup` from the
-`iroh-metrics` crate, which you register on the client:
+[`iroh-metrics`](https://crates.io/crates/iroh-metrics) crate, which you register
+on the [`iroh-services`](https://crates.io/crates/iroh-services) client. See the
+[metrics API reference](https://docs.rs/iroh-metrics/latest/iroh_metrics/) for
+metric types and the
+[`register_metrics_group` API](https://docs.rs/iroh-services/latest/iroh_services/struct.ClientBuilder.html#method.register_metrics_group)
+for client registration:
 
 ```bash
 cargo add iroh-metrics

@@ -3,7 +3,7 @@ title: "Blobs"
 ---
 
 The blobs protocol works with sequences of opaque data ("blobs"), which are often the bytes of a file.
-It's a protocol for data storage and transfer. `iroh-blobs` is _content-addressed_, which means data is always referenced to by it's cryptographic hash. Blobs implements request/response and 
+It's a protocol for data storage and transfer. [`iroh-blobs`](https://crates.io/crates/iroh-blobs) is _content-addressed_, which means data is always referenced to by it's cryptographic hash. Blobs implements request/response and
 streaming transfers blobs or ranges of blobs, using hashes to verify streams remain intact.
 
 All blobs within iroh are referred to by the BLAKE3 hash of its content. BLAKE3 is a _tree hashing_ algorithm, that splits its input into uniform chunks and arranges them as the leaves of a binary tree, producing intermediate _chunk hashes_ that accumulate up to a _root hash._ Iroh uses the 32 byte root hash (or just “hash”) as an immutable blob identifier. 

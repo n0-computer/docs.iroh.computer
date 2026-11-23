@@ -8,7 +8,9 @@ iroh uses the `tracing` crate for logging. To see what's happening inside iroh, 
 
 ### Setup
 
-First, add the tracing subscriber dependency:
+First, add the [`tracing-subscriber`](https://crates.io/crates/tracing-subscriber)
+dependency. See its [API reference](https://docs.rs/tracing-subscriber/latest/tracing_subscriber/)
+for subscriber and log-filter configuration:
 
 ```bash
 cargo add tracing-subscriber
@@ -43,6 +45,8 @@ This will print log messages to your terminal, helping you understand what iroh 
 [iroh doctor](https://github.com/n0-computer/iroh-doctor) is a command-line tool that helps you diagnose network connectivity issues with your iroh setup.
 
 ### Installation
+
+Install [`iroh-doctor` from crates.io](https://crates.io/crates/iroh-doctor):
 
 ```
 cargo install iroh-doctor
