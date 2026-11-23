@@ -49,7 +49,11 @@ SLA.
 
 ## Using your own relays
 
-To use a specific set of relays with your iroh endpoint, configure your relay URLs as part of an iroh-services preset:
+To use a specific set of relays with your iroh endpoint, configure a custom relay map:
+
+The endpoint configuration uses the [`iroh` crate](https://crates.io/crates/iroh).
+See the [`RelayMode` API reference](https://docs.rs/iroh/latest/iroh/endpoint/enum.RelayMode.html)
+for custom relay maps.
 
 <RelayEndpointConfig />
 

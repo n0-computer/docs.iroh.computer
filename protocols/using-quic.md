@@ -36,6 +36,12 @@ iroh uses [noq](https://github.com/n0-computer/noq), a pure-Rust QUIC implementa
 </Note>
 
 
+Use the [`iroh` crate](https://crates.io/crates/iroh) and its
+[`Connection` API reference](https://docs.rs/iroh/latest/iroh/endpoint/struct.Connection.html)
+for the stream operations below. For lower-level QUIC APIs, see
+[`noq` on crates.io](https://crates.io/crates/noq) and the
+[noq API reference](https://docs.rs/noq/latest/noq/).
+
 ## Overview of the QUIC API
 
 Implementing a new protocol on the QUIC protocol can be a little daunting initially. Although the API is not that extensive, it's more complicated than e.g. TCP where you can only send and receive bytes, and eventually have an end of stream.
