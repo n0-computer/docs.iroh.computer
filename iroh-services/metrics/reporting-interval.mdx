@@ -1,0 +1,79 @@
+---
+title: "Set the metrics reporting interval"
+description: "Send metrics to Iroh Services daily, hourly, or every five minutes from Rust."
+---
+
+Set the reporting interval on your `iroh-services` client to control how often
+your endpoint sends metrics. The default interval is 60 seconds.
+
+Start with the [Iroh Services quickstart](/iroh-services/quickstart) to create
+your preset and endpoint with a project API key.
+
+## Choose an interval
+
+Import `Duration` in your Rust application:
+
+```rust
+use std::time::Duration;
+```
+
+Choose one of these values:
+
+<CodeGroup>
+
+```rust Daily
+let reporting_interval = Duration::from_secs(24 * 60 * 60);
+```
+
+```rust Hourly
+let reporting_interval = Duration::from_secs(60 * 60);
+```
+
+```rust Every five minutes
+let reporting_interval = Duration::from_secs(5 * 60);
+```
+
+</CodeGroup>
+
+## Configure the client
+
+In your async application code, replace the quickstart's client construction
+with the following. Use the `preset` and `endpoint` you already created:
+
+```rust
+endpoint.online().await;
+
+let client = preset
+	.client_builder(&endpoint)
+	.name("my-endpoint")?
+	.metrics_interval(reporting_interval)
+	.build()
+	.await?;
+
+// Run your application here, keeping `client` alive.
+```
+
+Keep the client and async runtime alive for as long as you want to send metrics.
+Dropping the client stops its background tasks.
+
+The client sends an initial report at startup, then reports at the configured
+interval. Daily reporting repeats every 24 hours while the client runs. It does
+not align reports to midnight, and restarting the client starts a new schedule.
+
+This interval applies to the endpoint metrics and any
+[custom metrics groups](/iroh-services/metrics/custom) registered on the client.
+Choose a shorter interval when you need more frequent updates in the dashboard.
+
+## Send a report before the next interval
+
+To send the current metrics immediately, await `push_metrics()`:
+
+```rust
+client.push_metrics().await?;
+```
+
+This sends an extra report without changing the automatic interval.
+
+For API details, see
+[`ClientBuilder::metrics_interval`](https://docs.rs/iroh-services/latest/iroh_services/struct.ClientBuilder.html#method.metrics_interval)
+and [`Client::push_metrics`](https://docs.rs/iroh-services/latest/iroh_services/struct.Client.html#method.push_metrics).
