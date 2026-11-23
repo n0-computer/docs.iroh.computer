@@ -5,17 +5,26 @@ description: "Deploy and configure dedicated relay infrastructure through Iroh S
 
 import RelayPresetConfig from '/snippets/relay-preset-config.mdx';
 
-Managed relays are dedicated relay servers provisioned through the Iroh Services platform and operated by n0.computer. Unlike the [public relays](/iroh-services/relays/public), managed relays are exclusively yours: authenticated by default, no shared traffic, no rate limits, and with uptime SLAs.
+Managed relays are dedicated relay servers provisioned through the Iroh Services platform and operated by n0.computer. Unlike the [public relays](/iroh-services/relays/public), managed relays are exclusively yours: authenticated by default, with no shared traffic or rate limits.
 
 ## What you get
 
+Each Dedicated relay is a **$199/month per-region add-on** to the Pro plan and
+includes:
+
 - **Fully managed**: n0.computer handles operations, maintenance, and upgrades
-- **Authenticated by default**: only your project's endpoints can connect, authenticated automatically with your API key
+- **Authenticated by default**: only your project's endpoints can connect, using an endpoint-bound token derived locally from your API key
 - **Isolation**: your traffic only; no noisy neighbors
-- **Version locking**: pin to a specific iroh version or run blue/green deployments
-- **Multi-region & multi-cloud**: deploy across regions and providers for resilience
-- **On-prem**: available on Enterprise plans; [contact us](mailto:support@iroh.computer)
-- **Custom SLAs**: [contact us](mailto:support@iroh.computer)
+- **Capacity**: up to 60,000 concurrent connections
+- **Egress**: 250 GB per month, then $0.09/GB
+- **[Version locking](#version-locking)**: pin to a specific iroh version or run blue/green deployments
+- **Multi-region**: deploy across multiple regions for lowest latency and high availability. [Contact us](mailto:support@iroh.computer) to request a custom region if the available regions don't meet your needs.
+
+Multi-cloud, on-premises deployments, and SLAs are available on Enterprise
+plans. [Contact us](mailto:support@iroh.computer) to discuss.
+
+Only traffic carried by a relay counts as relay egress. Direct peer-to-peer
+traffic does not.
 
 ## Deploy a relay
 
@@ -32,11 +41,10 @@ The project must be on the Pro plan to deploy managed relays. You can also upgra
 Navigate to **Relays** in your project sidebar and click **Deploy Relay**. Select a region for your relay.
 
 ![Add relay dialog](/images/add-relay.png)
-![Add relay dialog](/images/region-relay.png)
 
 ### 3. Copy your relay URL
 
-Once deployed, your relay URL will appear in the dashboard. Copy it; you'll need it to configure your endpoints.
+Once deployed, your relay URL will appear in the dashboard. Hit Connect to see a code snippet to connect to your relay. 
 
 ### 4. Configure your endpoint
 
@@ -46,25 +54,34 @@ Set your endpoint to use your dedicated relay URLs instead of the public relays:
 
 ### 5. Verify connectivity
 
-Go to your project's **Relays** page to confirm your endpoints are connecting through your dedicated relay. You should see connected endpoint counts and traffic metrics.
+Go to your project's **Relays** page to confirm your endpoints are connecting
+through your dedicated relay. You should see connected endpoint counts and
+traffic metrics.
 
 ![Relay metrics](/images/metrics-relay.png)
 
 ## Authentication
 
-Managed relays **require authentication by default** — only your project's endpoints can connect. There's nothing extra to set up: when you build your endpoint with the [`preset()`](#4-configure-your-endpoint) and your API key, it authenticates automatically. For how this works under the hood, see [relay authentication](/concepts/relays#authentication).
+Managed relays **require authentication by default** — only your project's
+endpoints can connect. There's nothing extra to set up: when you build your
+endpoint with the [`preset()`](#4-configure-your-endpoint), the SDK derives an
+endpoint-bound relay token locally from your project API key. See [API
+Keys](/iroh-services/access#how-relay-authentication-works) for the authoritative
+authentication description.
+
+## Version locking
+
+Dedicated relays can be pinned to a specific supported iroh relay version
+instead of moving automatically to a newer release. This lets you coordinate
+relay upgrades with your endpoint rollout and operate old and new relay versions
+side by side during a blue/green deployment. The pin applies to the relay
+software; you remain responsible for verifying compatibility with the iroh
+versions used by your endpoints.
 
 ## Turn authentication off
 
 If you want any endpoint that has your relay's URL to be able to use it — not
-just your project's endpoints — you can turn authentication off in your relay's
-**Settings → Network Settings → Access Control**. Use the **Who may connect**
-dropdown, then **Save**.
-
-In the dashboard this control is labeled **Private** (authentication on — only
-your project's API keys may connect) and **Public** (authentication off).
-"Public" here means no API key is required to connect; it does not make your
-relay discoverable.
+just your project's endpoints — you can turn authentication off in the **Authentication** section.
 
 ![Relay access control settings](/images/relay-auth-toggle.png)
 
@@ -82,10 +99,37 @@ just don't require your API key to connect.
 
 ## Recommended setup
 
-For production, deploy at least two relays in different geographic regions. If one relay becomes unreachable, iroh automatically falls back to the next one in your list, so your peers will still find each other.
+Place relays as close as possible to the users they serve. Shorter network paths
+reduce latency and improve response times, including time to first byte when a
+connection uses a relay. For a globally distributed user base, prioritize
+regions near your largest user populations.
 
-Each relay handles up to 60,000 concurrent connections. For larger deployments, [contact us](mailto:support@iroh.computer) to increase relay capacity.
+For production, also deploy at least two relays in different geographic
+regions. If one relay becomes unreachable, iroh automatically falls back to the
+next one in your list, so your peers will still find each other. Choose regions
+that balance user proximity with protection from a single regional outage.
+
+Each relay handles up to 60,000 concurrent connections. For larger deployments,
+[contact us](mailto:support@iroh.computer) to increase relay capacity.
+
+## Request a custom region
+
+Need a relay closer to your users or in a region that is not available in the
+dashboard? Contact [support@iroh.computer](mailto:support@iroh.computer) with:
+
+- The region you need
+- Your expected peak concurrent connections
+- Your expected monthly relayed egress
+
+We review each request for availability and quote you on the expected monthly
+price. Depending on the region, provisioning may be available immediately or may
+require additional provider and capacity review. We will confirm availability,
+expected provisioning time, and pricing before provisioning the relay. Pricing
+for the custom region may differ from the standard $199/month per-region add-on
+for managed relays, and may come with different egress allowances and overage rates.
 
 ## Support
 
-Relay status and metrics are available in your project dashboard under **Relays**. On the Pro plan, we offer priority support. [Contact us](mailto:support@iroh.computer) for Enterprise SLAs.
+Relay status and metrics are available in your project dashboard under
+**Relays**. On the Pro plan, we offer email support at support@iroh.computer. [Contact
+us](mailto:support@iroh.computer) for Enterprise Support SLAs.

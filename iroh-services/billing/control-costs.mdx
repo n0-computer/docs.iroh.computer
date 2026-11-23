@@ -7,7 +7,8 @@ Iroh Services provides tools to help you stay in control of your spending.
 
 ## Spend caps
 
-Spend caps let you set a maximum monthly budget for your project. When your usage reaches the cap, services that incur additional charges will be paused until the next billing cycle.
+Spend caps let you set a monthly budget for your project. The cap is compared
+with the current total invoice, not only with usage-based overages.
 
 ### Setting a spend cap
 
@@ -17,19 +18,27 @@ Spend caps let you set a maximum monthly budget for your project. When your usag
 4. Click **Save**.
 
 <Note>
-Your spend cap applies to your total invoice, including the base plan cost, any applicable taxes, and usage-based charges that exceed what's included in your plan.
+Your spend cap applies to your total invoice, including the base plan,
+Dedicated relay charges, usage-based overages, and applicable taxes. It is not a
+guaranteed invoice ceiling: recurring charges and taxes still apply, and usage
+reported before enforcement takes effect can put the final invoice above the
+cap.
 </Note>
 
 ### What happens when you hit your cap
 
-When your usage-based charges reach your spend cap:
+When your total current invoice reaches your spend cap:
 
-- **Metrics ingestion** will be paused. Endpoints will stop sending new metrics until the next billing cycle.
-- **Your existing data** is preserved. Dashboards and historical metrics remain accessible.
-- **Endpoint connections**: the number of active connections sending metrics to your project will be throttled.
-- **Active relay connections** are not affected. Your endpoints will continue to connect through relays.
+- **Metrics collection pauses.** New metrics are not collected until the next billing cycle or until you raise or remove the cap. Existing dashboard and historical data remain available.
+- **Shared Relay overage metering stops.** Additional Shared Relay connection and egress usage is not billed after cap enforcement takes effect.
+- **Shared Relay traffic is constrained.** Existing relay connections are not dropped, but relay throughput is throttled. New connections above the plan's 10,000 included concurrent connections are refused.
+- **Dedicated relays continue running.** They are not stopped or throttled. Their monthly charges and any billable relay egress continue to apply while they are running; delete relays you no longer need.
+- **New paid infrastructure is blocked.** You cannot deploy another Dedicated relay while the cap is reached.
 
-Usage resets at the start of each billing cycle.
+Enforcement is not instantaneous because usage and invoice totals must be
+reported and evaluated. Usage resets and normal Shared Relay limits resume at
+the start of the next billing cycle. Raising or removing the cap also resumes
+service after the updated cap is evaluated.
 
 ## Tips for managing costs
 

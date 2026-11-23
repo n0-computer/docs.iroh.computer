@@ -11,7 +11,7 @@ This page describes how iroh is versioned, what compatibility guarantees we make
 |------|-------------|-------|---------|
 | Major | New features, breaking changes | ≥6 months | `1.x.x` |
 | Minor | Incremental features, improvements | ≥4 weeks | `1.2.x` |
-| Patch | Bug fixes, security updates | As needed | `1.2.3` |
+| Patch | Bug fixes, security updates. Only published for the latest minor version (see [Maintenance Releases](#maintenance-releases)) | As needed | `1.2.3` |
 | Release candidate | An early preview of an upcoming release, with higher confidence that the API is approaching stability | As needed | `1.0-rc` |
 | Canary | An early preview of an upcoming release with an unstable API | As needed | `0.97` |
 | Experimental | Fork or branch for a particular use case or prototype | As needed | `branch-name` |
@@ -36,6 +36,14 @@ The wire protocol must also remain compatible across minor versions within the s
 - Before deploying the next major version (e.g. `v2.0`), ensure all devices have been updated to the latest previous major (e.g. `v1.x`).
 - Before deploying the next minor version (e.g. `v2.1`), ensure all devices have been updated to the latest major (e.g. `v2.0`).
 
+## Maintenance Releases
+
+Number 0 publishes maintenance (patch) releases **only for the most recently released minor version**. Once a new minor version ships, the previous minor version stops receiving patch releases; any bug fixes or security patches are released as a patch to the new minor version instead.
+
+For example, once `1.3.0` is released, fixes ship as `1.3.x`, and no further `1.2.x` releases will be published.
+
+Because minor versions within a major series are API- and wire-compatible, upgrading to the latest minor version is the supported way to receive fixes. If you need patches on an older minor version, see [Extended Support](#support-policy).
+
 ## Support Policy
 
 **Full Support**: The version is fully supported. Number 0 provides timely bug fixes, security patches, and ongoing maintenance. Expect active development and prompt response to issues.
@@ -48,8 +56,8 @@ The wire protocol must also remain compatible across minor versions within the s
 
 | Release | Full Support | Maintenance Mode | Extended Support |
 |---------|--------------|------------------|-------------------|
-| Major | 1 year | 1–3 years after release | [Contact us](mailto:support@iroh.computer) |
-| Minor | 3 months | 3 months – 1 year after release | [Contact us](mailto:support@iroh.computer) |
+| Major | 1 year, via its latest minor version | 1–3 years after release, via its latest minor version | [Contact us](mailto:support@iroh.computer) |
+| Minor | Until the next minor version is released | N/A | [Contact us](mailto:support@iroh.computer) |
 | Canary | N/A | N/A | [Contact us](mailto:support@iroh.computer) |
 | Experimental | N/A | N/A | N/A |
 | Release Candidate | N/A | N/A | N/A |
@@ -57,7 +65,7 @@ The wire protocol must also remain compatible across minor versions within the s
 ### Examples
 
 1. If you are using `0.35` in production, `0.35` is a minor version of iroh that is older than 1 year. To get bug fixes, feature backports, or security patches, you need to purchase an Extended Support package.
-2. If you find a bug in a version which is older than 3 months, the team may choose to patch the issue in the latest minor release. If you do not want to update to the latest minor and would prefer a backport to your current minor version, you must purchase an Extended Support package to fund the labor of backporting and maintaining a minor version older than 3 months.
+2. If you are using `1.2` and `1.3` has already been released, a bug you find in `1.2` will be fixed in a `1.3.x` patch release, not a `1.2.x` release. If you do not want to update to the latest minor and would prefer a backport to your current minor version, you must purchase an Extended Support package to fund the labor of backporting and maintaining an older minor version.
 
 For more on support tiers and SLAs, see the [Support page](/iroh-services/support) or [contact us](https://iroh.computer/services/support).
 

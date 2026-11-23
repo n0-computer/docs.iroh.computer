@@ -97,7 +97,10 @@
             "pages": [
               "deployment/dedicated-infrastructure",
               "iroh-services/relays/public",
-              "iroh-services/relays/managed"
+              "iroh-services/relays/shared",
+              "iroh-services/relays/managed",
+              "iroh-services/relays/self-hosted",
+              "relays/rate-limiting"
             ]
           },
           {

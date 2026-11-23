@@ -9,26 +9,53 @@ connection can be established directly over the local network without needing a 
 
 Devices need to be connected to the same local network for mDNS address lookup to
 work. This can be a Wi-Fi network, an Ethernet network, or even a mobile
-hotspot. mDNS is not designed to work over the internet or across different
-networks.
+hotspot, but does not work in browsers.
+
 
 <Frame>
   <img src="https://www.iroh.computer/animations/mdns-address-lookup.svg" alt="Three devices on the same network — an iPhone, an Android phone and an embedded device — behind one router; each multicasts an mDNS announcement of its key and local address, and every device's known-peers list grows as the announcements arrive" style={{ width: '100%' }} />
 </Frame>
 
-## Usage
+## Choose an mDNS lookup
 
-mDNS address lookup is not enabled by default. It lives in the separate
-[`iroh-mdns-address-lookup`](https://crates.io/crates/iroh-mdns-address-lookup)
-crate, which you add alongside `iroh`.
+Local discovery is optional in iroh 1.x. Neither of these crates is enabled by
+default; add one when your application needs to find peers on the same network.
+They make different performance trade-offs:
+
+| Crate | How it discovers peers | When to consider it |
+| --- | --- | --- |
+| [`iroh-mdns-address-lookup`](https://docs.rs/iroh-mdns-address-lookup/latest/iroh_mdns_address_lookup/) | Uses [`swarm-discovery`](https://crates.io/crates/swarm-discovery), which adjusts the frequency of address announcements based on observed traffic. | Long-running endpoints or large local meshes where limiting multicast traffic matters. |
+| [`iroh-mdns-peer-lookup`](https://docs.rs/iroh-mdns-peer-lookup/latest/iroh_mdns_peer_lookup/) | Uses the standard mDNS/DNS-SD query and response protocol. | Short-lived or on-demand clients, including mobile apps that need a quick initial connection. |
+
+For mobile devices, weigh connection setup time against how long discovery stays
+active and its effect on battery use. A mobile app participating in a large local
+mesh may prefer bounded multicast traffic; an app that wakes briefly to connect
+may prefer faster initial lookup. These crates use different discovery formats,
+so check that the endpoints you want to find use a compatible lookup.
+
+Both examples below use `presets::N0`, which enables the default DNS lookup and
+relay servers alongside local discovery. Neither mDNS crate is enabled by the
+preset.
+
+mDNS shares local dialing addresses with peers on the local network. Publishing
+IP addresses to a global address lookup is not required for iroh's hole punching:
+endpoints exchange IP information after a connection is established, including
+when that connection starts through a relay. A connected peer may learn your IP
+addresses; take this into account if your application authenticates peers after
+accepting connections.
+
+## Using `iroh-mdns-address-lookup`
+
+Add the crate alongside iroh:
 
 ```toml
 [dependencies]
 iroh = "1"
-iroh-mdns-address-lookup = "0.4"
+iroh-mdns-address-lookup = "0.5"
 ```
 
-Add the `MdnsAddressLookup` to the endpoint with `Endpoint::builder`. We run it next to the default DNS address lookup, so connections still work when the two endpoints are not on the same local network.
+Bind the endpoint, build the mDNS service with its endpoint ID, then register the
+service:
 
 ```rust
 use iroh::{Endpoint, endpoint::presets};
@@ -36,13 +63,52 @@ use iroh_mdns_address_lookup::MdnsAddressLookup;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    let endpoint = Endpoint::builder(presets::N0)
-        .address_lookup(MdnsAddressLookup::builder())
-        .bind()
-        .await?;
-    // your code here
+    let endpoint = Endpoint::bind(presets::N0).await?;
+    let mdns = MdnsAddressLookup::builder().build(endpoint.id())?;
+    endpoint.address_lookup()?.add(mdns.clone());
+
+    // Keep `mdns` if you want to call `mdns.subscribe().await` to receive
+    // discovered and expired peer events.
     Ok(())
 }
 ```
 
-For more on how mDNS address lookup works, see the [`iroh-mdns-address-lookup` documentation](https://docs.rs/iroh-mdns-address-lookup).
+You can also pass `MdnsAddressLookup::builder()` to
+`Endpoint::builder(presets::N0).address_lookup(...)`
+before binding if you do not need to retain the mDNS handle for `subscribe()`.
+
+For discovery events and address filtering, see the
+[`iroh-mdns-address-lookup` documentation](https://docs.rs/iroh-mdns-address-lookup/latest/iroh_mdns_address_lookup/).
+
+## Using `iroh-mdns-peer-lookup`
+
+The [peer lookup crate](https://docs.rs/iroh-mdns-peer-lookup/latest/iroh_mdns_peer_lookup/)
+uses standard DNS-SD records. Its `announce` option lets a listening endpoint
+advertise itself while a client can perform lookup without advertising:
+
+```toml
+[dependencies]
+iroh = "1"
+iroh-mdns-peer-lookup = "0.1"
+```
+
+```rust
+use iroh::{Endpoint, endpoint::presets};
+use iroh_mdns_peer_lookup::{Options, lookup};
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let options = Options::new().announce(true).build();
+    let mdns = lookup(options).await?;
+    let endpoint = Endpoint::builder(presets::N0)
+        .address_lookup(mdns)
+        .bind()
+        .await?;
+    // Accept connections with `endpoint`.
+    Ok(())
+}
+```
+
+Use `.announce(false)` for a client that only looks up peers. See the
+[crate documentation](https://docs.rs/iroh-mdns-peer-lookup/latest/iroh_mdns_peer_lookup/)
+for its other options.
