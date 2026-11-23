@@ -67,7 +67,7 @@ Because the limiter is per-connection, one client hitting its limit doesn't affe
 
 ## Self-hosted relays
 
-If you run the `iroh-relay` binary (or embed the `iroh-relay` server crate)
+If you run the `iroh-relay` binary (or embed the [`iroh-relay`](https://crates.io/crates/iroh-relay) server crate)
 yourself, rate limiting is **off by default**. This means connections can send
 unlimited data. 
 
@@ -81,6 +81,9 @@ max_burst_bytes = 2_000_000
 
 `bytes_per_second` is required to enable the limiter; `max_burst_bytes` is
 optional and defaults to no burst allowance above the steady rate if omitted.
+
+See the [relay server API reference](https://docs.rs/iroh-relay/latest/iroh_relay/server/)
+for the configuration types used when embedding the server.
 
 If you're embedding the relay server as a library, the equivalent is
 `iroh_relay::server::Limits::client_rx`. This is the field the client-facing

@@ -3,8 +3,6 @@ title: "Build a chat app"
 description: "Build a peer-to-peer chat application using iroh gossip"
 ---
 
-import { YouTube } from '@/components/youtube'
-
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/ogN_mBkWu7o?si=Y-GqkmGBRZfRhclc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
@@ -31,7 +29,7 @@ cargo run
 
 This should print "hello world", and you can see the code for that in the `src/main.rs` file, which is the file we will be building on for this tutorial.
 
-Next, let's add the iroh dependencies, and a few others we will need to get the chat application working.
+Add [`iroh`](https://crates.io/crates/iroh) and the supporting dependencies for the chat application.
 
 `tokio` handles our async runtime, allowing us to do things like listen for incoming messages at the same time as we write outgoing messages.
 
@@ -83,13 +81,16 @@ async fn main() -> Result<()> {
 
 ## Adding Gossip Protocol Support
 
-The `iroh-gossip` protocol is what we will use to not only send messages, but also coordinate who we are connected to in our chat application.
+Use [`iroh-gossip`](https://crates.io/crates/iroh-gossip) to send messages and manage peer connections in the chat application.
 
 Install the gossip protocol:
 
 ```bash
 cargo add iroh-gossip
 ```
+
+See the [gossip API reference](https://docs.rs/iroh-gossip/latest/iroh_gossip/)
+for topics, subscriptions, and message handling.
 
 Then update the code to implement basic gossip functionality:
 

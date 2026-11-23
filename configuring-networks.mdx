@@ -398,8 +398,11 @@ connectivity report described in
 [Testing your configuration](#testing-your-configuration). It includes a port
 mapping probe.
 
-**For your developers:** `.portmapper_config(PortmapperConfig::Disabled)` on the
-endpoint builder, as in the UDP example above.
+**For your developers:** use `.portmapper_config(PortmapperConfig::Disabled)` on the
+endpoint builder, as in the UDP example above. See the
+[`iroh` crate](https://crates.io/crates/iroh) and the
+[endpoint builder API reference](https://docs.rs/iroh/latest/iroh/endpoint/struct.Builder.html)
+for application-level network configuration.
 
 ## Airgapped networks
 

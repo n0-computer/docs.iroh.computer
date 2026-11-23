@@ -13,6 +13,10 @@ The protocol itself works like this:
 5. Once the connecting side has finished sending, it reads "the echo" back and then closes the connection.
 
 
+Use the [`iroh` crate](https://crates.io/crates/iroh). See the
+[`ProtocolHandler` API reference](https://docs.rs/iroh/latest/iroh/protocol/trait.ProtocolHandler.html)
+for the interface your protocol implements.
+
 ## Listening for connections
 
 As established in the [protocol] page, you'll first need to decide on an "Application-Layer Protocol Negotiation" (ALPN) string.
